@@ -1,0 +1,1273 @@
+<title>DiPizza</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Parisienne&display=swap">
+
+<style>
+/* ══════════════════════════════════════════════════════════════
+   Wood-fired pizza catering — warm, photo-led, fully editable.
+   Six base tokens per theme drive every other colour, so the
+   toda la paleta sale de seis colores: cambia esos seis y cambia la web.
+   ══════════════════════════════════════════════════════════════ */
+
+:root {
+  --ground:  #FBF6EF;
+  --surface: #FFFCF7;
+  --ink:     #3A2E2A;
+  --accent:  #4A3A33;
+  --warm:    #C9552F;
+  --green:   #7A8F5C;
+  --shadow-a: 58, 46, 42;
+  --shadow-o: .10;
+
+  --ink-2:       color-mix(in srgb, var(--ink) 70%, var(--ground));
+  --ink-3:       color-mix(in srgb, var(--ink) 46%, var(--ground));
+  --line:        color-mix(in srgb, var(--ink) 12%, var(--ground));
+  --line-strong: color-mix(in srgb, var(--ink) 24%, var(--ground));
+  --surface-2:   color-mix(in srgb, var(--ink) 6%, var(--surface));
+  --on-accent:   color-mix(in srgb, var(--ground) 88%, var(--accent));
+  --wash-a:      color-mix(in srgb, var(--warm) 16%, transparent);
+  --wash-b:      color-mix(in srgb, var(--green) 15%, transparent);
+  --shadow:      0 2px 6px rgba(var(--shadow-a), .04), 0 14px 34px -16px rgba(var(--shadow-a), var(--shadow-o));
+  --shadow-lift: 0 4px 10px rgba(var(--shadow-a), .06), 0 26px 56px -22px rgba(var(--shadow-a), calc(var(--shadow-o) * 1.7));
+
+  --i-crust:  #E7CFA3;  --i-crust2: #D9BB86;  --i-char:   #7A5230;
+  --i-rosso:  #BF4430;  --i-giallo: #D9922F;  --i-bianca: #F0E5D1;
+  --i-verde:  #6E8B4A;  --i-mozz:   #FBF7EE;  --i-basil:  #4E7A3E;
+  --i-salame: #A93A32;  --i-fungo:  #4C3E35;  --i-blu:    #DCD8BE;
+  --i-pist:   #8FA84B;  --i-rosa:   #E3A9A2;  --i-radic:  #8A3A5E;
+  --i-noce:   #B08A5E;  --i-metal:  #9AA3A8;  --i-wood:   #C69A62;
+  --i-marble: color-mix(in srgb, var(--ink) 6%, var(--ground));
+
+  --rail: 1160px;
+  --r-lg: 26px;
+  --r-md: 18px;
+}
+
+/* La web se compromete con el crema calido, como la referencia:
+   no sigue el tema oscuro del dispositivo. */
+:root { color-scheme: light; }
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, .fred {
+  font-family: Fredoka, "DM Sans", sans-serif;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.1;
+  text-wrap: balance;
+  letter-spacing: -.005em;
+}
+p { margin: 0; }
+a { color: inherit; }
+img { display: block; }
+.script { font-family: Parisienne, cursive; font-weight: 400; }
+
+:focus-visible { outline: 2px solid var(--warm); outline-offset: 3px; border-radius: 6px; }
+
+.rail { max-width: var(--rail); margin-inline: auto; padding-inline: 26px; }
+.band { padding-block: clamp(64px, 8vw, 108px); }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .8125rem; font-weight: 500; color: var(--ink-2);
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 999px; padding: 7px 16px; box-shadow: var(--shadow);
+}
+.kicker {
+  font-size: .8125rem; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--warm); margin: 0;
+}
+.lede { font-size: clamp(1.0625rem, 1.3vw, 1.1875rem); color: var(--ink-2); max-width: 56ch; }
+
+/* ── buttons ─────────────────────────────────────────────── */
+.btn {
+  font: 500 .9375rem/1 "DM Sans", sans-serif;
+  padding: 14px 26px; border-radius: 999px;
+  border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent);
+  cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 9px;
+  transition: transform .18s, box-shadow .18s, background .18s, color .18s, border-color .18s;
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+.btn-soft {
+  background: var(--surface); color: var(--ink); border-color: var(--line);
+  box-shadow: var(--shadow);
+}
+.btn-soft:hover { border-color: var(--line-strong); }
+.btn-line { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+.btn-line:hover { background: transparent; border-color: var(--warm); color: var(--warm); }
+.btn-sm { padding: 10px 18px; font-size: .875rem; }
+
+/* ── nav ─────────────────────────────────────────────────── */
+.nav {
+  position: sticky; top: 0; z-index: 60;
+  background: color-mix(in srgb, var(--ground) 86%, transparent);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-in { display: flex; align-items: center; gap: 20px; height: 70px; }
+.mark {
+  display: flex; align-items: center; gap: 10px; text-decoration: none;
+  font-family: Fredoka, sans-serif; font-weight: 600; font-size: 1.125rem;
+  letter-spacing: -.01em; white-space: nowrap;
+}
+.mark img { height: 48px; width: auto; max-width: 150px; object-fit: contain; }
+.mark .script { font-size: 1.35rem; color: var(--warm); }
+
+.nav-links { display: flex; gap: 30px; margin-inline: auto; font-size: .9375rem; }
+.nav-links a {
+  text-decoration: none; color: var(--ink-2); font-weight: 500;
+  padding-block: 6px; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s;
+}
+.nav-links a:hover { color: var(--ink); border-bottom-color: var(--warm); }
+
+/* ── hero ────────────────────────────────────────────────── */
+.hero-wrap { position: relative; overflow: hidden; }
+.hero-wrap::before {
+  content: ""; position: absolute; inset: -20% -10% auto -10%; height: 150%;
+  background:
+    radial-gradient(48% 55% at 18% 22%, var(--wash-a), transparent 70%),
+    radial-gradient(46% 52% at 82% 12%, var(--wash-b), transparent 72%);
+  pointer-events: none;
+}
+.hero {
+  position: relative;
+  display: grid; grid-template-columns: 1.02fr .98fr;
+  gap: clamp(30px, 5vw, 66px); align-items: center;
+  padding-block: clamp(48px, 6.5vw, 88px) clamp(52px, 7vw, 96px);
+}
+.hero h1 { font-size: clamp(2.6rem, 5.4vw, 4.15rem); margin-block: 22px 20px; }
+.hero h1 em { font-style: normal; color: var(--warm); }
+.hero-actions { display: flex; gap: 13px; flex-wrap: wrap; margin-top: 30px; }
+
+.shot {
+  width: 100%; border-radius: var(--r-lg); overflow: hidden;
+  background: var(--surface); box-shadow: var(--shadow-lift);
+  border: 1px solid var(--line);
+}
+.shot img { width: 100%; height: 100%; object-fit: cover; }
+.shot svg { width: 100%; height: auto; display: block; }
+.hero .shot { aspect-ratio: 4/5; max-width: 470px; margin-inline: auto; display: grid; place-items: center; }
+.hero .shot svg { padding: 6%; }
+
+@keyframes ember { 0%,100% { opacity: .84; } 50% { opacity: 1; } }
+.ember { animation: ember 3.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .ember { animation: none; }
+  html { scroll-behavior: auto !important; }
+  .btn:hover, .card:hover, .tile:hover { transform: none; }
+}
+
+/* ── value props ─────────────────────────────────────────── */
+.props { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(24px, 4vw, 52px); text-align: center; }
+.prop { display: grid; gap: 12px; justify-items: center; }
+.prop .ic {
+  width: 62px; height: 62px; border-radius: 999px;
+  background: color-mix(in srgb, var(--warm) 13%, var(--surface));
+  display: grid; place-items: center; color: var(--warm);
+}
+.prop .ic svg { width: 27px; height: 27px; }
+.prop h3 { font-size: 1.1875rem; }
+.prop p { font-size: .9375rem; color: var(--ink-2); max-width: 34ch; }
+
+/* ── section heads ───────────────────────────────────────── */
+.sec-head { text-align: center; display: grid; gap: 14px; justify-items: center; margin-bottom: clamp(38px, 5vw, 56px); }
+.sec-head h2 { font-size: clamp(1.85rem, 3.3vw, 2.7rem); max-width: 20ch; }
+.sec-head p { color: var(--ink-2); max-width: 54ch; }
+
+/* ── signature cards ─────────────────────────────────────── */
+.cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-lg); overflow: hidden;
+  display: flex; flex-direction: column;
+  box-shadow: var(--shadow); transition: transform .2s, box-shadow .2s;
+}
+.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+.card-art { aspect-ratio: 1; background: var(--surface-2); display: grid; place-items: center; overflow: hidden; }
+.card-art img { width: 100%; height: 100%; object-fit: cover; }
+.card-art svg { width: 86%; height: auto; }
+.card-body { padding: 20px 22px 24px; display: grid; gap: 9px; }
+.card-body h3 { font-size: 1.0625rem; }
+.card-body p { font-size: .875rem; color: var(--ink-2); line-height: 1.6; }
+.card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.tag {
+  font-size: .6875rem; font-weight: 500; letter-spacing: .04em;
+  color: var(--ink-3); background: var(--surface-2);
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px;
+}
+.tag-hot { color: var(--warm); border-color: color-mix(in srgb, var(--warm) 32%, var(--line)); }
+.tag-veg { color: var(--green); border-color: color-mix(in srgb, var(--green) 34%, var(--line)); }
+.center-cta { display: grid; place-items: center; margin-top: clamp(34px, 4vw, 48px); }
+
+/* ── full menu ───────────────────────────────────────────── */
+.filters { display: flex; gap: 9px; flex-wrap: wrap; justify-content: center; margin-bottom: 34px; }
+.chip {
+  font: 500 .875rem/1 "DM Sans", sans-serif; padding: 11px 20px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+  border-radius: 999px; cursor: pointer; transition: all .2s; box-shadow: var(--shadow);
+}
+.chip:hover { color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+.menu-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.dish {
+  display: grid; grid-template-columns: 92px 1fr; gap: 18px; align-items: center;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-md); padding: 16px; transition: border-color .2s, transform .2s;
+}
+.dish:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+.dish-art { width: 92px; height: 92px; border-radius: 14px; overflow: hidden; background: var(--surface-2); display: grid; place-items: center; }
+.dish-art img { width: 100%; height: 100%; object-fit: cover; }
+.dish-art svg { width: 100%; height: 100%; }
+.dish h3 { font-size: 1rem; margin-bottom: 3px; }
+.dish p { font-size: .8125rem; color: var(--ink-2); line-height: 1.55; }
+.dish .card-tags { margin-top: 7px; }
+.menu-note { text-align: center; margin-top: 26px; font-size: .875rem; color: var(--ink-3); }
+
+/* ── split / story ───────────────────────────────────────── */
+.split {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(30px, 5vw, 64px); align-items: center;
+}
+.split .shot { aspect-ratio: 5/4; display: grid; place-items: center; }
+.split .shot svg { padding: 5%; }
+.split h2 { font-size: clamp(1.75rem, 3vw, 2.4rem); margin-block: 12px 16px; }
+.split .btn { margin-top: 26px; }
+.ticks { display: grid; gap: 11px; margin-top: 20px; }
+.tick { display: flex; gap: 11px; align-items: flex-start; font-size: .9375rem; color: var(--ink-2); }
+.tick svg { width: 19px; height: 19px; flex: none; color: var(--green); margin-top: 3px; }
+
+/* ── gallery ─────────────────────────────────────────────── */
+.gal { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.tile {
+  position: relative; border: 1px solid var(--line); background: var(--surface);
+  border-radius: var(--r-md); padding: 0; cursor: zoom-in; overflow: hidden;
+  aspect-ratio: 1; display: grid; place-items: center;
+  box-shadow: var(--shadow); transition: transform .2s, box-shadow .2s;
+}
+.tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+.tile.wide { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
+.tile img { width: 100%; height: 100%; object-fit: cover; }
+.tile svg { width: 100%; height: 100%; }
+.tile-cap {
+  position: absolute; inset: auto 0 0 0; padding: 34px 16px 14px;
+  background: linear-gradient(to top, color-mix(in srgb, var(--ground) 92%, transparent), transparent);
+  font-size: .8125rem; color: var(--ink); text-align: left; opacity: 0; transition: opacity .22s;
+}
+.tile:hover .tile-cap, .tile:focus-visible .tile-cap { opacity: 1; }
+
+.lb {
+  position: fixed; inset: 0; z-index: 90;
+  background: color-mix(in srgb, var(--ground) 93%, transparent);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  display: grid; grid-template-rows: 1fr auto; place-items: center; padding: 4vh 4vw; gap: 20px;
+}
+.lb[hidden] { display: none; }
+.lb-stage { max-width: min(820px, 100%); max-height: 72vh; display: grid; place-items: center; }
+.lb-stage img, .lb-stage svg { max-width: 100%; max-height: 72vh; width: auto; height: auto; border-radius: var(--r-md); }
+.lb-bar { display: flex; align-items: center; gap: 18px; font-size: .9375rem; color: var(--ink-2); }
+.lb-nav {
+  border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink);
+  width: 42px; height: 42px; border-radius: 999px; cursor: pointer; font-size: 1rem;
+}
+.lb-nav:hover { border-color: var(--warm); color: var(--warm); }
+.lb-close { position: absolute; top: 22px; right: 26px; background: transparent; border: 0; color: var(--ink-2); font-size: 1.6rem; cursor: pointer; line-height: 1; padding: 8px; }
+
+/* ── dark call-to-action band ────────────────────────────── */
+.cta-band { background: var(--accent); color: var(--on-accent); border-radius: var(--r-lg); padding: clamp(40px, 6vw, 72px) clamp(26px, 5vw, 64px); text-align: center; }
+.cta-band h2 { font-size: clamp(1.8rem, 3.2vw, 2.6rem); color: var(--on-accent); }
+.cta-band p { margin: 16px auto 0; max-width: 50ch; color: color-mix(in srgb, var(--on-accent) 78%, var(--accent)); }
+.cta-band .btn {
+  margin-top: 30px; background: var(--on-accent); color: var(--accent); border-color: var(--on-accent);
+}
+.cta-band .script { display: block; font-size: 1.6rem; color: color-mix(in srgb, var(--on-accent) 72%, var(--accent)); margin-bottom: 6px; }
+
+/* ── booking info ────────────────────────────────────────── */
+.info { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.info-item {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md);
+  padding: 22px; display: grid; gap: 7px; align-content: start;
+}
+.info-item dt { font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.info-item dd { margin: 0; font-size: .9375rem; }
+.info-item a { text-decoration: none; border-bottom: 1px solid var(--line-strong); }
+.info-item a:hover { color: var(--warm); border-color: var(--warm); }
+
+/* ── enquiry form ────────────────────────────────────────── */
+.form {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-lg); padding: clamp(26px, 4vw, 42px);
+  display: grid; gap: 18px; box-shadow: var(--shadow);
+}
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.field { display: grid; gap: 7px; }
+.field label { font-size: .8125rem; font-weight: 500; color: var(--ink-2); }
+.field input, .field select, .field textarea {
+  font: 400 .9375rem/1.5 "DM Sans", sans-serif; color: var(--ink);
+  background: var(--ground); border: 1px solid var(--line);
+  border-radius: 12px; padding: 12px 15px; width: 100%;
+}
+.field textarea { resize: vertical; min-height: 100px; }
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--warm);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--warm) 15%, transparent);
+}
+.form-foot { display: flex; align-items: center; gap: 16px; justify-content: space-between; flex-wrap: wrap; }
+.form-foot small { color: var(--ink-3); font-size: .8125rem; max-width: 36ch; }
+.sent {
+  border: 1px solid color-mix(in srgb, var(--green) 45%, var(--line));
+  background: color-mix(in srgb, var(--green) 9%, var(--surface));
+  border-radius: var(--r-lg); padding: 26px; display: grid; gap: 13px;
+}
+.sent h3 { font-size: 1.3rem; }
+.sent pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .75rem; line-height: 1.7;
+  color: var(--ink-2); background: var(--ground); border: 1px solid var(--line);
+  border-radius: 12px; padding: 15px; margin: 0; white-space: pre-wrap; overflow-x: auto;
+}
+
+/* ── follow + footer ─────────────────────────────────────── */
+.follow { text-align: center; display: grid; gap: 12px; justify-items: center; }
+.follow .script { font-size: 2rem; color: var(--warm); }
+.foot {
+  border-top: 1px solid var(--line); padding-block: 34px 52px;
+  display: flex; gap: 20px; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; font-size: .875rem; color: var(--ink-3);
+}
+
+/* ── assistant ───────────────────────────────────────────── */
+.chat-btn {
+  position: fixed; right: 24px; bottom: 24px; z-index: 70;
+  width: 58px; height: 58px; border-radius: 999px;
+  border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent);
+  cursor: pointer; display: grid; place-items: center; box-shadow: var(--shadow-lift);
+  transition: transform .2s;
+}
+.chat-btn:hover { transform: translateY(-3px); }
+.chat-btn svg { width: 25px; height: 25px; }
+
+.chat {
+  position: fixed; right: 24px; bottom: 94px; z-index: 71;
+  width: min(370px, calc(100vw - 32px)); height: min(530px, calc(100vh - 145px));
+  background: var(--surface); border: 1px solid var(--line-strong); border-radius: 22px;
+  box-shadow: var(--shadow-lift); display: grid; grid-template-rows: auto 1fr auto auto; overflow: hidden;
+}
+.chat[hidden] { display: none; }
+.chat-head { padding: 16px 20px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
+.chat-head strong { font-family: Fredoka, sans-serif; font-weight: 600; font-size: 1rem; }
+.chat-head span { font-size: .75rem; color: var(--ink-3); }
+.dot { width: 7px; height: 7px; border-radius: 999px; background: var(--green); flex: none; }
+.chat-log { overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.msg { max-width: 88%; font-size: .875rem; line-height: 1.58; padding: 11px 15px; border-radius: 18px; }
+.msg-bot { background: var(--surface-2); border-bottom-left-radius: 6px; align-self: flex-start; }
+.msg-me { background: var(--accent); color: var(--on-accent); border-bottom-right-radius: 6px; align-self: flex-end; }
+.msg-act {
+  margin-top: 10px; display: inline-block; font: 500 .75rem/1 "DM Sans", sans-serif;
+  background: var(--surface); border: 1px solid var(--line-strong); color: var(--ink);
+  border-radius: 999px; padding: 8px 14px; cursor: pointer;
+}
+.msg-act:hover { border-color: var(--warm); color: var(--warm); }
+.chat-chips { display: flex; gap: 7px; padding: 0 15px 12px; overflow-x: auto; scrollbar-width: none; }
+.chat-chips::-webkit-scrollbar { display: none; }
+.chat-chips button {
+  font: 400 .75rem/1 "DM Sans", sans-serif; white-space: nowrap;
+  border: 1px solid var(--line); background: var(--ground); color: var(--ink-2);
+  border-radius: 999px; padding: 8px 13px; cursor: pointer;
+}
+.chat-chips button:hover { color: var(--ink); border-color: var(--line-strong); }
+.chat-form { display: flex; gap: 8px; padding: 12px 15px 15px; border-top: 1px solid var(--line); }
+.chat-form input {
+  flex: 1; font: 400 .875rem/1.4 "DM Sans", sans-serif; color: var(--ink);
+  background: var(--ground); border: 1px solid var(--line); border-radius: 999px; padding: 11px 16px;
+}
+.chat-form input:focus { outline: none; border-color: var(--warm); }
+.chat-form button { width: 40px; height: 40px; flex: none; border-radius: 999px; border: 0; background: var(--accent); color: var(--on-accent); cursor: pointer; display: grid; place-items: center; }
+
+/* ── responsive ──────────────────────────────────────────── */
+@media (max-width: 940px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero .shot { order: -1; max-width: 380px; }
+  .props { grid-template-columns: 1fr; }
+  .cards { grid-template-columns: repeat(2, 1fr); }
+  .menu-list { grid-template-columns: 1fr; }
+  .split { grid-template-columns: 1fr; }
+  .split .shot { order: -1; }
+  .gal { grid-template-columns: repeat(2, 1fr); }
+  .info { grid-template-columns: repeat(2, 1fr); }
+  .nav-links { display: none; }
+}
+@media (max-width: 560px) {
+  .rail { padding-inline: 18px; }
+  .cards { grid-template-columns: 1fr; }
+  .info { grid-template-columns: 1fr; }
+  .row { grid-template-columns: 1fr; }
+  .tile.wide { grid-column: span 2; grid-row: auto; }
+  .chat { right: 12px; left: 12px; width: auto; bottom: 86px; }
+  .chat-btn { right: 16px; bottom: 16px; }
+  .sw-grid, .preset-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<header class="nav">
+  <div class="rail nav-in">
+    <a class="mark" id="navMark" href="#top"></a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#top">Home</a>
+      <a href="#menu">Menu</a>
+      <a href="#story">Our Story</a>
+      <a href="#gallery">Gallery</a>
+    </nav>
+    <a class="btn btn-sm" href="#enquiry">Start an Enquiry</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ── hero ─────────────────────────────────────────── -->
+  <div class="hero-wrap">
+    <section class="rail hero">
+      <div>
+        <span class="eyebrow" id="heroBadge"></span>
+        <h1 id="heroTitle"></h1>
+        <p class="lede" id="heroLede"></p>
+        <div class="hero-actions">
+          <a class="btn" href="#menu">See the Menu</a>
+          <a class="btn btn-soft" href="#enquiry">Start an Enquiry</a>
+        </div>
+      </div>
+      <div class="shot" id="heroShot"></div>
+    </section>
+  </div>
+
+  <!-- ── three virtues ────────────────────────────────── -->
+  <section class="rail band">
+    <div class="props">
+      <div class="prop">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c2.5 2.8-.6 4.6.9 7 1.2-1 2.6-.4 2.6 1.4 0 .6.6.5 1-.3C18.3 14 19 15.4 19 17a7 7 0 1 1-14 0c0-4 3-5.4 4.6-8.4C10.7 6.3 11 4.6 12 3z"/></svg></span>
+        <h3>Fired by Wood, Never a Conveyor</h3>
+        <p>A real wood-fired oven, lit on site. Every pie goes in and comes out in front of your guests, one at a time.</p>
+      </div>
+      <div class="prop">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span>
+        <h3>Dough Made From Scratch</h3>
+        <p>Stretched by hand on the prep table, never pressed from a mix. Light enough that guests come back for a third.</p>
+      </div>
+      <div class="prop">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11v9H2zM13 11h4.5l3.5 3.5V17h-8z"/><circle cx="6" cy="18.5" r="1.8"/><circle cx="17" cy="18.5" r="1.8"/></svg></span>
+        <h3>We Come to You</h3>
+        <p>Backyard, park, warehouse or parking lot. Oven, prep table and crew travel to the venue — you supply the guests.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── signature four ───────────────────────────────── -->
+  <section class="rail band" id="signature">
+    <div class="sec-head">
+      <p class="kicker">Guest Favourites</p>
+      <h2>The four that disappear first</h2>
+      <p>Fifteen pizzas on the full menu, three families, and these are the ones we make the most of.</p>
+    </div>
+    <div class="cards" id="signatureCards"></div>
+    <div class="center-cta"><a class="btn btn-line" href="#menu">View the Full Menu</a></div>
+  </section>
+
+  <!-- ── full menu ────────────────────────────────────── -->
+  <section class="rail band" id="menu">
+    <div class="sec-head">
+      <p class="kicker">The Card</p>
+      <h2 id="menuTitle"></h2>
+      <p>Fresh mozzarella on every pizza, dough stretched by hand at the venue. Pick the ones you want for your event — most hosts settle on five or six and let us bring the rest as a surprise.</p>
+    </div>
+    <div class="filters" id="filters" role="group" aria-label="Filter the menu"></div>
+    <div class="menu-list" id="menuList"></div>
+    <p class="menu-note" id="menuNote"></p>
+  </section>
+
+  <!-- ── story / made to order ────────────────────────── -->
+  <section class="rail band" id="story">
+    <div class="split">
+      <div class="shot" id="storyShot"></div>
+      <div>
+        <p class="kicker">Built Around Your Event</p>
+        <h2 id="storyTitle"></h2>
+        <p class="lede" id="storyText"></p>
+        <div class="ticks">
+          <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Fifteen pizzas to choose from — pick the ones your guests will want.</span></div>
+          <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>$14 a pizza, plus a $100 catering fee. No surprises on the invoice.</span></div>
+          <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Six meat pizzas and six veggie ones, three of them without tomato sauce.</span></div>
+          <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Everything cooked on site — nothing arrives reheated.</span></div>
+        </div>
+        <a class="btn" href="#gallery">See the Gallery</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── gallery ──────────────────────────────────────── -->
+  <section class="rail band" id="gallery">
+    <div class="sec-head">
+      <p class="kicker">Gallery</p>
+      <h2>Set-ups, service and the card itself</h2>
+      <p>Real events and the pizzas shot from above. Select any piece to see it larger.</p>
+    </div>
+    <div class="gal" id="galGrid"></div>
+  </section>
+
+  <!-- ── dark CTA band ────────────────────────────────── -->
+  <section class="rail band">
+    <div class="cta-band">
+      <span class="script">Ready when you are</span>
+      <h2>Tell us what you're hosting</h2>
+      <p>Send the date, the venue and roughly how many pizzas you need. We come back with availability and the total the same day.</p>
+      <a class="btn" href="#enquiry">Start an Enquiry</a>
+    </div>
+  </section>
+
+  <!-- ── booking info ─────────────────────────────────── -->
+  <section class="rail band" style="padding-top:0">
+    <div class="sec-head">
+      <p class="kicker">Good to Know</p>
+      <h2>Booking information</h2>
+    </div>
+    <dl class="info" id="info"></dl>
+  </section>
+
+  <!-- ── enquiry ──────────────────────────────────────── -->
+  <section class="rail band" id="enquiry" style="padding-top:0">
+    <div class="sec-head">
+      <p class="kicker">Enquiry</p>
+      <h2>Start your booking</h2>
+      <p>Nothing is charged here. We confirm by email or phone, and the deposit is settled once the proposal is signed.</p>
+    </div>
+    <form class="form" id="form" novalidate>
+      <div class="row">
+        <div class="field"><label for="f-name">Name</label><input id="f-name" name="Name" required autocomplete="name"></div>
+        <div class="field"><label for="f-org">Company or institution</label><input id="f-org" name="Company" autocomplete="organization"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="f-mail">Email</label><input id="f-mail" name="Email" type="email" required autocomplete="email"></div>
+        <div class="field"><label for="f-tel">Phone</label><input id="f-tel" name="Phone" type="tel" autocomplete="tel"></div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="f-type">Occasion</label>
+          <select id="f-type" name="Occasion">
+            <option>Birthday or party</option><option>Wedding or celebration</option>
+            <option>Corporate or work event</option><option>Community or school event</option>
+          </select>
+        </div>
+        <div class="field"><label for="f-date">Preferred date</label><input id="f-date" name="Date" type="date"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="f-pax">Guests</label><input id="f-pax" name="Guests" type="number" min="1" step="1" placeholder="30"></div>
+        <div class="field"><label for="f-place">Venue</label><input id="f-place" name="Venue" placeholder="City or address"></div>
+      </div>
+      <div class="field">
+        <label for="f-msg">Anything we should know</label>
+        <textarea id="f-msg" name="Details" placeholder="Timings, the space available, special diets, pizzas you already have in mind…"></textarea>
+      </div>
+      <div class="form-foot">
+        <small>We use these details only to prepare your proposal.</small>
+        <button class="btn" type="submit">Send Enquiry</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ── follow ───────────────────────────────────────── -->
+  <section class="rail band" style="padding-top:0">
+    <div class="follow">
+      <p class="kicker" id="followHandle"></p>
+      <span class="script">Follow along</span>
+      <p class="lede" style="text-align:center">New seasonal pizzas and the set-ups we are proudest of, posted first on Instagram.</p>
+      <a class="btn btn-soft" id="followLink" href="#" target="_blank" rel="noopener noreferrer">Open Instagram</a>
+    </div>
+  </section>
+
+  <footer class="rail foot">
+    <span class="mark" id="footMark"></span>
+    <span id="footTag"></span>
+    <span id="footContact"></span>
+  </footer>
+</main>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Enlarged gallery">
+  <button class="lb-close" id="lbClose" aria-label="Close">×</button>
+  <div class="lb-stage" id="lbStage"></div>
+  <div class="lb-bar">
+    <button class="lb-nav" id="lbPrev" aria-label="Previous">←</button>
+    <span id="lbCap"></span>
+    <button class="lb-nav" id="lbNext" aria-label="Next">→</button>
+  </div>
+</div>
+
+<button class="chat-btn" id="chatBtn" aria-label="Open the assistant" aria-expanded="false">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/>
+    <path d="M12 8.5c1.6 1.1.4 2.5.9 3.6.7-.5 1.6-.2 1.6 1 0 1.3-1.1 2.2-2.5 2.2s-2.5-1-2.5-2.5c0-1.9 2-2.3 2.5-4.3z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+
+<section class="chat" id="chat" hidden aria-label="Assistant">
+  <div class="chat-head"><span class="dot"></span><strong>Assistant</strong><span>· replies instantly</span></div>
+  <div class="chat-log" id="chatLog" role="log" aria-live="polite"></div>
+  <div class="chat-chips" id="chatChips"></div>
+  <form class="chat-form" id="chatForm">
+    <input id="chatInput" placeholder="Ask a question…" autocomplete="off" aria-label="Message">
+    <button type="submit" aria-label="Send">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+    </button>
+  </form>
+</section>
+
+
+
+<script>
+"use strict";
+
+/* ══════════════════════════════════════════════════════════════
+   1 · DEFAULTS
+   ══════════════════════════════════════════════════════════════ */
+
+const DEFAULT_BRAND = {
+  name: "DiPizza",
+  script: "",                       /* optional script word before the name */
+  badge: "Authentic pizza at your event · est. 2016",
+  headline: "Made from scratch,|fired on site,|served {to your guests}.",
+  lede: "We bring the wood-fired oven to you and cook Neapolitan pizza in front of your guests — dough stretched by hand, one pie at a time, never a mix and never a shortcut.",
+  menuTitle: "Fifteen pizzas, three families",
+  menuNote: "All pizzas $14 each · Catering fee $100 per event · Pizzas tagged “no tomato” are made without tomato sauce.",
+  storyTitle: "We set up wherever you are",
+  storyText: "Backyard, park, warehouse or parking lot — the oven, the prep table and the crew travel to the venue. You pick the pizzas, we handle the rest and leave the space the way we found it.",
+  handle: "@dipizza",
+  instagram: "https://instagram.com/",
+  tagline: "Wood-fired pizza catering · est. 2016"
+};
+
+/* Marcadores de posicion: sustituir por los datos reales de DiPizza. */
+const DEFAULT_CONTACT = {
+  email: "events@dipizza.com",
+  phone: "(000) 000-0000",
+  notice: "Book ahead so we can hold your date — ask us what's open.",
+  coverage: "Tell us the venue and we'll confirm we can reach it.",
+  hours: "Reach out any day; we reply within one business day.",
+  payment: "$14 per pizza plus a $100 catering fee per event."
+};
+
+const PRESETS = {
+  forno: {
+    label: "Forno",
+    light: { ground:"#FBF6EF", surface:"#FFFCF7", ink:"#3A2E2A", accent:"#4A3A33", warm:"#C9552F", green:"#7A8F5C" },
+    dark:  { ground:"#1A1512", surface:"#241D18", ink:"#F2E9E0", accent:"#E8DACB", warm:"#E8825C", green:"#A3B884" }
+  },
+  amalfi: {
+    label: "Amalfi",
+    light: { ground:"#F6F5EF", surface:"#FFFEF9", ink:"#2B3A3F", accent:"#3A5A63", warm:"#D98C3E", green:"#7FA08C" },
+    dark:  { ground:"#101719", surface:"#182225", ink:"#E9F1F2", accent:"#CFE2E4", warm:"#EFA765", green:"#9CC0AE" }
+  },
+  rosa: {
+    label: "Rosa",
+    light: { ground:"#FDF7F4", surface:"#FFFCFA", ink:"#3E2F30", accent:"#5A4142", warm:"#C96A61", green:"#8E9C7C" },
+    dark:  { ground:"#1B1416", surface:"#251C1E", ink:"#F4E9E7", accent:"#EDD8D4", warm:"#E08D82", green:"#A7B695" }
+  },
+  oliva: {
+    label: "Oliva",
+    light: { ground:"#F6F5EC", surface:"#FDFDF6", ink:"#2E3326", accent:"#414A33", warm:"#C2703A", green:"#6E8A4E" },
+    dark:  { ground:"#14170F", surface:"#1D2117", ink:"#EDF0E3", accent:"#DCE3CC", warm:"#DE9058", green:"#9EBC77" }
+  }
+};
+
+const TOKEN_LABELS = [
+  ["ground",  "Page"], ["surface", "Cards"], ["ink", "Text"],
+  ["accent",  "Buttons"], ["warm", "Warm accent"], ["green", "Fresh accent"]
+];
+
+const DEFAULT_MENU = [
+  /* ── TRADITIONALs ── */
+  { id:"margherita", order:10, cat:"traditionals", star:1, name:"Margherita",
+    ing:"Tomato base, fresh mozzarella, basil.",
+    tags:["vegetarian"], art:{ base:"rosso", top:[["--i-mozz",7,13,"blob"],["--i-basil",5,9,"leaf"]] } },
+  { id:"napoletana", order:20, cat:"traditionals", star:0, name:"Napoletana",
+    ing:"Tomato base, fresh mozzarella, kalamata olives, anchovies.",
+    tags:[], art:{ base:"rosso", top:[["--i-mozz",6,12,"blob"],["--i-fungo",8,7,"disc"],["--i-metal",6,9,"shred"]] } },
+  { id:"garlicbread", order:30, cat:"traditionals", star:0, name:"Garlic Bread",
+    ing:"Tomato base, fresh mozzarella, garlic-parsley butter, feta cheese.",
+    tags:["vegetarian"], art:{ base:"rosso", top:[["--i-mozz",8,12,"blob"],["--i-blu",7,7,"crumb"],["--i-verde",12,3,"crumb"]] } },
+
+  /* ── MEATs ── */
+  { id:"pepperoni", order:40, cat:"meats", star:1, name:"Pepperoni",
+    ing:"Tomato base, fresh mozzarella, pepperoni.",
+    tags:[], art:{ base:"rosso", top:[["--i-mozz",6,12,"blob"],["--i-salame",10,12,"disc"]] } },
+  { id:"hamcheese", order:50, cat:"meats", star:0, name:"Ham & Cheese",
+    ing:"Tomato base, fresh mozzarella, ham.",
+    tags:[], art:{ base:"rosso", top:[["--i-mozz",7,13,"blob"],["--i-rosa",6,14,"blob"]] } },
+  { id:"prosciutto", order:60, cat:"meats", star:1, name:"Prosciutto",
+    ing:"Tomato base, fresh mozzarella, prosciutto, arugula, parmigiano.",
+    tags:[], art:{ base:"rosso", top:[["--i-rosa",5,16,"blob"],["--i-basil",7,9,"leaf"],["--i-mozz",5,9,"shred"]] } },
+  { id:"salami", order:70, cat:"meats", star:0, name:"Salami",
+    ing:"Tomato base, fresh mozzarella, salami, red onion, kalamata olive.",
+    tags:[], art:{ base:"rosso", top:[["--i-mozz",5,11,"blob"],["--i-salame",8,11,"disc"],["--i-radic",7,8,"shred"],["--i-fungo",6,6,"disc"]] } },
+  { id:"hawaiian", order:80, cat:"meats", star:0, name:"Hawaiian",
+    ing:"Tomato base, fresh mozzarella, ham, pineapple.",
+    tags:[], art:{ base:"rosso", top:[["--i-mozz",6,12,"blob"],["--i-rosa",5,13,"blob"],["--i-giallo",8,9,"disc"]] } },
+  { id:"pancetta", order:90, cat:"meats", star:0, name:"Pancetta",
+    ing:"Fresh mozzarella, feta cheese, red onion, bacon.",
+    tags:[], art:{ base:"bianca", top:[["--i-mozz",7,12,"blob"],["--i-blu",6,8,"crumb"],["--i-radic",7,8,"shred"],["--i-salame",6,9,"shred"]] } },
+
+  /* ── VEGGIEs ── */
+  { id:"carciofi", order:100, cat:"veggies", star:0, name:"Carciofi",
+    ing:"Tomato base, fresh mozzarella, artichoke, mushrooms, kalamata olives.",
+    tags:["vegetarian"], art:{ base:"rosso", top:[["--i-mozz",5,11,"blob"],["--i-verde",7,11,"leaf"],["--i-fungo",7,8,"disc"]] } },
+  { id:"zucchini", order:110, cat:"veggies", star:1, name:"Zucchini",
+    ing:"Tomato base, fresh mozzarella, zucchini, cherry tomatoes, basil sauce.",
+    tags:["vegetarian"], art:{ base:"rosso", top:[["--i-verde",10,12,"disc"],["--i-rosso",6,9,"disc"],["--i-mozz",5,10,"blob"]] } },
+  { id:"bianca", order:120, cat:"veggies", star:0, name:"Bianca",
+    ing:"Fresh mozzarella, goat cheese, mushrooms, red onion.",
+    tags:["vegetarian"], art:{ base:"bianca", top:[["--i-mozz",8,13,"blob"],["--i-fungo",8,8,"disc"],["--i-radic",6,8,"shred"]] } },
+  { id:"basilicata", order:130, cat:"veggies", star:1, name:"Basilicata",
+    ing:"Fresh mozzarella, ricotta, basil sauce, cherry tomatoes.",
+    tags:["vegetarian","no tomato"], art:{ base:"bianca", top:[["--i-mozz",7,13,"blob"],["--i-verde",8,7,"crumb"],["--i-rosso",7,9,"disc"]] } },
+  { id:"spicyhoney", order:140, cat:"veggies", star:0, name:"Spicy-Honey",
+    ing:"Fresh mozzarella, ricotta, chili flakes, honey, dried oregano.",
+    tags:["vegetarian","spicy","no tomato"], art:{ base:"bianca", top:[["--i-mozz",8,13,"blob"],["--i-rosso",14,4,"crumb"],["--i-giallo",9,5,"crumb"]] } },
+  { id:"sundried", order:150, cat:"veggies", star:0, name:"Sundried Tomatoes",
+    ing:"Fresh mozzarella, ricotta, dried tomatoes, basil sauce, pine nuts.",
+    tags:["vegetarian","no tomato"], art:{ base:"bianca", top:[["--i-mozz",7,12,"blob"],["--i-radic",8,8,"blob"],["--i-noce",9,5,"crumb"],["--i-verde",7,6,"crumb"]] } }
+];
+
+const FAMILIES = [
+  { id:"all", label:"Full menu" }, { id:"traditionals", label:"Traditionals" },
+  { id:"meats", label:"Meats" }, { id:"veggies", label:"Veggies" }
+];
+
+/* Gallery falls back to these drawn pieces until real photos land. */
+const FALLBACK_GALLERY = [
+  { id:"f-oven", wide:true, scene:"forno", caption:"The oven set up on site" },
+  { id:"f-marg", pizza:"margherita", caption:"Margherita, straight off the peel" },
+  { id:"f-pros", pizza:"prosciutto", caption:"Prosciutto with arugula and parmigiano" },
+  { id:"f-zucc", pizza:"zucchini",   caption:"Zucchini with cherry tomatoes" },
+  { id:"f-basi", pizza:"basilicata", caption:"Basilicata" },
+  { id:"f-mise", wide:true, scene:"mise", caption:"Prep table before service" },
+  { id:"f-carc", pizza:"carciofi",   caption:"Carciofi" },
+  { id:"f-bian", pizza:"bianca",     caption:"Bianca" },
+  { id:"f-sala", pizza:"salami",     caption:"Salami" },
+  { id:"f-pepp", pizza:"pepperoni",  caption:"Pepperoni" }
+];
+
+/* ══════════════════════════════════════════════════════════════
+   2 · STATE
+   ══════════════════════════════════════════════════════════════ */
+
+const state = {
+  brand:   { ...DEFAULT_BRAND },
+  contact: { ...DEFAULT_CONTACT },
+  palette: { light: { ...PRESETS.forno.light }, dark: { ...PRESETS.forno.dark } },
+  menu:    DEFAULT_MENU.map(p => ({ ...p, tags:[...p.tags] })),
+  photos:  {},        /* logo | hero | story | pizza-<id>  →  data URL */
+  gallery: [],        /* uploaded pieces: { id, order, caption, dataUrl } */
+  filter:  "all",
+  editTheme: "light"
+};
+
+let db = null, canEdit = false, seeding = false;
+
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+const headline = str => esc(str).split("|").join("<br>").replace(/\{([^}]*)\}/g, "<em>$1</em>");
+const $ = id => document.getElementById(id);
+
+/* ══════════════════════════════════════════════════════════════
+   3 · DRAWN PIZZAS — used until a real photo replaces them
+   ══════════════════════════════════════════════════════════════ */
+
+function seedFrom(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function rng(seed) {
+  let s = seed || 1;
+  return () => { s ^= s << 13; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; };
+}
+const BASES = { rosso:"--i-rosso", bianca:"--i-bianca", verde:"--i-verde", giallo:"--i-giallo" };
+
+function wobbly(cx, cy, r, amp, rand) {
+  const pts = [];
+  for (let i = 0; i < 56; i++) {
+    const a = (i / 56) * Math.PI * 2;
+    const rr = r + Math.sin(a * 3 + rand() * .4) * amp + (rand() - .5) * amp * .8;
+    pts.push((cx + Math.cos(a) * rr).toFixed(1) + " " + (cy + Math.sin(a) * rr).toFixed(1));
+  }
+  return "M" + pts.join("L") + "Z";
+}
+function topping(shape, x, y, size, color, rot) {
+  const c = "var(" + color + ")";
+  if (shape === "leaf")  return `<ellipse cx="${x}" cy="${y}" rx="${size*.62}" ry="${size*.3}" fill="${c}" transform="rotate(${rot} ${x} ${y})"/>`;
+  if (shape === "shred") return `<rect x="${x-size*.7}" y="${y-size*.16}" width="${size*1.4}" height="${size*.32}" rx="${size*.16}" fill="${c}" transform="rotate(${rot} ${x} ${y})"/>`;
+  if (shape === "disc")  return `<circle cx="${x}" cy="${y}" r="${size*.5}" fill="${c}"/><circle cx="${x}" cy="${y}" r="${size*.5}" fill="none" stroke="var(--i-char)" stroke-opacity=".18" stroke-width="1"/>`;
+  if (shape === "crumb") return `<circle cx="${x}" cy="${y}" r="${size*.5}" fill="${c}"/>`;
+  return `<ellipse cx="${x}" cy="${y}" rx="${size*.54}" ry="${size*.44}" fill="${c}" transform="rotate(${rot} ${x} ${y})"/>`;
+}
+function pizzaSVG(item) {
+  const art = item.art || { base:"rosso", top:[["--i-mozz",7,13,"blob"],["--i-basil",5,9,"leaf"]] };
+  const rand = rng(seedFrom(item.id + (art.base || "")));
+  const out = [];
+  out.push(`<path d="${wobbly(100,100,92,3.2,rand)}" fill="var(--i-crust)" stroke="var(--i-char)" stroke-opacity=".35" stroke-width="1.2"/>`);
+  out.push(`<path d="${wobbly(100,100,84,2.4,rand)}" fill="var(--i-crust2)" opacity=".55"/>`);
+  for (let i = 0; i < 11; i++) {
+    const a = rand() * Math.PI * 2, r = 84 + rand() * 5;
+    const x = (100 + Math.cos(a) * r).toFixed(1), y = (100 + Math.sin(a) * r).toFixed(1);
+    out.push(`<ellipse cx="${x}" cy="${y}" rx="${(3+rand()*3).toFixed(1)}" ry="${(2+rand()*2).toFixed(1)}" fill="var(--i-char)" opacity="${(.28+rand()*.3).toFixed(2)}" transform="rotate(${(a*57).toFixed(0)} ${x} ${y})"/>`);
+  }
+  out.push(`<path d="${wobbly(100,100,74,2.6,rand)}" fill="var(${BASES[art.base] || BASES.rosso})"/>`);
+  if (art.base === "rosso" || art.base === "giallo") out.push(`<path d="${wobbly(100,100,68,3.4,rand)}" fill="var(--i-char)" opacity=".07"/>`);
+  for (const [color, count, size, shape] of (art.top || [])) {
+    for (let i = 0; i < count; i++) {
+      const a = rand() * Math.PI * 2, r = Math.sqrt(rand()) * 62;
+      out.push(topping(shape, (100 + Math.cos(a) * r).toFixed(1), (100 + Math.sin(a) * r).toFixed(1), size, color, (rand() * 360).toFixed(0)));
+    }
+  }
+  return `<svg viewBox="0 0 200 200" role="img" aria-label="${esc(item.name)}">${out.join("")}</svg>`;
+}
+
+function ovenSVG() {
+  return `<svg viewBox="0 0 420 400" role="img" aria-label="Neapolitan wood-fired dome oven, lit">
+    <defs>
+      <radialGradient id="fuoco" cx="50%" cy="72%" r="62%">
+        <stop offset="0%" stop-color="var(--warm)"/><stop offset="55%" stop-color="var(--i-giallo)"/><stop offset="100%" stop-color="var(--i-rosso)"/>
+      </radialGradient>
+    </defs>
+    <rect x="52" y="318" width="316" height="16" rx="6" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1.2"/>
+    <rect x="76" y="334" width="268" height="46" rx="8" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="1.2"/>
+    <path d="M110 380v-46M210 380v-46M310 380v-46" stroke="var(--line)" stroke-width="1"/>
+    <path d="M62 318A148 148 0 0 1 358 318Z" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6"/>
+    <path d="M96 318A114 114 0 0 1 324 318" fill="none" stroke="var(--line)" stroke-width="1"/>
+    <path d="M130 318A80 80 0 0 1 290 318" fill="none" stroke="var(--line)" stroke-width="1"/>
+    <path d="M164 318A46 46 0 0 1 256 318" fill="none" stroke="var(--line)" stroke-width="1"/>
+    <path d="M210 170v148M155 180l38 138M265 180l-38 138" stroke="var(--line)" stroke-width="1"/>
+    <rect x="292" y="118" width="26" height="72" rx="5" fill="var(--surface-2)" stroke="var(--ink)" stroke-width="1.4"/>
+    <rect x="286" y="106" width="38" height="14" rx="6" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.4"/>
+    <path d="M158 318A52 52 0 0 1 262 318Z" fill="var(--ink)"/>
+    <g class="ember">
+      <path d="M166 318A44 44 0 0 1 254 318Z" fill="url(#fuoco)" opacity=".92"/>
+      <path d="M196 318c-10-14 4-22 2-34 14 10 22 4 20 22 8-6 12 2 10 12Z" fill="var(--warm)" opacity=".95"/>
+    </g>
+    <path d="M152 318A58 58 0 0 1 268 318" fill="none" stroke="var(--ink)" stroke-width="1.6"/>
+    <line x1="360" y1="96" x2="330" y2="300" stroke="var(--i-wood)" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="327" cy="308" rx="21" ry="15" fill="var(--i-metal)" stroke="var(--ink)" stroke-width="1.2"/>
+    <rect x="86" y="342" width="52" height="10" rx="5" fill="var(--i-wood)" stroke="var(--ink)" stroke-width="1"/>
+    <rect x="94" y="357" width="52" height="10" rx="5" fill="var(--i-wood)" stroke="var(--ink)" stroke-width="1"/>
+  </svg>`;
+}
+
+function sceneSVG(kind) {
+  if (kind === "mise") {
+    return `<svg viewBox="0 0 400 400" role="img" aria-label="Mise en place on marble">
+      <rect width="400" height="400" fill="var(--i-marble)"/>
+      <path d="M0 90q120 26 240-6t160 18M0 300q140-30 250 4t150-12" fill="none" stroke="var(--line)" stroke-width="1"/>
+      <line x1="40" y1="352" x2="360" y2="60" stroke="var(--i-wood)" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="352" cy="66" rx="28" ry="20" fill="var(--i-metal)" stroke="var(--ink)" stroke-width="1.2" transform="rotate(-42 352 66)"/>
+      <circle cx="120" cy="150" r="46" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.4"/><circle cx="120" cy="150" r="34" fill="var(--i-rosso)"/>
+      <circle cx="238" cy="196" r="40" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.4"/><circle cx="238" cy="196" r="29" fill="var(--i-mozz)"/>
+      <circle cx="150" cy="268" r="36" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.4"/><circle cx="150" cy="268" r="26" fill="var(--i-basil)"/>
+      <circle cx="292" cy="300" r="30" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.4"/><circle cx="292" cy="300" r="21" fill="var(--i-giallo)"/>
+      <g fill="var(--surface)" opacity=".85">
+        <circle cx="72" cy="230" r="3"/><circle cx="196" cy="120" r="2.4"/><circle cx="300" cy="150" r="3.2"/><circle cx="88" cy="318" r="2.6"/>
+        <circle cx="212" cy="332" r="3"/><circle cx="336" cy="238" r="2.2"/><circle cx="60" cy="120" r="2.4"/><circle cx="258" cy="90" r="2.8"/>
+      </g>
+    </svg>`;
+  }
+  return `<svg viewBox="0 0 400 400" role="img" aria-label="The oven set up in a cloister">
+    <rect width="400" height="400" fill="var(--i-marble)"/>
+    <line x1="0" y1="300" x2="400" y2="300" stroke="var(--line-strong)" stroke-width="1"/>
+    <path d="M40 300v-90M120 300v-120M280 300v-120M360 300v-90" stroke="var(--line)" stroke-width="1"/>
+    <path d="M40 210A40 40 0 0 1 120 210M280 210A40 40 0 0 1 360 210" fill="none" stroke="var(--line)" stroke-width="1"/>
+    <rect x="130" y="262" width="140" height="14" rx="5" fill="var(--surface-2)" stroke="var(--ink)" stroke-width="1.2"/>
+    <rect x="146" y="276" width="108" height="26" rx="6" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.2"/>
+    <path d="M136 262A64 64 0 0 1 264 262Z" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.4"/>
+    <path d="M158 262A42 42 0 0 1 242 262" fill="none" stroke="var(--line)" stroke-width="1"/>
+    <rect x="238" y="180" width="14" height="34" rx="4" fill="var(--surface-2)" stroke="var(--ink)" stroke-width="1.2"/>
+    <path d="M178 262A22 22 0 0 1 222 262Z" fill="var(--ink)"/>
+    <path d="M182 262A18 18 0 0 1 218 262Z" fill="var(--warm)" opacity=".92" class="ember"/>
+    <ellipse cx="200" cy="330" rx="120" ry="10" fill="var(--ink)" opacity=".05"/>
+    <circle cx="70" cy="330" r="9" fill="none" stroke="var(--line-strong)" stroke-width="1.2"/>
+    <circle cx="96" cy="336" r="9" fill="none" stroke="var(--line-strong)" stroke-width="1.2"/>
+    <circle cx="316" cy="332" r="9" fill="none" stroke="var(--line-strong)" stroke-width="1.2"/>
+  </svg>`;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   4 · RENDER
+   ══════════════════════════════════════════════════════════════ */
+
+function markHTML() {
+  if (state.photos.logo) return `<img src="${state.photos.logo}" alt="${esc(state.brand.name)}">`;
+  const s = state.brand.script ? `<span class="script">${esc(state.brand.script)}</span>` : "";
+  return s + "<span>" + esc(state.brand.name) + "</span>";
+}
+
+function renderPalette() {
+  const css = t => TOKEN_LABELS.map(([k]) => `--${k}:${state.palette[t][k]};`).join("");
+  let sheet = $("paletteOverride");
+  if (!sheet) { sheet = document.createElement("style"); sheet.id = "paletteOverride"; document.head.appendChild(sheet); }
+  sheet.textContent = `:root{${css("light")}}`;
+}
+
+function renderBrand() {
+  const b = state.brand;
+  document.title = b.name;
+  $("navMark").innerHTML = markHTML();
+  $("footMark").innerHTML = markHTML();
+  $("heroBadge").textContent = b.badge;
+  $("heroTitle").innerHTML = headline(b.headline);
+  $("heroLede").textContent = b.lede;
+  $("menuTitle").textContent = b.menuTitle;
+  $("menuNote").textContent = b.menuNote;
+  $("storyTitle").textContent = b.storyTitle;
+  $("storyText").textContent = b.storyText;
+  $("followHandle").textContent = b.handle;
+  $("followLink").href = b.instagram || "#";
+  $("footTag").textContent = b.tagline;
+  $("heroShot").innerHTML = state.photos.hero
+    ? `<img src="${state.photos.hero}" alt="${esc(b.name)}">` : ovenSVG();
+  $("storyShot").innerHTML = state.photos.story
+    ? `<img src="${state.photos.story}" alt="">` : sceneSVG("mise");
+}
+
+function renderInfo() {
+  const c = state.contact;
+  $("info").innerHTML = `
+    <div class="info-item"><dt>Notice</dt><dd>${esc(c.notice)}</dd></div>
+    <div class="info-item"><dt>Coverage</dt><dd>${esc(c.coverage)}</dd></div>
+    <div class="info-item"><dt>Payment</dt><dd>${esc(c.payment)}</dd></div>
+    <div class="info-item"><dt>Reach us</dt><dd><a href="mailto:${esc(c.email)}">${esc(c.email)}</a><br><a href="tel:${esc(c.phone.replace(/[^\d+]/g,""))}">${esc(c.phone)}</a><br>${esc(c.hours)}</dd></div>`;
+  $("footContact").textContent = c.email + " · " + c.phone;
+}
+
+const TAG_CLASS = { spicy:"tag tag-hot", vegetarian:"tag tag-veg", vegan:"tag tag-veg" };
+const tagsHTML = p => p.tags.map(t => `<span class="${TAG_CLASS[t] || "tag"}">${esc(t)}</span>`).join("");
+
+function pizzaArt(p) {
+  const photo = state.photos["pizza-" + p.id];
+  return photo ? `<img src="${photo}" alt="${esc(p.name)}">` : pizzaSVG(p);
+}
+
+function renderSignature() {
+  const stars = state.menu.filter(p => p.star).slice(0, 4);
+  const list = stars.length ? stars : state.menu.slice(0, 4);
+  $("signatureCards").innerHTML = list.map(p => `
+    <article class="card">
+      <div class="card-art">${pizzaArt(p)}</div>
+      <div class="card-body">
+        <h3>${esc(p.name)}</h3>
+        <p>${esc(p.ing)}</p>
+        <div class="card-tags">${tagsHTML(p)}</div>
+      </div>
+    </article>`).join("");
+}
+
+function renderMenu() {
+  const list = state.filter === "all" ? state.menu : state.menu.filter(p => p.cat === state.filter);
+  $("menuList").innerHTML = list.map(p => `
+    <article class="dish">
+      <div class="dish-art">${pizzaArt(p)}</div>
+      <div>
+        <h3>${esc(p.name)}</h3>
+        <p>${esc(p.ing)}</p>
+        <div class="card-tags">${tagsHTML(p)}</div>
+      </div>
+    </article>`).join("") || `<article class="dish"><div></div><p>No pizzas in this family yet.</p></article>`;
+  $("filters").innerHTML = FAMILIES.map(f =>
+    `<button class="chip" data-cat="${f.id}" aria-pressed="${state.filter === f.id}">${f.label}</button>`).join("");
+}
+
+/* The gallery shows uploaded photos once there are any, and the
+   drawn fallback set until then. */
+function galleryPieces() {
+  if (state.gallery.length) return state.gallery.map(g => ({ ...g, photo: g.dataUrl }));
+  return FALLBACK_GALLERY;
+}
+function pieceArt(g) {
+  if (g.photo) return `<img src="${g.photo}" alt="${esc(g.caption)}">`;
+  if (g.pizza) {
+    const p = state.menu.find(x => x.id === g.pizza);
+    return p ? pizzaArt(p) : sceneSVG("forno");
+  }
+  return sceneSVG(g.scene);
+}
+function renderGallery() {
+  $("galGrid").innerHTML = galleryPieces().map((g, i) =>
+    `<button class="tile${g.wide ? " wide" : ""}" data-i="${i}" aria-label="Enlarge: ${esc(g.caption)}">
+       ${pieceArt(g)}<span class="tile-cap">${esc(g.caption)}</span>
+     </button>`).join("");
+}
+
+function renderAll() {
+  renderPalette(); renderBrand(); renderInfo();
+  renderSignature(); renderMenu(); renderGallery();
+}
+
+$("filters").addEventListener("click", e => {
+  const b = e.target.closest(".chip");
+  if (!b) return;
+  state.filter = b.dataset.cat;
+  renderMenu();
+});
+
+/* ── lightbox ─────────────────────────────────────────────── */
+const lb = $("lb");
+let lbIdx = 0, lastFocus = null;
+function lbShow(i) {
+  const pieces = galleryPieces();
+  lbIdx = (i + pieces.length) % pieces.length;
+  $("lbStage").innerHTML = pieceArt(pieces[lbIdx]);
+  $("lbCap").textContent = pieces[lbIdx].caption;
+}
+function lbOpen(i) { lastFocus = document.activeElement; lbShow(i); lb.hidden = false; $("lbClose").focus(); }
+function lbClose() { lb.hidden = true; if (lastFocus) lastFocus.focus(); }
+$("galGrid").addEventListener("click", e => {
+  const t = e.target.closest(".tile");
+  if (t) lbOpen(Number(t.dataset.i));
+});
+$("lbClose").addEventListener("click", lbClose);
+$("lbPrev").addEventListener("click", () => lbShow(lbIdx - 1));
+$("lbNext").addEventListener("click", () => lbShow(lbIdx + 1));
+lb.addEventListener("click", e => { if (e.target === lb) lbClose(); });
+document.addEventListener("keydown", e => {
+  if (lb.hidden) return;
+  if (e.key === "Escape") lbClose();
+  if (e.key === "ArrowLeft") lbShow(lbIdx - 1);
+  if (e.key === "ArrowRight") lbShow(lbIdx + 1);
+});
+
+/* ── enquiry form ─────────────────────────────────────────── */
+$("form").addEventListener("submit", e => {
+  e.preventDefault();
+  const f = e.target, d = new FormData(f);
+  const name = (d.get("Name") || "").trim(), mail = (d.get("Email") || "").trim();
+  if (!name || !mail) { (name ? $("f-mail") : $("f-name")).focus(); return; }
+  const summary = [...d.entries()].filter(([, v]) => String(v).trim())
+    .map(([k, v]) => k.padEnd(9) + " " + v).join("\n");
+
+  const panel = document.createElement("div");
+  panel.className = "sent";
+  panel.innerHTML = `
+    <h3>Enquiry ready, ${esc(name.split(" ")[0])}.</h3>
+    <p style="font-size:.9375rem;color:var(--ink-2)">This is what the events team receives. Copy it, or open it in your mail client to send.</p>
+    <pre>${esc(summary)}</pre>
+    <div class="form-foot">
+      <button class="btn btn-soft" type="button" id="copyBtn">Copy summary</button>
+      <a class="btn" id="mailBtn" href="#">Open in mail</a>
+    </div>`;
+  f.replaceWith(panel);
+  panel.querySelector("#mailBtn").href = "mailto:" + state.contact.email +
+    "?subject=" + encodeURIComponent("Catering enquiry · " + name) + "&body=" + encodeURIComponent(summary);
+  panel.querySelector("#copyBtn").addEventListener("click", async ev => {
+    try { await navigator.clipboard.writeText(summary); ev.target.textContent = "Copied"; }
+    catch { ev.target.textContent = "Select the text to copy"; }
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════
+   5 · ASSISTANT
+   ══════════════════════════════════════════════════════════════ */
+
+const REPLIES = [
+  { k:["price","prices","cost","how much","quote","budget","rate","expensive"],
+    t:"Pizzas are $14 each, plus a $100 catering fee for the event. That covers the oven, the dough, the ingredients and cooking on site. Tell us your date, venue and roughly how many pizzas you need and we send the total back the same day.",
+    a:["Start an enquiry", "#enquiry"] },
+  { k:["minimum","maximum","how many","guests","people","headcount","pax","capacity"],
+    t:"Tell us how many guests you are expecting and we will work out the pizza count with you — most hosts plan on two to three slices a head. Ask us about larger parties and we will confirm what we can do." },
+  { k:["gluten","celiac","coeliac","intolerance","intolerant"],
+    t:"Ask us when you book — tell us how many guests need it and we will confirm what we can arrange for your event." },
+  { k:["vegan","vegetarian","diet","allergy","allergen","halal","kosher","dairy","nut"],
+    t:"Six of the fifteen pizzas are vegetarian, and three of those are made without tomato sauce — Basilicata, Spicy-Honey and Sundried Tomatoes. For any other dietary need, tell us when you book.",
+    a:["See the card", "#menu"] },
+  { k:["space","set up","setup","install","power","electricity","metres","meters","indoor","smoke","terrace","water"],
+    t:"We need 4 × 2.5 m of level ground, outdoors or in a space with extraction. No power supply and no water connection — the oven runs on wood. We arrive 90 minutes before service and are gone 45 minutes after.",
+    a:["What's included", "#story"] },
+  { k:["where","travel","area","coverage","distance","km","miles","far","location"],
+    t:"Send us the venue address and we will confirm we can reach it and whether any travel applies." },
+  { k:["invoice","vat","company","tax","institution","insurance","payment","terms","30 day","purchase order","deposit"],
+    t:"Pizzas are $14 each plus a $100 catering fee per event. Ask us about invoicing and paperwork for your company or venue and we will send what you need.",
+    a:["Booking information", "#story"] },
+  { k:["date","availability","available","book","booking","calendar","free","when","notice"],
+    t:"Two weeks' notice for up to 150 guests, four weeks above that. We confirm availability in under 24 business hours, and Fridays and Saturdays from May to September usually go two to three months ahead.",
+    a:["Check a date", "#enquiry"] },
+  { k:["menu","pizza","pizzas","card","kinds","types","which","options","food"],
+    t:"Fifteen pizzas across three families: Traditionals, Meats and Veggies. For each event we settle on five or six, which keeps the line moving and every pie coming out hot.",
+    a:["Open the card", "#menu"] },
+  { k:["favourite","favorite","popular","recommend","best","suggest"],
+    t:"Margherita and Pepperoni go fastest at almost every event. Prosciutto and Zucchini are the two we get asked about most once people have tried them.",
+    a:["Open the menu", "#menu"] },
+  { k:["photo","photos","gallery","pictures","see","look","instagram","follow"],
+    t:"The gallery further down has set-ups and the card shot from above, and the newest work goes to Instagram first.",
+    a:["Open the gallery", "#gallery"] },
+  { k:["human","person","speak","call","phone","email","contact","talk","someone","whatsapp"],
+    t:"Gladly. The email and phone are in the booking information below, Monday to Friday 9:00–18:00 — or leave your details and we call you the same day.",
+    a:["Leave my details", "#enquiry"] },
+  { k:["hi","hello","hey","good morning","good afternoon","greetings","ciao"],
+    t:"Hello. I can answer on pricing, minimum headcount, special diets, the space we need, coverage and invoicing. What would you like to know?" },
+  { k:["thanks","thank you","great","perfect","cheers"],
+    t:"My pleasure. If you like, I can hand this to the events team.",
+    a:["Go to the form", "#enquiry"] }
+];
+
+const FALLBACK = {
+  t:"I don't have an answer for that yet. I do know pricing, minimum headcount, diets and allergens, the space we need, coverage, invoicing and availability. Otherwise a person on the team can take it from here.",
+  a:["Write to the team", "#enquiry"]
+};
+
+const CHIPS = ["How much is it?", "Minimum headcount?", "Gluten-free?", "What space do you need?", "How far do you travel?", "Can you invoice a company?"];
+
+const chat = $("chat"), chatBtn = $("chatBtn"), chatLog = $("chatLog");
+let greeted = false;
+
+function push(text, who, action) {
+  const el = document.createElement("div");
+  el.className = "msg msg-" + who;
+  el.textContent = text;
+  if (action) {
+    const b = document.createElement("button");
+    b.className = "msg-act"; b.type = "button"; b.textContent = action[0];
+    b.addEventListener("click", () => {
+      document.querySelector(action[1]).scrollIntoView({ behavior:"smooth", block:"start" });
+      toggleChat(false);
+    });
+    el.appendChild(document.createElement("br"));
+    el.appendChild(b);
+  }
+  chatLog.appendChild(el);
+  chatLog.scrollTop = chatLog.scrollHeight;
+}
+function answer(q) {
+  const n = q.toLowerCase();
+  let best = null, score = 0;
+  for (const r of REPLIES) {
+    let s = 0;
+    for (const k of r.k) if (n.includes(k)) s += k.length;
+    if (s > score) { score = s; best = r; }
+  }
+  return best || FALLBACK;
+}
+function ask(q) { push(q, "me"); const r = answer(q); setTimeout(() => push(r.t, "bot", r.a), 420); }
+function toggleChat(open) {
+  chat.hidden = !open;
+  chatBtn.setAttribute("aria-expanded", String(open));
+  if (open) {
+    if (!greeted) {
+      greeted = true;
+      push("Hello — the assistant for " + state.brand.name + ". I can settle pricing, minimums, diets, space and coverage right now, and pass you to the events team whenever you'd rather speak to a person.", "bot");
+    }
+    $("chatInput").focus();
+  } else { chatBtn.focus(); }
+}
+chatBtn.addEventListener("click", () => toggleChat(chat.hidden));
+$("chatForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const v = $("chatInput").value.trim();
+  if (!v) return;
+  $("chatInput").value = "";
+  ask(v);
+});
+$("chatChips").innerHTML = CHIPS.map(c => `<button type="button">${c}</button>`).join("");
+$("chatChips").addEventListener("click", e => { if (e.target.tagName === "BUTTON") ask(e.target.textContent); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !chat.hidden) toggleChat(false); });
+
+const PHOTOS = {
+  "logo": "images/logo.png",
+  "hero": "images/hero.jpg",
+  "story": "images/story.jpg",
+  "pizza-margherita": "images/pizza-margherita.jpg",
+  "pizza-prosciutto": "images/pizza-prosciutto.jpg",
+  "pizza-zucchini": "images/pizza-zucchini.jpg",
+  "pizza-carciofi": "images/pizza-carciofi.jpg",
+  "pizza-bianca": "images/pizza-bianca.jpg",
+  "pizza-basilicata": "images/pizza-basilicata.jpg",
+  "pizza-salami": "images/pizza-salami.jpg"
+};
+
+const GALLERY = [
+  {
+    "id": "gal-01",
+    "order": 10,
+    "caption": "The setup on site, ready for service",
+    "dataUrl": "images/gal-01.jpg"
+  },
+  {
+    "id": "gal-02",
+    "order": 20,
+    "caption": "Prosciutto with arugula and parmigiano",
+    "dataUrl": "images/gal-02.jpg"
+  },
+  {
+    "id": "gal-03",
+    "order": 30,
+    "caption": "Stretching the dough at the prep table",
+    "dataUrl": "images/gal-03.jpg"
+  },
+  {
+    "id": "gal-04",
+    "order": 40,
+    "caption": "Ricotta, cherry tomatoes and fresh arugula",
+    "dataUrl": "images/gal-04.jpg"
+  },
+  {
+    "id": "gal-05",
+    "order": 50,
+    "caption": "Prosciutto, straight off the peel",
+    "dataUrl": "images/gal-05.jpg"
+  },
+  {
+    "id": "gal-06",
+    "order": 60,
+    "caption": "Pizzas going out as guests arrive",
+    "dataUrl": "images/gal-06.jpg"
+  },
+  {
+    "id": "gal-07",
+    "order": 70,
+    "caption": "Zucchini and mushrooms, garden style",
+    "dataUrl": "images/gal-07.jpg"
+  },
+  {
+    "id": "gal-08",
+    "order": 80,
+    "caption": "Bianca with mushrooms and goat cheese",
+    "dataUrl": "images/gal-08.jpg"
+  },
+  {
+    "id": "gal-09",
+    "order": 90,
+    "caption": "The wood-fired oven under the tent",
+    "dataUrl": "images/gal-09.jpg"
+  },
+  {
+    "id": "gal-10",
+    "order": 100,
+    "caption": "Mushrooms over a tomato base",
+    "dataUrl": "images/gal-10.jpg"
+  }
+];
+
+/* ══════════════════════════════════════════════════════════════
+   6 · ARRANQUE
+   Las fotos son archivos en images/. Para cambiar el menu, los
+   textos o los colores, edita los bloques DEFAULT_* de arriba.
+   ══════════════════════════════════════════════════════════════ */
+
+state.photos = PHOTOS;
+state.gallery = GALLERY;
+renderAll();
+
+document.documentElement.style.scrollBehavior = "smooth";
+</script>
