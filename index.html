@@ -763,7 +763,7 @@ const FALLBACK_GALLERY = [
 const state = {
   brand:   { ...DEFAULT_BRAND },
   contact: { ...DEFAULT_CONTACT },
-  palette: { light: { ...PRESETS.forno.light }, dark: { ...PRESETS.forno.dark } },
+  palette: { light: { ...PRESETS.dipizza.light } },
   menu:    DEFAULT_MENU.map(p => ({ ...p, tags:[...p.tags] })),
   photos:  {},        /* logo | hero | story | pizza-<id>  →  data URL */
   gallery: [],        /* uploaded pieces: { id, order, caption, dataUrl } */
