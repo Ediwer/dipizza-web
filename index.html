@@ -1,22 +1,23 @@
-﻿<title>DiPizza</title>
+<title>DiPizza</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Parisienne&display=swap">
 
 <style>
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   Wood-fired pizza catering â€” warm, photo-led, fully editable.
+/* ══════════════════════════════════════════════════════════════
+   Wood-fired pizza catering — warm, photo-led, fully editable.
    Six base tokens per theme drive every other colour, so the
-   toda la paleta sale de seis colores: cambia esos seis y cambia la web.
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+   Studio can repaint the whole page from six colour pickers.
+   ══════════════════════════════════════════════════════════════ */
 
 :root {
-  --ground:  #FBF6EF;
-  --surface: #FFFCF7;
-  --ink:     #3A2E2A;
-  --accent:  #4A3A33;
-  --warm:    #C9552F;
-  --green:   #7A8F5C;
-  --shadow-a: 58, 46, 42;
-  --shadow-o: .10;
+  --ground:  #FAF8F4;
+  --surface: #FFFFFF;
+  --ink:     #1A1917;
+  --accent:  #1A1917;
+  --warm:    #CE2B37;
+  --green:   #12894C;
+  --zest:    #F2C300;
+  --shadow-a: 26, 25, 23;
+  --shadow-o: .09;
 
   --ink-2:       color-mix(in srgb, var(--ink) 70%, var(--ground));
   --ink-3:       color-mix(in srgb, var(--ink) 46%, var(--ground));
@@ -24,8 +25,8 @@
   --line-strong: color-mix(in srgb, var(--ink) 24%, var(--ground));
   --surface-2:   color-mix(in srgb, var(--ink) 6%, var(--surface));
   --on-accent:   color-mix(in srgb, var(--ground) 88%, var(--accent));
-  --wash-a:      color-mix(in srgb, var(--warm) 16%, transparent);
-  --wash-b:      color-mix(in srgb, var(--green) 15%, transparent);
+  --wash-a:      color-mix(in srgb, var(--warm) 11%, transparent);
+  --wash-b:      color-mix(in srgb, var(--zest) 13%, transparent);
   --shadow:      0 2px 6px rgba(var(--shadow-a), .04), 0 14px 34px -16px rgba(var(--shadow-a), var(--shadow-o));
   --shadow-lift: 0 4px 10px rgba(var(--shadow-a), .06), 0 26px 56px -22px rgba(var(--shadow-a), calc(var(--shadow-o) * 1.7));
 
@@ -88,7 +89,7 @@ img { display: block; }
 }
 .lede { font-size: clamp(1.0625rem, 1.3vw, 1.1875rem); color: var(--ink-2); max-width: 56ch; }
 
-/* â”€â”€ buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── buttons ─────────────────────────────────────────────── */
 .btn {
   font: 500 .9375rem/1 "DM Sans", sans-serif;
   padding: 14px 26px; border-radius: 999px;
@@ -108,7 +109,7 @@ img { display: block; }
 .btn-line:hover { background: transparent; border-color: var(--warm); color: var(--warm); }
 .btn-sm { padding: 10px 18px; font-size: .875rem; }
 
-/* â”€â”€ nav â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── nav ─────────────────────────────────────────────────── */
 .nav {
   position: sticky; top: 0; z-index: 60;
   background: color-mix(in srgb, var(--ground) 86%, transparent);
@@ -122,7 +123,7 @@ img { display: block; }
   font-family: Fredoka, sans-serif; font-weight: 600; font-size: 1.125rem;
   letter-spacing: -.01em; white-space: nowrap;
 }
-.mark img { height: 52px; width: auto; max-width: 150px; object-fit: contain; }
+.mark img { height: 54px; width: auto; max-width: 150px; object-fit: contain; }
 .mark .script { font-size: 1.35rem; color: var(--warm); }
 
 .nav-links { display: flex; gap: 30px; margin-inline: auto; font-size: .9375rem; }
@@ -132,12 +133,12 @@ img { display: block; }
 }
 .nav-links a:hover { color: var(--ink); border-bottom-color: var(--warm); }
 
-/* â”€â”€ hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── hero ────────────────────────────────────────────────── */
 .hero-wrap { position: relative; overflow: hidden; }
 .hero-wrap::before {
   content: ""; position: absolute; inset: -20% -10% auto -10%; height: 150%;
   background:
-    radial-gradient(48% 55% at 18% 22%, var(--wash-a), transparent 70%),
+    radial-gradient(52% 58% at 16% 20%, var(--wash-a), transparent 72%),
     radial-gradient(46% 52% at 82% 12%, var(--wash-b), transparent 72%);
   pointer-events: none;
 }
@@ -169,7 +170,7 @@ img { display: block; }
   .btn:hover, .card:hover, .tile:hover { transform: none; }
 }
 
-/* â”€â”€ value props â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── value props ─────────────────────────────────────────── */
 .props { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(24px, 4vw, 52px); text-align: center; }
 .prop { display: grid; gap: 12px; justify-items: center; }
 .prop .ic {
@@ -181,12 +182,12 @@ img { display: block; }
 .prop h3 { font-size: 1.1875rem; }
 .prop p { font-size: .9375rem; color: var(--ink-2); max-width: 34ch; }
 
-/* â”€â”€ section heads â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── section heads ───────────────────────────────────────── */
 .sec-head { text-align: center; display: grid; gap: 14px; justify-items: center; margin-bottom: clamp(38px, 5vw, 56px); }
 .sec-head h2 { font-size: clamp(1.85rem, 3.3vw, 2.7rem); max-width: 20ch; }
 .sec-head p { color: var(--ink-2); max-width: 54ch; }
 
-/* â”€â”€ signature cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── signature cards ─────────────────────────────────────── */
 .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
 .card {
   background: var(--surface); border: 1px solid var(--line);
@@ -195,7 +196,9 @@ img { display: block; }
   box-shadow: var(--shadow); transition: transform .2s, box-shadow .2s;
 }
 .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
-.card-art { aspect-ratio: 1; background: var(--surface-2); display: grid; place-items: center; overflow: hidden; }
+.card-art { aspect-ratio: 1; background: var(--surface-2); display: grid; place-items: center; overflow: hidden; cursor: zoom-in; }
+.card-art img, .dish-art img { transition: transform .35s; }
+.card:hover .card-art img, .dish:hover .dish-art img { transform: scale(1.04); }
 .card-art img { width: 100%; height: 100%; object-fit: cover; }
 .card-art svg { width: 86%; height: auto; }
 .card-body { padding: 20px 22px 24px; display: grid; gap: 9px; }
@@ -211,7 +214,7 @@ img { display: block; }
 .tag-veg { color: var(--green); border-color: color-mix(in srgb, var(--green) 34%, var(--line)); }
 .center-cta { display: grid; place-items: center; margin-top: clamp(34px, 4vw, 48px); }
 
-/* â”€â”€ full menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── full menu ───────────────────────────────────────────── */
 .filters { display: flex; gap: 9px; flex-wrap: wrap; justify-content: center; margin-bottom: 34px; }
 .chip {
   font: 500 .875rem/1 "DM Sans", sans-serif; padding: 11px 20px;
@@ -228,7 +231,7 @@ img { display: block; }
   border-radius: var(--r-md); padding: 16px; transition: border-color .2s, transform .2s;
 }
 .dish:hover { border-color: var(--line-strong); transform: translateY(-2px); }
-.dish-art { width: 92px; height: 92px; border-radius: 14px; overflow: hidden; background: var(--surface-2); display: grid; place-items: center; }
+.dish-art { width: 92px; height: 92px; border-radius: 14px; overflow: hidden; background: var(--surface-2); display: grid; place-items: center; cursor: zoom-in; }
 .dish-art img { width: 100%; height: 100%; object-fit: cover; }
 .dish-art svg { width: 100%; height: 100%; }
 .dish h3 { font-size: 1rem; margin-bottom: 3px; }
@@ -236,7 +239,7 @@ img { display: block; }
 .dish .card-tags { margin-top: 7px; }
 .menu-note { text-align: center; margin-top: 26px; font-size: .875rem; color: var(--ink-3); }
 
-/* â”€â”€ split / story â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── split / story ───────────────────────────────────────── */
 .split {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: clamp(30px, 5vw, 64px); align-items: center;
@@ -249,7 +252,7 @@ img { display: block; }
 .tick { display: flex; gap: 11px; align-items: flex-start; font-size: .9375rem; color: var(--ink-2); }
 .tick svg { width: 19px; height: 19px; flex: none; color: var(--green); margin-top: 3px; }
 
-/* â”€â”€ gallery â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── gallery ─────────────────────────────────────────────── */
 .gal { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .tile {
   position: relative; border: 1px solid var(--line); background: var(--surface);
@@ -285,16 +288,18 @@ img { display: block; }
 .lb-nav:hover { border-color: var(--warm); color: var(--warm); }
 .lb-close { position: absolute; top: 22px; right: 26px; background: transparent; border: 0; color: var(--ink-2); font-size: 1.6rem; cursor: pointer; line-height: 1; padding: 8px; }
 
-/* â”€â”€ dark call-to-action band â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-.cta-band { background: var(--accent); color: var(--on-accent); border-radius: var(--r-lg); padding: clamp(40px, 6vw, 72px) clamp(26px, 5vw, 64px); text-align: center; }
+/* ── dark call-to-action band ────────────────────────────── */
+.cta-band { background: var(--ink); color: var(--on-accent); border-radius: var(--r-lg); padding: clamp(40px, 6vw, 72px) clamp(26px, 5vw, 64px); text-align: center; }
+.cta-mark { width: 82px; height: auto; margin: 0 auto 20px; }
 .cta-band h2 { font-size: clamp(1.8rem, 3.2vw, 2.6rem); color: var(--on-accent); }
-.cta-band p { margin: 16px auto 0; max-width: 50ch; color: color-mix(in srgb, var(--on-accent) 78%, var(--accent)); }
+.cta-band p { margin: 16px auto 0; max-width: 50ch; color: color-mix(in srgb, var(--on-accent) 74%, var(--ink)); }
 .cta-band .btn {
-  margin-top: 30px; background: var(--on-accent); color: var(--accent); border-color: var(--on-accent);
+  margin-top: 30px; background: var(--zest); color: #1A1917; border-color: var(--zest);
+  font-weight: 600;
 }
-.cta-band .script { display: block; font-size: 1.6rem; color: color-mix(in srgb, var(--on-accent) 72%, var(--accent)); margin-bottom: 6px; }
+.cta-band .script { display: block; font-size: 1.6rem; color: var(--zest); margin-bottom: 6px; }
 
-/* â”€â”€ booking info â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── booking info ────────────────────────────────────────── */
 .info { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 .info-item {
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md);
@@ -305,7 +310,7 @@ img { display: block; }
 .info-item a { text-decoration: none; border-bottom: 1px solid var(--line-strong); }
 .info-item a:hover { color: var(--warm); border-color: var(--warm); }
 
-/* â”€â”€ enquiry form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── enquiry form ────────────────────────────────────────── */
 .form {
   background: var(--surface); border: 1px solid var(--line);
   border-radius: var(--r-lg); padding: clamp(26px, 4vw, 42px);
@@ -338,7 +343,7 @@ img { display: block; }
   border-radius: 12px; padding: 15px; margin: 0; white-space: pre-wrap; overflow-x: auto;
 }
 
-/* â”€â”€ follow + footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── follow + footer ─────────────────────────────────────── */
 .follow { text-align: center; display: grid; gap: 12px; justify-items: center; }
 .follow .script { font-size: 2rem; color: var(--warm); }
 .foot {
@@ -347,7 +352,7 @@ img { display: block; }
   flex-wrap: wrap; font-size: .875rem; color: var(--ink-3);
 }
 
-/* â”€â”€ assistant â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── assistant ───────────────────────────────────────────── */
 .chat-btn {
   position: fixed; right: 24px; bottom: 24px; z-index: 70;
   width: 58px; height: 58px; border-radius: 999px;
@@ -395,7 +400,7 @@ img { display: block; }
 .chat-form input:focus { outline: none; border-color: var(--warm); }
 .chat-form button { width: 40px; height: 40px; flex: none; border-radius: 999px; border: 0; background: var(--accent); color: var(--on-accent); cursor: pointer; display: grid; place-items: center; }
 
-/* â”€â”€ responsive â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── responsive ──────────────────────────────────────────── */
 @media (max-width: 940px) {
   .hero { grid-template-columns: 1fr; }
   .hero .shot { order: -1; max-width: 380px; }
@@ -416,6 +421,7 @@ img { display: block; }
   .tile.wide { grid-column: span 2; grid-row: auto; }
   .chat { right: 12px; left: 12px; width: auto; bottom: 86px; }
   .chat-btn { right: 16px; bottom: 16px; }
+  .studio-btn { left: 16px; bottom: 16px; }
   .sw-grid, .preset-grid { grid-template-columns: 1fr; }
 }
 </style>
@@ -435,7 +441,7 @@ img { display: block; }
 
 <main id="top">
 
-  <!-- â”€â”€ hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── hero ─────────────────────────────────────────── -->
   <div class="hero-wrap">
     <section class="rail hero">
       <div>
@@ -451,7 +457,7 @@ img { display: block; }
     </section>
   </div>
 
-  <!-- â”€â”€ three virtues â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── three virtues ────────────────────────────────── -->
   <section class="rail band">
     <div class="props">
       <div class="prop">
@@ -467,12 +473,12 @@ img { display: block; }
       <div class="prop">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11v9H2zM13 11h4.5l3.5 3.5V17h-8z"/><circle cx="6" cy="18.5" r="1.8"/><circle cx="17" cy="18.5" r="1.8"/></svg></span>
         <h3>We Come to You</h3>
-        <p>Backyard, park, warehouse or parking lot. Oven, prep table and crew travel to the venue â€” you supply the guests.</p>
+        <p>Backyard, park, warehouse or parking lot. Oven, prep table and crew travel to the venue — you supply the guests.</p>
       </div>
     </div>
   </section>
 
-  <!-- â”€â”€ signature four â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── signature four ───────────────────────────────── -->
   <section class="rail band" id="signature">
     <div class="sec-head">
       <p class="kicker">Guest Favourites</p>
@@ -483,19 +489,19 @@ img { display: block; }
     <div class="center-cta"><a class="btn btn-line" href="#menu">View the Full Menu</a></div>
   </section>
 
-  <!-- â”€â”€ full menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── full menu ────────────────────────────────────── -->
   <section class="rail band" id="menu">
     <div class="sec-head">
       <p class="kicker">The Card</p>
       <h2 id="menuTitle"></h2>
-      <p>Fresh mozzarella on every pizza, dough stretched by hand at the venue. Pick the ones you want for your event â€” most hosts settle on five or six and let us bring the rest as a surprise.</p>
+      <p>Fresh mozzarella on every pizza, dough stretched by hand at the venue. Pick the ones you want for your event — most hosts settle on five or six and let us bring the rest as a surprise.</p>
     </div>
     <div class="filters" id="filters" role="group" aria-label="Filter the menu"></div>
     <div class="menu-list" id="menuList"></div>
     <p class="menu-note" id="menuNote"></p>
   </section>
 
-  <!-- â”€â”€ story / made to order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── story / made to order ────────────────────────── -->
   <section class="rail band" id="story">
     <div class="split">
       <div class="shot" id="storyShot"></div>
@@ -504,17 +510,17 @@ img { display: block; }
         <h2 id="storyTitle"></h2>
         <p class="lede" id="storyText"></p>
         <div class="ticks">
-          <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Fifteen pizzas to choose from â€” pick the ones your guests will want.</span></div>
+          <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Fifteen pizzas to choose from — pick the ones your guests will want.</span></div>
           <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>$14 a pizza, plus a $100 catering fee. No surprises on the invoice.</span></div>
           <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Six meat pizzas and six veggie ones, three of them without tomato sauce.</span></div>
-          <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Everything cooked on site â€” nothing arrives reheated.</span></div>
+          <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Everything cooked on site — nothing arrives reheated.</span></div>
         </div>
         <a class="btn" href="#gallery">See the Gallery</a>
       </div>
     </div>
   </section>
 
-  <!-- â”€â”€ gallery â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── gallery ──────────────────────────────────────── -->
   <section class="rail band" id="gallery">
     <div class="sec-head">
       <p class="kicker">Gallery</p>
@@ -524,9 +530,10 @@ img { display: block; }
     <div class="gal" id="galGrid"></div>
   </section>
 
-  <!-- â”€â”€ dark CTA band â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── dark CTA band ────────────────────────────────── -->
   <section class="rail band">
     <div class="cta-band">
+      <img class="cta-mark" src="images/logo-light.png" alt="">
       <span class="script">Ready when you are</span>
       <h2>Tell us what you're hosting</h2>
       <p>Send the date, the venue and roughly how many pizzas you need. We come back with availability and the total the same day.</p>
@@ -534,7 +541,7 @@ img { display: block; }
     </div>
   </section>
 
-  <!-- â”€â”€ booking info â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── booking info ─────────────────────────────────── -->
   <section class="rail band" style="padding-top:0">
     <div class="sec-head">
       <p class="kicker">Good to Know</p>
@@ -543,7 +550,7 @@ img { display: block; }
     <dl class="info" id="info"></dl>
   </section>
 
-  <!-- â”€â”€ enquiry â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── enquiry ──────────────────────────────────────── -->
   <section class="rail band" id="enquiry" style="padding-top:0">
     <div class="sec-head">
       <p class="kicker">Enquiry</p>
@@ -575,7 +582,7 @@ img { display: block; }
       </div>
       <div class="field">
         <label for="f-msg">Anything we should know</label>
-        <textarea id="f-msg" name="Details" placeholder="Timings, the space available, special diets, pizzas you already have in mindâ€¦"></textarea>
+        <textarea id="f-msg" name="Details" placeholder="Timings, the space available, special diets, pizzas you already have in mind…"></textarea>
       </div>
       <div class="form-foot">
         <small>We use these details only to prepare your proposal.</small>
@@ -584,7 +591,7 @@ img { display: block; }
     </form>
   </section>
 
-  <!-- â”€â”€ follow â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── follow ───────────────────────────────────────── -->
   <section class="rail band" style="padding-top:0">
     <div class="follow">
       <p class="kicker" id="followHandle"></p>
@@ -602,12 +609,12 @@ img { display: block; }
 </main>
 
 <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Enlarged gallery">
-  <button class="lb-close" id="lbClose" aria-label="Close">Ã—</button>
+  <button class="lb-close" id="lbClose" aria-label="Close">×</button>
   <div class="lb-stage" id="lbStage"></div>
   <div class="lb-bar">
-    <button class="lb-nav" id="lbPrev" aria-label="Previous">â†</button>
+    <button class="lb-nav" id="lbPrev" aria-label="Previous">←</button>
     <span id="lbCap"></span>
-    <button class="lb-nav" id="lbNext" aria-label="Next">â†’</button>
+    <button class="lb-nav" id="lbNext" aria-label="Next">→</button>
   </div>
 </div>
 
@@ -619,11 +626,11 @@ img { display: block; }
 </button>
 
 <section class="chat" id="chat" hidden aria-label="Assistant">
-  <div class="chat-head"><span class="dot"></span><strong>Assistant</strong><span>Â· replies instantly</span></div>
+  <div class="chat-head"><span class="dot"></span><strong>Assistant</strong><span>· replies instantly</span></div>
   <div class="chat-log" id="chatLog" role="log" aria-live="polite"></div>
   <div class="chat-chips" id="chatChips"></div>
   <form class="chat-form" id="chatForm">
-    <input id="chatInput" placeholder="Ask a questionâ€¦" autocomplete="off" aria-label="Message">
+    <input id="chatInput" placeholder="Ask a question…" autocomplete="off" aria-label="Message">
     <button type="submit" aria-label="Send">
       <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
     </button>
@@ -635,65 +642,50 @@ img { display: block; }
 <script>
 "use strict";
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   1 Â· DEFAULTS
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══════════════════════════════════════════════════════════════
+   1 · DEFAULTS
+   ══════════════════════════════════════════════════════════════ */
 
 const DEFAULT_BRAND = {
   name: "DiPizza",
   script: "",                       /* optional script word before the name */
-  badge: "Authentic pizza at your event Â· est. 2016",
+  badge: "Authentic pizza at your event · est. 2016",
   headline: "Made from scratch,|fired on site,|served {to your guests}.",
-  lede: "We bring the wood-fired oven to you and cook Neapolitan pizza in front of your guests â€” dough stretched by hand, one pie at a time, never a mix and never a shortcut.",
+  lede: "We bring the wood-fired oven to you and cook Neapolitan pizza in front of your guests — dough stretched by hand, one pie at a time, never a mix and never a shortcut.",
   menuTitle: "Fifteen pizzas, three families",
-  menuNote: "All pizzas $14 each Â· Catering fee $100 per event Â· Pizzas tagged â€œno tomatoâ€ are made without tomato sauce.",
+  menuNote: "All pizzas $14 each · Catering fee $100 per event · Pizzas tagged “no tomato” are made without tomato sauce.",
   storyTitle: "We set up wherever you are",
-  storyText: "Backyard, park, warehouse or parking lot â€” the oven, the prep table and the crew travel to the venue. You pick the pizzas, we handle the rest and leave the space the way we found it.",
+  storyText: "Backyard, park, warehouse or parking lot — the oven, the prep table and the crew travel to the venue. You pick the pizzas, we handle the rest and leave the space the way we found it.",
   handle: "@dipizza",
   instagram: "https://instagram.com/",
-  tagline: "Wood-fired pizza catering Â· est. 2016"
+  tagline: "Wood-fired pizza catering · est. 2016"
 };
 
 /* Marcadores de posicion: sustituir por los datos reales de DiPizza. */
 const DEFAULT_CONTACT = {
-  email: "events@dipizza.com",
-  phone: "(000) 000-0000",
-  notice: "Book ahead so we can hold your date â€” ask us what's open.",
+  email: "dipizza00@gmail.com",
+  phone: "(484) 954-7273",
+  notice: "Book ahead so we can hold your date — ask us what's open.",
   coverage: "Tell us the venue and we'll confirm we can reach it.",
   hours: "Reach out any day; we reply within one business day.",
   payment: "$14 per pizza plus a $100 catering fee per event."
 };
 
 const PRESETS = {
-  forno: {
-    label: "Forno",
-    light: { ground:"#FBF6EF", surface:"#FFFCF7", ink:"#3A2E2A", accent:"#4A3A33", warm:"#C9552F", green:"#7A8F5C" },
-    dark:  { ground:"#1A1512", surface:"#241D18", ink:"#F2E9E0", accent:"#E8DACB", warm:"#E8825C", green:"#A3B884" }
-  },
-  amalfi: {
-    label: "Amalfi",
-    light: { ground:"#F6F5EF", surface:"#FFFEF9", ink:"#2B3A3F", accent:"#3A5A63", warm:"#D98C3E", green:"#7FA08C" },
-    dark:  { ground:"#101719", surface:"#182225", ink:"#E9F1F2", accent:"#CFE2E4", warm:"#EFA765", green:"#9CC0AE" }
-  },
-  rosa: {
-    label: "Rosa",
-    light: { ground:"#FDF7F4", surface:"#FFFCFA", ink:"#3E2F30", accent:"#5A4142", warm:"#C96A61", green:"#8E9C7C" },
-    dark:  { ground:"#1B1416", surface:"#251C1E", ink:"#F4E9E7", accent:"#EDD8D4", warm:"#E08D82", green:"#A7B695" }
-  },
-  oliva: {
-    label: "Oliva",
-    light: { ground:"#F6F5EC", surface:"#FDFDF6", ink:"#2E3326", accent:"#414A33", warm:"#C2703A", green:"#6E8A4E" },
-    dark:  { ground:"#14170F", surface:"#1D2117", ink:"#EDF0E3", accent:"#DCE3CC", warm:"#DE9058", green:"#9EBC77" }
+  dipizza: {
+    label: "DiPizza",
+    light: { ground:"#FAF8F4", surface:"#FFFFFF", ink:"#1A1917",
+             accent:"#1A1917", warm:"#CE2B37", green:"#12894C", zest:"#F2C300" }
   }
 };
 
 const TOKEN_LABELS = [
-  ["ground",  "Page"], ["surface", "Cards"], ["ink", "Text"],
-  ["accent",  "Buttons"], ["warm", "Warm accent"], ["green", "Fresh accent"]
+  ["ground", "Page"], ["surface", "Cards"], ["ink", "Text"], ["accent", "Buttons"],
+  ["warm", "Red"], ["green", "Green"], ["zest", "Yellow"]
 ];
 
 const DEFAULT_MENU = [
-  /* â”€â”€ TRADITIONALs â”€â”€ */
+  /* ── TRADITIONALs ── */
   { id:"margherita", order:10, cat:"traditionals", star:1, name:"Margherita",
     ing:"Tomato base, fresh mozzarella, basil.",
     tags:["vegetarian"], art:{ base:"rosso", top:[["--i-mozz",7,13,"blob"],["--i-basil",5,9,"leaf"]] } },
@@ -704,7 +696,7 @@ const DEFAULT_MENU = [
     ing:"Tomato base, fresh mozzarella, garlic-parsley butter, feta cheese.",
     tags:["vegetarian"], art:{ base:"rosso", top:[["--i-mozz",8,12,"blob"],["--i-blu",7,7,"crumb"],["--i-verde",12,3,"crumb"]] } },
 
-  /* â”€â”€ MEATs â”€â”€ */
+  /* ── MEATs ── */
   { id:"pepperoni", order:40, cat:"meats", star:1, name:"Pepperoni",
     ing:"Tomato base, fresh mozzarella, pepperoni.",
     tags:[], art:{ base:"rosso", top:[["--i-mozz",6,12,"blob"],["--i-salame",10,12,"disc"]] } },
@@ -724,7 +716,7 @@ const DEFAULT_MENU = [
     ing:"Fresh mozzarella, feta cheese, red onion, bacon.",
     tags:[], art:{ base:"bianca", top:[["--i-mozz",7,12,"blob"],["--i-blu",6,8,"crumb"],["--i-radic",7,8,"shred"],["--i-salame",6,9,"shred"]] } },
 
-  /* â”€â”€ VEGGIEs â”€â”€ */
+  /* ── VEGGIEs ── */
   { id:"carciofi", order:100, cat:"veggies", star:0, name:"Carciofi",
     ing:"Tomato base, fresh mozzarella, artichoke, mushrooms, kalamata olives.",
     tags:["vegetarian"], art:{ base:"rosso", top:[["--i-mozz",5,11,"blob"],["--i-verde",7,11,"leaf"],["--i-fungo",7,8,"disc"]] } },
@@ -764,16 +756,16 @@ const FALLBACK_GALLERY = [
   { id:"f-pepp", pizza:"pepperoni",  caption:"Pepperoni" }
 ];
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   2 Â· STATE
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══════════════════════════════════════════════════════════════
+   2 · STATE
+   ══════════════════════════════════════════════════════════════ */
 
 const state = {
   brand:   { ...DEFAULT_BRAND },
   contact: { ...DEFAULT_CONTACT },
   palette: { light: { ...PRESETS.forno.light }, dark: { ...PRESETS.forno.dark } },
   menu:    DEFAULT_MENU.map(p => ({ ...p, tags:[...p.tags] })),
-  photos:  {},        /* logo | hero | story | pizza-<id>  â†’  data URL */
+  photos:  {},        /* logo | hero | story | pizza-<id>  →  data URL */
   gallery: [],        /* uploaded pieces: { id, order, caption, dataUrl } */
   filter:  "all",
   editTheme: "light"
@@ -785,9 +777,9 @@ const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&":"&amp
 const headline = str => esc(str).split("|").join("<br>").replace(/\{([^}]*)\}/g, "<em>$1</em>");
 const $ = id => document.getElementById(id);
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   3 Â· DRAWN PIZZAS â€” used until a real photo replaces them
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══════════════════════════════════════════════════════════════
+   3 · DRAWN PIZZAS — used until a real photo replaces them
+   ══════════════════════════════════════════════════════════════ */
 
 function seedFrom(str) {
   let h = 2166136261;
@@ -905,9 +897,9 @@ function sceneSVG(kind) {
   </svg>`;
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   4 Â· RENDER
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══════════════════════════════════════════════════════════════
+   4 · RENDER
+   ══════════════════════════════════════════════════════════════ */
 
 function markHTML() {
   if (state.photos.logo) return `<img src="${state.photos.logo}" alt="${esc(state.brand.name)}">`;
@@ -950,7 +942,7 @@ function renderInfo() {
     <div class="info-item"><dt>Coverage</dt><dd>${esc(c.coverage)}</dd></div>
     <div class="info-item"><dt>Payment</dt><dd>${esc(c.payment)}</dd></div>
     <div class="info-item"><dt>Reach us</dt><dd><a href="mailto:${esc(c.email)}">${esc(c.email)}</a><br><a href="tel:${esc(c.phone.replace(/[^\d+]/g,""))}">${esc(c.phone)}</a><br>${esc(c.hours)}</dd></div>`;
-  $("footContact").textContent = c.email + " Â· " + c.phone;
+  $("footContact").textContent = c.email + " · " + c.phone;
 }
 
 const TAG_CLASS = { spicy:"tag tag-hot", vegetarian:"tag tag-veg", vegan:"tag tag-veg" };
@@ -966,7 +958,7 @@ function renderSignature() {
   const list = stars.length ? stars : state.menu.slice(0, 4);
   $("signatureCards").innerHTML = list.map(p => `
     <article class="card">
-      <div class="card-art">${pizzaArt(p)}</div>
+      <div class="card-art" data-pid="${p.id}" role="button" tabindex="0" aria-label="Enlarge ${esc(p.name)}">${pizzaArt(p)}</div>
       <div class="card-body">
         <h3>${esc(p.name)}</h3>
         <p>${esc(p.ing)}</p>
@@ -979,7 +971,7 @@ function renderMenu() {
   const list = state.filter === "all" ? state.menu : state.menu.filter(p => p.cat === state.filter);
   $("menuList").innerHTML = list.map(p => `
     <article class="dish">
-      <div class="dish-art">${pizzaArt(p)}</div>
+      <div class="dish-art" data-pid="${p.id}" role="button" tabindex="0" aria-label="Enlarge ${esc(p.name)}">${pizzaArt(p)}</div>
       <div>
         <h3>${esc(p.name)}</h3>
         <p>${esc(p.ing)}</p>
@@ -1023,20 +1015,46 @@ $("filters").addEventListener("click", e => {
   renderMenu();
 });
 
-/* â”€â”€ lightbox â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── lightbox ─────────────────────────────────────────────── */
+/* ── caja de luz ─────────────────────────────────────────────────────
+   Gobernada por una lista de piezas, asi que sirve igual para la
+   galeria y para las fotos del menu. */
 const lb = $("lb");
-let lbIdx = 0, lastFocus = null;
+let lbItems = [], lbIdx = 0, lastFocus = null;
+
 function lbShow(i) {
-  const pieces = galleryPieces();
-  lbIdx = (i + pieces.length) % pieces.length;
-  $("lbStage").innerHTML = pieceArt(pieces[lbIdx]);
-  $("lbCap").textContent = pieces[lbIdx].caption;
+  if (!lbItems.length) return;
+  lbIdx = (i + lbItems.length) % lbItems.length;
+  $("lbStage").innerHTML = lbItems[lbIdx].html;
+  $("lbCap").textContent = lbItems[lbIdx].caption;
+  const many = lbItems.length > 1;
+  $("lbPrev").hidden = $("lbNext").hidden = !many;
 }
-function lbOpen(i) { lastFocus = document.activeElement; lbShow(i); lb.hidden = false; $("lbClose").focus(); }
+function lbOpen(items, i) {
+  lbItems = items;
+  lastFocus = document.activeElement;
+  lbShow(i);
+  lb.hidden = false;
+  $("lbClose").focus();
+}
 function lbClose() { lb.hidden = true; if (lastFocus) lastFocus.focus(); }
+
+const galleryItems = () =>
+  galleryPieces().map(g => ({ html: pieceArt(g), caption: g.caption }));
+const menuItems = () =>
+  state.menu.map(p => ({ html: pizzaArt(p), caption: p.name + " — " + p.ing }));
+
 $("galGrid").addEventListener("click", e => {
   const t = e.target.closest(".tile");
-  if (t) lbOpen(Number(t.dataset.i));
+  if (t) lbOpen(galleryItems(), Number(t.dataset.i));
+});
+
+/* Cualquier foto de pizza abre la caja de luz y navega por la carta */
+document.addEventListener("click", e => {
+  const z = e.target.closest("[data-pid]");
+  if (!z) return;
+  const i = state.menu.findIndex(p => p.id === z.dataset.pid);
+  if (i >= 0) lbOpen(menuItems(), i);
 });
 $("lbClose").addEventListener("click", lbClose);
 $("lbPrev").addEventListener("click", () => lbShow(lbIdx - 1));
@@ -1049,7 +1067,7 @@ document.addEventListener("keydown", e => {
   if (e.key === "ArrowRight") lbShow(lbIdx + 1);
 });
 
-/* â”€â”€ enquiry form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── enquiry form ─────────────────────────────────────────── */
 $("form").addEventListener("submit", e => {
   e.preventDefault();
   const f = e.target, d = new FormData(f);
@@ -1070,30 +1088,30 @@ $("form").addEventListener("submit", e => {
     </div>`;
   f.replaceWith(panel);
   panel.querySelector("#mailBtn").href = "mailto:" + state.contact.email +
-    "?subject=" + encodeURIComponent("Catering enquiry Â· " + name) + "&body=" + encodeURIComponent(summary);
+    "?subject=" + encodeURIComponent("Catering enquiry · " + name) + "&body=" + encodeURIComponent(summary);
   panel.querySelector("#copyBtn").addEventListener("click", async ev => {
     try { await navigator.clipboard.writeText(summary); ev.target.textContent = "Copied"; }
     catch { ev.target.textContent = "Select the text to copy"; }
   });
 });
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   5 Â· ASSISTANT
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══════════════════════════════════════════════════════════════
+   5 · ASSISTANT
+   ══════════════════════════════════════════════════════════════ */
 
 const REPLIES = [
   { k:["price","prices","cost","how much","quote","budget","rate","expensive"],
     t:"Pizzas are $14 each, plus a $100 catering fee for the event. That covers the oven, the dough, the ingredients and cooking on site. Tell us your date, venue and roughly how many pizzas you need and we send the total back the same day.",
     a:["Start an enquiry", "#enquiry"] },
   { k:["minimum","maximum","how many","guests","people","headcount","pax","capacity"],
-    t:"Tell us how many guests you are expecting and we will work out the pizza count with you â€” most hosts plan on two to three slices a head. Ask us about larger parties and we will confirm what we can do." },
+    t:"Tell us how many guests you are expecting and we will work out the pizza count with you — most hosts plan on two to three slices a head. Ask us about larger parties and we will confirm what we can do." },
   { k:["gluten","celiac","coeliac","intolerance","intolerant"],
-    t:"Ask us when you book â€” tell us how many guests need it and we will confirm what we can arrange for your event." },
+    t:"Ask us when you book — tell us how many guests need it and we will confirm what we can arrange for your event." },
   { k:["vegan","vegetarian","diet","allergy","allergen","halal","kosher","dairy","nut"],
-    t:"Six of the fifteen pizzas are vegetarian, and three of those are made without tomato sauce â€” Basilicata, Spicy-Honey and Sundried Tomatoes. For any other dietary need, tell us when you book.",
+    t:"Six of the fifteen pizzas are vegetarian, and three of those are made without tomato sauce — Basilicata, Spicy-Honey and Sundried Tomatoes. For any other dietary need, tell us when you book.",
     a:["See the card", "#menu"] },
   { k:["space","set up","setup","install","power","electricity","metres","meters","indoor","smoke","terrace","water"],
-    t:"We need 4 Ã— 2.5 m of level ground, outdoors or in a space with extraction. No power supply and no water connection â€” the oven runs on wood. We arrive 90 minutes before service and are gone 45 minutes after.",
+    t:"We need 4 × 2.5 m of level ground, outdoors or in a space with extraction. No power supply and no water connection — the oven runs on wood. We arrive 90 minutes before service and are gone 45 minutes after.",
     a:["What's included", "#story"] },
   { k:["where","travel","area","coverage","distance","km","miles","far","location"],
     t:"Send us the venue address and we will confirm we can reach it and whether any travel applies." },
@@ -1113,7 +1131,7 @@ const REPLIES = [
     t:"The gallery further down has set-ups and the card shot from above, and the newest work goes to Instagram first.",
     a:["Open the gallery", "#gallery"] },
   { k:["human","person","speak","call","phone","email","contact","talk","someone","whatsapp"],
-    t:"Gladly. The email and phone are in the booking information below, Monday to Friday 9:00â€“18:00 â€” or leave your details and we call you the same day.",
+    t:"Gladly. The email and phone are in the booking information below, Monday to Friday 9:00–18:00 — or leave your details and we call you the same day.",
     a:["Leave my details", "#enquiry"] },
   { k:["hi","hello","hey","good morning","good afternoon","greetings","ciao"],
     t:"Hello. I can answer on pricing, minimum headcount, special diets, the space we need, coverage and invoicing. What would you like to know?" },
@@ -1166,7 +1184,7 @@ function toggleChat(open) {
   if (open) {
     if (!greeted) {
       greeted = true;
-      push("Hello â€” the assistant for " + state.brand.name + ". I can settle pricing, minimums, diets, space and coverage right now, and pass you to the events team whenever you'd rather speak to a person.", "bot");
+      push("Hello — the assistant for " + state.brand.name + ". I can settle pricing, minimums, diets, space and coverage right now, and pass you to the events team whenever you'd rather speak to a person.", "bot");
     }
     $("chatInput").focus();
   } else { chatBtn.focus(); }
@@ -1259,11 +1277,11 @@ const GALLERY = [
   }
 ];
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   6 Â· ARRANQUE
+/* ══════════════════════════════════════════════════════════════
+   6 · ARRANQUE
    Las fotos son archivos en images/. Para cambiar el menu, los
    textos o los colores, edita los bloques DEFAULT_* de arriba.
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+   ══════════════════════════════════════════════════════════════ */
 
 state.photos = PHOTOS;
 state.gallery = GALLERY;
