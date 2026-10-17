@@ -1349,14 +1349,29 @@ state.gallery = GALLERY;
 renderAll();
 
 /* ══════════════════════════════════════════════════════════════
-   BROCHADAS CON LA BANDERA
-   Un barrido por seccion, alternando lado, con las tres franjas
-   verde-blanco-rojo dentro y el borde deshilachado de la brocha.
+   BROCHADAS: LA BANDERA A LO LARGO DE LA PAGINA
+   Verde arriba, blanco a media pagina, rojo al final. Cada brochada
+   toma el tramo de bandera que le toca por su posicion, y arranca
+   donde termino la anterior: al bajar se lee una sola bandera.
    ══════════════════════════════════════════════════════════════ */
 
 (function flagBrushes() {
   const root = getComputedStyle(document.documentElement);
   const tone = n => root.getPropertyValue(n).trim() || "#ffffff";
+
+  const bytes = c => (c.replace("#", "").match(/.{2}/g) || ["ff", "ff", "ff"])
+    .map(h => parseInt(h, 16));
+  const mix = (a, b, t) => "#" + bytes(a)
+    .map((v, i) => Math.round(v + (bytes(b)[i] - v) * t).toString(16).padStart(2, "0"))
+    .join("");
+
+  /* 0 = verde · 0.5 = blanco · 1 = rojo */
+  function flagAt(t) {
+    t = Math.min(1, Math.max(0, t));
+    return t <= .5
+      ? mix(tone("--green"), tone("--ink"), t / .5)
+      : mix(tone("--ink"), tone("--warm"), (t - .5) / .5);
+  }
 
   /* Barrido de brocha: entra fino, engorda y se va perdiendo */
   const SWEEP = "M6 72C96 40 214 30 342 40c104 8 192 20 252 6-72 30-176 44-290 40"
@@ -1366,14 +1381,6 @@ renderAll();
   defs.setAttribute("aria-hidden", "true");
   defs.style.cssText = "position:absolute;width:0;height:0;overflow:hidden";
   defs.innerHTML = `<svg width="0" height="0"><defs>
-      <linearGradient id="flagBands" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0"     stop-color="${tone("--green")}"/>
-        <stop offset="0.325" stop-color="${tone("--green")}"/>
-        <stop offset="0.342" stop-color="${tone("--ink")}" stop-opacity=".9"/>
-        <stop offset="0.658" stop-color="${tone("--ink")}" stop-opacity=".9"/>
-        <stop offset="0.675" stop-color="${tone("--warm")}"/>
-        <stop offset="1"     stop-color="${tone("--warm")}"/>
-      </linearGradient>
       <filter id="flagBristle" x="-18%" y="-80%" width="136%" height="260%">
         <feTurbulence type="fractalNoise" baseFrequency="0.016 0.44"
                       numOctaves="3" seed="4" result="n"/>
@@ -1391,18 +1398,27 @@ renderAll();
   /* el hero ya tiene su propio degradado */
   const sections = [...document.querySelectorAll("main section")]
     .filter(s => !s.classList.contains("hero"));
+  const last = Math.max(1, sections.length - 1);
 
   sections.forEach((sec, i) => {
+    const t = i / last;                    /* donde cae en la bandera */
     const left = i % 2 === 0;
+    const from = flagAt(t - .07);
+    const to = flagAt(t + .07);
+    const id = `flagBand${i}`;
+
     const el = document.createElement("div");
     el.className = "flag-brush";
     el.setAttribute("aria-hidden", "true");
-    /* asoma por el lateral: entra y sale del cuadro */
     el.style[left ? "left" : "right"] = "-7%";
     el.style.setProperty("--turn", `${((i * 7) % 13) - 6}deg`);
     el.style.setProperty("--op", (i % 3 === 1 ? .30 : .40).toFixed(2));
     el.innerHTML = `<svg viewBox="0 0 600 120" preserveAspectRatio="none">
-        <path d="${SWEEP}" fill="url(#flagBands)"
+        <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="${left ? from : to}"/>
+          <stop offset="1" stop-color="${left ? to : from}"/>
+        </linearGradient></defs>
+        <path d="${SWEEP}" fill="url(#${id})"
               mask="url(#flagEndsMask)" filter="url(#flagBristle)"
               transform="${left ? "" : "translate(600,0) scale(-1,1)"}"/>
       </svg>`;
