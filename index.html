@@ -414,16 +414,19 @@ img { display: block; }
    los laterales. Decorativos: por detras y sin raton. */
 .flag-brush {
   position: absolute; z-index: 0; pointer-events: none;
-  width: clamp(300px, 42vw, 620px); aspect-ratio: 5 / 1;
-  transform: rotate(var(--turn, -5deg));
-  opacity: var(--op, .34);
+  /* va en la banda de aire de la cabecera de seccion, donde el fondo
+     esta despejado: dentro del contenido quedaba tapada por las tarjetas */
+  top: 6px;
+  width: clamp(300px, 54vw, 760px); aspect-ratio: 7 / 1;
+  transform: rotate(var(--turn, -4deg));
+  opacity: var(--op, .38);
 }
 .flag-brush svg { width: 100%; height: 100%; display: block; }
 main section { position: relative; }
 .nav, main > section > *:not(.flag-brush), main > div { position: relative; z-index: 1; }
 
 @media (max-width: 700px) {
-  .flag-brush { width: 78vw; opacity: calc(var(--op, .34) * .8); }
+  .flag-brush { width: 86vw; opacity: calc(var(--op, .38) * .85); }
 }
 
 /* ── responsive ──────────────────────────────────────────── */
@@ -1364,17 +1367,17 @@ renderAll();
   defs.style.cssText = "position:absolute;width:0;height:0;overflow:hidden";
   defs.innerHTML = `<svg width="0" height="0"><defs>
       <linearGradient id="flagBands" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0"    stop-color="${tone("--green")}"/>
-        <stop offset="0.30" stop-color="${tone("--green")}"/>
-        <stop offset="0.37" stop-color="${tone("--ink")}" stop-opacity=".82"/>
-        <stop offset="0.63" stop-color="${tone("--ink")}" stop-opacity=".82"/>
-        <stop offset="0.70" stop-color="${tone("--warm")}"/>
-        <stop offset="1"    stop-color="${tone("--warm")}"/>
+        <stop offset="0"     stop-color="${tone("--green")}"/>
+        <stop offset="0.325" stop-color="${tone("--green")}"/>
+        <stop offset="0.342" stop-color="${tone("--ink")}" stop-opacity=".9"/>
+        <stop offset="0.658" stop-color="${tone("--ink")}" stop-opacity=".9"/>
+        <stop offset="0.675" stop-color="${tone("--warm")}"/>
+        <stop offset="1"     stop-color="${tone("--warm")}"/>
       </linearGradient>
       <filter id="flagBristle" x="-18%" y="-80%" width="136%" height="260%">
         <feTurbulence type="fractalNoise" baseFrequency="0.016 0.44"
                       numOctaves="3" seed="4" result="n"/>
-        <feDisplacementMap in="SourceGraphic" in2="n" scale="26"
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="34"
                            xChannelSelector="R" yChannelSelector="G"/>
       </filter>
       <linearGradient id="flagEnds" x1="0" y1="0" x2="1" y2="0">
@@ -1395,10 +1398,9 @@ renderAll();
     el.className = "flag-brush";
     el.setAttribute("aria-hidden", "true");
     /* asoma por el lateral: entra y sale del cuadro */
-    el.style[left ? "left" : "right"] = "-14%";
-    el.style.top = `${12 + ((i * 23) % 56)}%`;
-    el.style.setProperty("--turn", `${((i * 7) % 17) - 8}deg`);
-    el.style.setProperty("--op", (i % 3 === 1 ? .26 : .34).toFixed(2));
+    el.style[left ? "left" : "right"] = "-7%";
+    el.style.setProperty("--turn", `${((i * 7) % 13) - 6}deg`);
+    el.style.setProperty("--op", (i % 3 === 1 ? .30 : .40).toFixed(2));
     el.innerHTML = `<svg viewBox="0 0 600 120" preserveAspectRatio="none">
         <path d="${SWEEP}" fill="url(#flagBands)"
               mask="url(#flagEndsMask)" filter="url(#flagBristle)"
