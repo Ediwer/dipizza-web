@@ -409,25 +409,16 @@ img { display: block; }
 .chat-form input:focus { outline: none; border-color: var(--warm); }
 .chat-form button { width: 40px; height: 40px; flex: none; border-radius: 999px; border: 0; background: var(--accent); color: var(--on-accent); cursor: pointer; display: grid; place-items: center; }
 
-/* ── brochadas con la bandera ─────────────────────────────────────
-   Barridos horizontales con las tres franjas dentro, repartidos por
-   los laterales. Decorativos: por detras y sin raton. */
-.flag-brush {
-  position: absolute; z-index: 0; pointer-events: none;
-  /* va en la banda de aire de la cabecera de seccion, donde el fondo
-     esta despejado: dentro del contenido quedaba tapada por las tarjetas */
-  top: 6px;
-  width: clamp(300px, 54vw, 760px); aspect-ratio: 7 / 1;
-  transform: rotate(var(--turn, -4deg));
-  opacity: var(--op, .38);
+/* ── aguadas tricolor de los margenes ─────────────────────────────
+   Dos garabatos continuos bajan por los laterales, verde arriba y
+   rojo abajo. Decorativos: por detras y sin raton. */
+body { position: relative; }
+.wash-layer {
+  position: absolute; top: 0; left: 0; width: 100%;
+  z-index: 0; pointer-events: none; overflow: hidden;
 }
-.flag-brush svg { width: 100%; height: 100%; display: block; }
-main section { position: relative; }
-.nav, main > section > *:not(.flag-brush), main > div { position: relative; z-index: 1; }
-
-@media (max-width: 700px) {
-  .flag-brush { width: 86vw; opacity: calc(var(--op, .38) * .85); }
-}
+.wash-layer svg { display: block; }
+.nav, main { position: relative; z-index: 1; }
 
 /* ── responsive ──────────────────────────────────────────── */
 @media (max-width: 940px) {
@@ -1351,81 +1342,96 @@ state.gallery = GALLERY;
 renderAll();
 
 /* ══════════════════════════════════════════════════════════════
-   BROCHADAS: LA BANDERA A LO LARGO DE LA PAGINA
-   Verde arriba, blanco a media pagina, rojo al final. Cada brochada
-   toma el tramo de bandera que le toca por su posicion, y arranca
-   donde termino la anterior: al bajar se lee una sola bandera.
+   AGUADAS TRICOLOR DE LOS MARGENES
+   Dos garabatos gruesos bajan por los laterales flanqueando la
+   pagina: verde arriba, claro a media altura, rojo al final. Dos
+   pasadas por lado — aguada ancha y trazo encima — para que lea a
+   acuarela. Se redibujan si cambia el tamano o crece la pagina.
    ══════════════════════════════════════════════════════════════ */
 
-(function flagBrushes() {
+(function sideWashes() {
+  const layer = document.createElement("div");
+  layer.className = "wash-layer";
+  layer.setAttribute("aria-hidden", "true");
+  document.body.appendChild(layer);
+
   const root = getComputedStyle(document.documentElement);
   const tone = n => root.getPropertyValue(n).trim() || "#ffffff";
 
-  const bytes = c => (c.replace("#", "").match(/.{2}/g) || ["ff", "ff", "ff"])
-    .map(h => parseInt(h, 16));
-  const mix = (a, b, t) => "#" + bytes(a)
-    .map((v, i) => Math.round(v + (bytes(b)[i] - v) * t).toString(16).padStart(2, "0"))
-    .join("");
-
-  /* 0 = verde · 0.5 = blanco · 1 = rojo */
-  function flagAt(t) {
-    t = Math.min(1, Math.max(0, t));
-    return t <= .5
-      ? mix(tone("--green"), tone("--ink"), t / .5)
-      : mix(tone("--ink"), tone("--warm"), (t - .5) / .5);
+  /* Garabato: vaivenes de rotulador dentro de una banda vertical */
+  function scribble(cx, half, top, bottom, period, seed) {
+    let s = seed, rnd = () => (s = (s * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+    const pts = [];
+    let y = top, dir = 1;
+    while (y < bottom) {
+      pts.push([cx + dir * half * (0.72 + rnd() * 0.38), y]);
+      y += period * (0.78 + rnd() * 0.5);
+      dir *= -1;
+    }
+    pts.push([cx + dir * half * 0.7, bottom]);
+    return "M" + pts.map(p => `${p[0].toFixed(0)} ${p[1].toFixed(0)}`).join("L");
   }
 
-  /* Barrido de brocha: entra fino, engorda y se va perdiendo */
-  const SWEEP = "M6 72C96 40 214 30 342 40c104 8 192 20 252 6-72 30-176 44-290 40"
-              + "C192 82 94 88 6 72Z";
+  let lastW = 0, lastH = 0;
 
-  const defs = document.createElement("div");
-  defs.setAttribute("aria-hidden", "true");
-  defs.style.cssText = "position:absolute;width:0;height:0;overflow:hidden";
-  defs.innerHTML = `<svg width="0" height="0"><defs>
-      <filter id="flagBristle" x="-18%" y="-80%" width="136%" height="260%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.016 0.44"
-                      numOctaves="3" seed="4" result="n"/>
-        <feDisplacementMap in="SourceGraphic" in2="n" scale="34"
-                           xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
-      <linearGradient id="flagEnds" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#000"/><stop offset="0.13" stop-color="#fff"/>
-        <stop offset="0.86" stop-color="#fff"/><stop offset="1" stop-color="#1a1a1a"/>
-      </linearGradient>
-      <mask id="flagEndsMask"><rect width="600" height="120" fill="url(#flagEnds)"/></mask>
-    </defs></svg>`;
-  document.body.appendChild(defs);
+  function draw() {
+    const W = document.documentElement.clientWidth;
+    const H = document.body.scrollHeight;
+    if (!W || !H) return;
+    if (Math.abs(W - lastW) < 2 && Math.abs(H - lastH) < 24) return;
+    lastW = W; lastH = H;
 
-  /* el hero ya tiene su propio degradado */
-  const sections = [...document.querySelectorAll("main section")]
-    .filter(s => !s.classList.contains("hero"));
-  const last = Math.max(1, sections.length - 1);
+    /* la banda ocupa el margen que queda fuera del contenido */
+    const band = Math.max(70, Math.min(W * 0.17, (W - 1160) / 2 + 110));
+    const period = Math.max(90, H / 46);
 
-  sections.forEach((sec, i) => {
-    const t = i / last;                    /* donde cae en la bandera */
-    const left = i % 2 === 0;
-    const from = flagAt(t - .07);
-    const to = flagAt(t + .07);
-    const id = `flagBand${i}`;
+    const left = scribble(band * 0.52, band * 0.46, -20, H + 20, period, 7);
+    const right = scribble(W - band * 0.52, band * 0.46, -20, H + 20, period, 29);
 
-    const el = document.createElement("div");
-    el.className = "flag-brush";
-    el.setAttribute("aria-hidden", "true");
-    el.style[left ? "left" : "right"] = "-7%";
-    el.style.setProperty("--turn", `${((i * 7) % 13) - 6}deg`);
-    el.style.setProperty("--op", (i % 3 === 1 ? .30 : .40).toFixed(2));
-    el.innerHTML = `<svg viewBox="0 0 600 120" preserveAspectRatio="none">
-        <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="${left ? from : to}"/>
-          <stop offset="1" stop-color="${left ? to : from}"/>
-        </linearGradient></defs>
-        <path d="${SWEEP}" fill="url(#${id})"
-              mask="url(#flagEndsMask)" filter="url(#flagBristle)"
-              transform="${left ? "" : "translate(600,0) scale(-1,1)"}"/>
-      </svg>`;
-    sec.prepend(el);
-  });
+    const wide = Math.max(46, band * 0.52);
+    const fine = wide * 0.46;
+
+    layer.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+      <defs>
+        <linearGradient id="washFlag" x1="0" y1="0" x2="0" y2="${H}" gradientUnits="userSpaceOnUse">
+          <stop offset="0"    stop-color="${tone("--green")}"/>
+          <stop offset="0.42" stop-color="${tone("--green")}" stop-opacity=".55"/>
+          <stop offset="0.52" stop-color="${tone("--ink")}" stop-opacity=".40"/>
+          <stop offset="0.62" stop-color="${tone("--warm")}" stop-opacity=".55"/>
+          <stop offset="1"    stop-color="${tone("--warm")}"/>
+        </linearGradient>
+        <filter id="washPaper" x="-12%" y="-2%" width="124%" height="104%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.009 0.022"
+                        numOctaves="4" seed="11" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="38"
+                             xChannelSelector="R" yChannelSelector="G"/>
+          <feGaussianBlur stdDeviation="2.5"/>
+        </filter>
+        <linearGradient id="washEnds" x1="0" y1="0" x2="0" y2="${H}" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#000"/><stop offset="0.03" stop-color="#fff"/>
+          <stop offset="0.96" stop-color="#fff"/><stop offset="1" stop-color="#000"/>
+        </linearGradient>
+        <mask id="washEndsMask"><rect width="${W}" height="${H}" fill="url(#washEnds)"/></mask>
+      </defs>
+      <g mask="url(#washEndsMask)" filter="url(#washPaper)" fill="none"
+         stroke="url(#washFlag)" stroke-linecap="round" stroke-linejoin="round">
+        <g opacity=".30" stroke-width="${wide.toFixed(0)}">
+          <path d="${left}"/><path d="${right}"/>
+        </g>
+        <g opacity=".42" stroke-width="${fine.toFixed(0)}">
+          <path d="${left}"/><path d="${right}"/>
+        </g>
+      </g>
+    </svg>`;
+  }
+
+  let timer;
+  const schedule = () => { clearTimeout(timer); timer = setTimeout(draw, 150); };
+
+  draw();
+  addEventListener("resize", schedule);
+  addEventListener("load", schedule);
+  if (window.ResizeObserver) new ResizeObserver(schedule).observe(document.body);
 })();
 
 document.documentElement.style.scrollBehavior = "smooth";
