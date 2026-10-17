@@ -416,11 +416,11 @@ body { position: relative; }
 .brush-layer {
   position: absolute; top: 0; left: 0; width: 100%;
   z-index: 0; pointer-events: none; overflow: hidden;
-  opacity: .15;
+  opacity: .30;
 }
 .brush-layer svg { display: block; }
 .nav, main { position: relative; z-index: 1; }
-@media (max-width: 700px) { .brush-layer { opacity: .12; } }
+@media (max-width: 700px) { .brush-layer { opacity: .24; } }
 
 /* ── responsive ──────────────────────────────────────────── */
 @media (max-width: 940px) {
@@ -1388,8 +1388,8 @@ renderAll();
       const t = i / steps;
       pts.push([
         W * 0.5
-          + Math.sin(t * Math.PI * 4.4 + 0.7) * W * 0.27
-          + Math.sin(t * Math.PI * 11.3) * W * 0.045,
+          + Math.sin(t * Math.PI * 4.4 + 0.7) * W * 0.40
+          + Math.sin(t * Math.PI * 11.3) * W * 0.06,
         t * H
       ]);
     }
@@ -1419,7 +1419,7 @@ renderAll();
         <mask id="brushEndsMask"><rect width="${W}" height="${H}" fill="url(#brushEnds)"/></mask>
       </defs>
       <path d="${smooth(pts)}" fill="none" stroke="url(#brushTricolor)"
-            stroke-width="${Math.max(40, W * 0.058).toFixed(0)}" stroke-linecap="round"
+            stroke-width="${Math.max(52, W * 0.075).toFixed(0)}" stroke-linecap="round"
             mask="url(#brushEndsMask)"${bristle}/>
     </svg>`;
   }
