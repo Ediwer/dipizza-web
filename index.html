@@ -409,18 +409,22 @@ img { display: block; }
 .chat-form input:focus { outline: none; border-color: var(--warm); }
 .chat-form button { width: 40px; height: 40px; flex: none; border-radius: 999px; border: 0; background: var(--accent); color: var(--on-accent); cursor: pointer; display: grid; place-items: center; }
 
-/* ── pincelada tricolor continua ──────────────────────────────────
-   Un solo trazo recorre la pagina de arriba abajo cambiando de color.
-   Decorativo: por detras del contenido, sin raton ni lector. */
-body { position: relative; }
-.brush-layer {
-  position: absolute; top: 0; left: 0; width: 100%;
-  z-index: 0; pointer-events: none; overflow: hidden;
-  opacity: .30;
+/* ── brochadas con la bandera ─────────────────────────────────────
+   Barridos horizontales con las tres franjas dentro, repartidos por
+   los laterales. Decorativos: por detras y sin raton. */
+.flag-brush {
+  position: absolute; z-index: 0; pointer-events: none;
+  width: clamp(300px, 42vw, 620px); aspect-ratio: 5 / 1;
+  transform: rotate(var(--turn, -5deg));
+  opacity: var(--op, .34);
 }
-.brush-layer svg { display: block; }
-.nav, main { position: relative; z-index: 1; }
-@media (max-width: 700px) { .brush-layer { opacity: .24; } }
+.flag-brush svg { width: 100%; height: 100%; display: block; }
+main section { position: relative; }
+.nav, main > section > *:not(.flag-brush), main > div { position: relative; z-index: 1; }
+
+@media (max-width: 700px) {
+  .flag-brush { width: 78vw; opacity: calc(var(--op, .34) * .8); }
+}
 
 /* ── responsive ──────────────────────────────────────────── */
 @media (max-width: 940px) {
@@ -1342,95 +1346,66 @@ state.gallery = GALLERY;
 renderAll();
 
 /* ══════════════════════════════════════════════════════════════
-   PINCELADA TRICOLOR CONTINUA
-   Un unico trazo baja serpenteando toda la pagina. El color va del
-   verde al blanco y al rojo a lo largo del recorrido; el blanco lleva
-   media opacidad porque sobre negro pesa mas que los otros dos.
+   BROCHADAS CON LA BANDERA
+   Un barrido por seccion, alternando lado, con las tres franjas
+   verde-blanco-rojo dentro y el borde deshilachado de la brocha.
    ══════════════════════════════════════════════════════════════ */
 
-(function continuousBrush() {
-  const layer = document.createElement("div");
-  layer.className = "brush-layer";
-  layer.setAttribute("aria-hidden", "true");
-  document.body.appendChild(layer);
-
+(function flagBrushes() {
   const root = getComputedStyle(document.documentElement);
   const tone = n => root.getPropertyValue(n).trim() || "#ffffff";
 
-  /* Catmull-Rom a bezier: curva suave que pasa por todos los puntos */
-  function smooth(pts) {
-    let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
-    for (let i = 0; i < pts.length - 1; i++) {
-      const [x0, y0] = pts[Math.max(0, i - 1)];
-      const [x1, y1] = pts[i];
-      const [x2, y2] = pts[i + 1];
-      const [x3, y3] = pts[Math.min(pts.length - 1, i + 2)];
-      d += `C${(x1 + (x2 - x0) / 6).toFixed(1)} ${(y1 + (y2 - y0) / 6).toFixed(1)},`
-         + `${(x2 - (x3 - x1) / 6).toFixed(1)} ${(y2 - (y3 - y1) / 6).toFixed(1)},`
-         + `${x2.toFixed(1)} ${y2.toFixed(1)}`;
-    }
-    return d;
-  }
+  /* Barrido de brocha: entra fino, engorda y se va perdiendo */
+  const SWEEP = "M6 72C96 40 214 30 342 40c104 8 192 20 252 6-72 30-176 44-290 40"
+              + "C192 82 94 88 6 72Z";
 
-  let lastW = 0, lastH = 0;
+  const defs = document.createElement("div");
+  defs.setAttribute("aria-hidden", "true");
+  defs.style.cssText = "position:absolute;width:0;height:0;overflow:hidden";
+  defs.innerHTML = `<svg width="0" height="0"><defs>
+      <linearGradient id="flagBands" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0"    stop-color="${tone("--green")}"/>
+        <stop offset="0.30" stop-color="${tone("--green")}"/>
+        <stop offset="0.37" stop-color="${tone("--ink")}" stop-opacity=".82"/>
+        <stop offset="0.63" stop-color="${tone("--ink")}" stop-opacity=".82"/>
+        <stop offset="0.70" stop-color="${tone("--warm")}"/>
+        <stop offset="1"    stop-color="${tone("--warm")}"/>
+      </linearGradient>
+      <filter id="flagBristle" x="-18%" y="-80%" width="136%" height="260%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.016 0.44"
+                      numOctaves="3" seed="4" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="26"
+                           xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <linearGradient id="flagEnds" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#000"/><stop offset="0.13" stop-color="#fff"/>
+        <stop offset="0.86" stop-color="#fff"/><stop offset="1" stop-color="#1a1a1a"/>
+      </linearGradient>
+      <mask id="flagEndsMask"><rect width="600" height="120" fill="url(#flagEnds)"/></mask>
+    </defs></svg>`;
+  document.body.appendChild(defs);
 
-  function draw() {
-    const W = document.documentElement.clientWidth;
-    const H = document.body.scrollHeight;
-    if (!W || !H) return;
-    if (Math.abs(W - lastW) < 2 && Math.abs(H - lastH) < 24) return;
-    lastW = W; lastH = H;
+  /* el hero ya tiene su propio degradado */
+  const sections = [...document.querySelectorAll("main section")]
+    .filter(s => !s.classList.contains("hero"));
 
-    /* el serpenteo: una onda larga mas otra corta que la desordena */
-    const steps = Math.max(28, Math.round(H / 70));
-    const pts = [];
-    for (let i = 0; i <= steps; i++) {
-      const t = i / steps;
-      pts.push([
-        W * 0.5
-          + Math.sin(t * Math.PI * 4.4 + 0.7) * W * 0.40
-          + Math.sin(t * Math.PI * 11.3) * W * 0.06,
-        t * H
-      ]);
-    }
-
-    /* dos vueltas completas al tricolor de arriba abajo */
-    const CYCLE = [[tone("--green"), 1], [tone("--ink"), .5], [tone("--warm"), 1]];
-    const bands = 6;
-    const stops = Array.from({ length: bands + 1 }, (_, i) => {
-      const [c, o] = CYCLE[i % CYCLE.length];
-      return `<stop offset="${(i / bands * 100).toFixed(1)}%" stop-color="${c}" stop-opacity="${o}"/>`;
-    }).join("");
-
-    /* el filtro de cerda es caro sobre un lienzo tan alto: solo en pantalla amplia */
-    const bristle = W > 700 ? ' filter="url(#brushBristle)"' : "";
-
-    layer.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-      <defs>
-        <linearGradient id="brushTricolor" x1="0" y1="0" x2="0" y2="${H}" gradientUnits="userSpaceOnUse">${stops}</linearGradient>
-        <filter id="brushBristle" x="-20%" y="-1%" width="140%" height="102%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.55 0.011" numOctaves="3" seed="5" result="n"/>
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="26" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-        <linearGradient id="brushEnds" x1="0" y1="0" x2="0" y2="${H}" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stop-color="#000"/><stop offset="0.045" stop-color="#fff"/>
-          <stop offset="0.95" stop-color="#fff"/><stop offset="1" stop-color="#000"/>
-        </linearGradient>
-        <mask id="brushEndsMask"><rect width="${W}" height="${H}" fill="url(#brushEnds)"/></mask>
-      </defs>
-      <path d="${smooth(pts)}" fill="none" stroke="url(#brushTricolor)"
-            stroke-width="${Math.max(52, W * 0.075).toFixed(0)}" stroke-linecap="round"
-            mask="url(#brushEndsMask)"${bristle}/>
-    </svg>`;
-  }
-
-  let timer;
-  const schedule = () => { clearTimeout(timer); timer = setTimeout(draw, 150); };
-
-  draw();
-  addEventListener("resize", schedule);
-  addEventListener("load", schedule);
-  if (window.ResizeObserver) new ResizeObserver(schedule).observe(document.body);
+  sections.forEach((sec, i) => {
+    const left = i % 2 === 0;
+    const el = document.createElement("div");
+    el.className = "flag-brush";
+    el.setAttribute("aria-hidden", "true");
+    /* asoma por el lateral: entra y sale del cuadro */
+    el.style[left ? "left" : "right"] = "-14%";
+    el.style.top = `${12 + ((i * 23) % 56)}%`;
+    el.style.setProperty("--turn", `${((i * 7) % 17) - 8}deg`);
+    el.style.setProperty("--op", (i % 3 === 1 ? .26 : .34).toFixed(2));
+    el.innerHTML = `<svg viewBox="0 0 600 120" preserveAspectRatio="none">
+        <path d="${SWEEP}" fill="url(#flagBands)"
+              mask="url(#flagEndsMask)" filter="url(#flagBristle)"
+              transform="${left ? "" : "translate(600,0) scale(-1,1)"}"/>
+      </svg>`;
+    sec.prepend(el);
+  });
 })();
 
 document.documentElement.style.scrollBehavior = "smooth";
