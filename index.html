@@ -409,6 +409,25 @@ img { display: block; }
 .chat-form input:focus { outline: none; border-color: var(--warm); }
 .chat-form button { width: 40px; height: 40px; flex: none; border-radius: 999px; border: 0; background: var(--accent); color: var(--on-accent); cursor: pointer; display: grid; place-items: center; }
 
+/* ── pinceladas tricolor de fondo ─────────────────────────────────
+   Decorativas y discretas: una por seccion, por detras del contenido. */
+.brush-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+main section { position: relative; isolation: isolate; }
+.brush {
+  position: absolute; z-index: -1; pointer-events: none;
+  top: 12%; left: -8%;
+  width: 48%; max-width: 580px; aspect-ratio: 5 / 1;
+  transform: rotate(var(--turn, -6deg));
+  opacity: var(--brush-opacity, .12);
+}
+.brush-right { left: auto; right: -8%; top: auto; bottom: 14%; }
+.brush svg { width: 100%; height: 100%; display: block; }
+.brush path { fill: var(--brush-colour, var(--ink)); }
+
+@media (max-width: 700px) {
+  .brush { width: 72%; opacity: calc(var(--brush-opacity, .12) * .8); }
+}
+
 /* ── responsive ──────────────────────────────────────────── */
 @media (max-width: 940px) {
   .hero { grid-template-columns: 1fr; }
@@ -1327,6 +1346,63 @@ const GALLERY = [
 state.photos = PHOTOS;
 state.gallery = GALLERY;
 renderAll();
+
+/* ══════════════════════════════════════════════════════════════
+   PINCELADAS TRICOLOR
+   Una por seccion, alternando verde, blanco y rojo de la bandera.
+   El blanco lleva menos opacidad: sobre negro pesa mas que los otros.
+   ══════════════════════════════════════════════════════════════ */
+
+(function brushstrokes() {
+  const CYCLE = [
+    { colour: "var(--green)", opacity: .13 },
+    { colour: "var(--ink)",   opacity: .07 },
+    { colour: "var(--warm)",  opacity: .13 }
+  ];
+
+  const SWEEP = "M12 70C90 44 200 34 320 42c100 7 185 18 268 6-76 28-180 40-288 36"
+              + "C190 80 92 86 12 70Z";
+
+  const defs = document.createElement("div");
+  defs.className = "brush-defs";
+  defs.setAttribute("aria-hidden", "true");
+  defs.innerHTML = `<svg width="0" height="0"><defs>
+      <filter id="bristle" x="-15%" y="-70%" width="130%" height="240%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.014 0.42"
+                      numOctaves="3" seed="9" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="24"
+                           xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <linearGradient id="brushFadeGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#000"/>
+        <stop offset=".16" stop-color="#fff"/>
+        <stop offset=".74" stop-color="#fff"/>
+        <stop offset="1" stop-color="#1a1a1a"/>
+      </linearGradient>
+      <mask id="brushFade">
+        <rect width="600" height="120" fill="url(#brushFadeGrad)"/>
+      </mask>
+    </defs></svg>`;
+  document.body.appendChild(defs);
+
+  /* El hero ya tiene su propio degradado: no lleva pincelada */
+  const sections = [...document.querySelectorAll("main section")]
+    .filter(s => !s.classList.contains("hero"));
+
+  sections.forEach((sec, i) => {
+    const step = CYCLE[i % CYCLE.length];
+    const el = document.createElement("div");
+    el.className = "brush" + (i % 2 ? " brush-right" : "");
+    el.setAttribute("aria-hidden", "true");
+    el.style.setProperty("--brush-colour", step.colour);
+    el.style.setProperty("--brush-opacity", step.opacity);
+    el.style.setProperty("--turn", `${((i * 5) % 19) - 9}deg`);
+    el.innerHTML = `<svg viewBox="0 0 600 120" preserveAspectRatio="none">
+        <path d="${SWEEP}" mask="url(#brushFade)" filter="url(#bristle)"/>
+      </svg>`;
+    sec.prepend(el);
+  });
+})();
 
 document.documentElement.style.scrollBehavior = "smooth";
 </script>
