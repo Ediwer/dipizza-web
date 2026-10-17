@@ -9,15 +9,15 @@
    ══════════════════════════════════════════════════════════════ */
 
 :root {
-  --ground:  #FAF8F4;
-  --surface: #FFFFFF;
-  --ink:     #1A1917;
-  --accent:  #1A1917;
-  --warm:    #CE2B37;
-  --green:   #12894C;
+  --ground:  #0C0B0A;
+  --surface: #171514;
+  --ink:     #F3EEE7;
+  --accent:  #F3EEE7;
+  --warm:    #E4414E;
+  --green:   #3FB375;
   --zest:    #F2C300;
-  --shadow-a: 26, 25, 23;
-  --shadow-o: .09;
+  --shadow-a: 0, 0, 0;
+  --shadow-o: .55;
 
   --ink-2:       color-mix(in srgb, var(--ink) 70%, var(--ground));
   --ink-3:       color-mix(in srgb, var(--ink) 46%, var(--ground));
@@ -25,8 +25,8 @@
   --line-strong: color-mix(in srgb, var(--ink) 24%, var(--ground));
   --surface-2:   color-mix(in srgb, var(--ink) 6%, var(--surface));
   --on-accent:   color-mix(in srgb, var(--ground) 88%, var(--accent));
-  --wash-a:      color-mix(in srgb, var(--warm) 11%, transparent);
-  --wash-b:      color-mix(in srgb, var(--zest) 13%, transparent);
+  --wash-a:      color-mix(in srgb, var(--warm) 17%, transparent);
+  --wash-b:      color-mix(in srgb, var(--zest) 15%, transparent);
   --shadow:      0 2px 6px rgba(var(--shadow-a), .04), 0 14px 34px -16px rgba(var(--shadow-a), var(--shadow-o));
   --shadow-lift: 0 4px 10px rgba(var(--shadow-a), .06), 0 26px 56px -22px rgba(var(--shadow-a), calc(var(--shadow-o) * 1.7));
 
@@ -43,9 +43,8 @@
   --r-md: 18px;
 }
 
-/* La web se compromete con el crema calido, como la referencia:
-   no sigue el tema oscuro del dispositivo. */
-:root { color-scheme: light; }
+/* La web se compromete con el negro: no sigue el tema del dispositivo. */
+:root { color-scheme: dark; }
 
 * { box-sizing: border-box; }
 
@@ -232,6 +231,15 @@ img { display: block; }
 }
 .dish:hover { border-color: var(--line-strong); transform: translateY(-2px); }
 .dish-art { width: 92px; height: 92px; border-radius: 14px; overflow: hidden; background: var(--surface-2); display: grid; place-items: center; cursor: zoom-in; }
+
+/* Pizzas todavia sin fotografia: ficha de texto, sin hueco vacio */
+.dish-plain { grid-template-columns: 1fr; padding: 24px 22px 22px; }
+.dish-plain h3 { font-size: 1.25rem; margin-bottom: 10px; }
+.dish-plain h3::after {
+  content: ""; display: block; width: 34px; height: 2px;
+  background: var(--zest); border-radius: 2px; margin-top: 9px;
+}
+.dish-plain p { font-size: .875rem; }
 .dish-art img { width: 100%; height: 100%; object-fit: cover; }
 .dish-art svg { width: 100%; height: 100%; }
 .dish h3 { font-size: 1rem; margin-bottom: 3px; }
@@ -289,10 +297,11 @@ img { display: block; }
 .lb-close { position: absolute; top: 22px; right: 26px; background: transparent; border: 0; color: var(--ink-2); font-size: 1.6rem; cursor: pointer; line-height: 1; padding: 8px; }
 
 /* ── dark call-to-action band ────────────────────────────── */
-.cta-band { background: var(--ink); color: var(--on-accent); border-radius: var(--r-lg); padding: clamp(40px, 6vw, 72px) clamp(26px, 5vw, 64px); text-align: center; }
+.cta-band { background: var(--surface); color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--zest) 34%, var(--line)); border-radius: var(--r-lg); padding: clamp(40px, 6vw, 72px) clamp(26px, 5vw, 64px); text-align: center; }
 .cta-mark { width: 82px; height: auto; margin: 0 auto 20px; }
-.cta-band h2 { font-size: clamp(1.8rem, 3.2vw, 2.6rem); color: var(--on-accent); }
-.cta-band p { margin: 16px auto 0; max-width: 50ch; color: color-mix(in srgb, var(--on-accent) 74%, var(--ink)); }
+.cta-band h2 { font-size: clamp(1.8rem, 3.2vw, 2.6rem); color: var(--ink); }
+.cta-band p { margin: 16px auto 0; max-width: 50ch; color: var(--ink-2); }
 .cta-band .btn {
   margin-top: 30px; background: var(--zest); color: #1A1917; border-color: var(--zest);
   font-weight: 600;
@@ -674,8 +683,8 @@ const DEFAULT_CONTACT = {
 const PRESETS = {
   dipizza: {
     label: "DiPizza",
-    light: { ground:"#FAF8F4", surface:"#FFFFFF", ink:"#1A1917",
-             accent:"#1A1917", warm:"#CE2B37", green:"#12894C", zest:"#F2C300" }
+    light: { ground:"#0C0B0A", surface:"#171514", ink:"#F3EEE7",
+             accent:"#F3EEE7", warm:"#E4414E", green:"#3FB375", zest:"#F2C300" }
   }
 };
 
@@ -969,15 +978,21 @@ function renderSignature() {
 
 function renderMenu() {
   const list = state.filter === "all" ? state.menu : state.menu.filter(p => p.cat === state.filter);
-  $("menuList").innerHTML = list.map(p => `
-    <article class="dish">
-      <div class="dish-art" data-pid="${p.id}" role="button" tabindex="0" aria-label="Enlarge ${esc(p.name)}">${pizzaArt(p)}</div>
-      <div>
+  $("menuList").innerHTML = list.map(p => {
+    const body = `<div>
         <h3>${esc(p.name)}</h3>
         <p>${esc(p.ing)}</p>
         <div class="card-tags">${tagsHTML(p)}</div>
-      </div>
-    </article>`).join("") || `<article class="dish"><div></div><p>No pizzas in this family yet.</p></article>`;
+      </div>`;
+    /* Sin foto todavia: ficha de texto en vez de un hueco con un dibujo */
+    if (!state.photos["pizza-" + p.id]) {
+      return `<article class="dish dish-plain">${body}</article>`;
+    }
+    return `<article class="dish">
+      <div class="dish-art" data-pid="${p.id}" role="button" tabindex="0" aria-label="Enlarge ${esc(p.name)}">${pizzaArt(p)}</div>
+      ${body}
+    </article>`;
+  }).join("") || `<article class="dish dish-plain"><div><p>No pizzas in this family yet.</p></div></article>`;
   $("filters").innerHTML = FAMILIES.map(f =>
     `<button class="chip" data-cat="${f.id}" aria-pressed="${state.filter === f.id}">${f.label}</button>`).join("");
 }
@@ -1202,7 +1217,7 @@ $("chatChips").addEventListener("click", e => { if (e.target.tagName === "BUTTON
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !chat.hidden) toggleChat(false); });
 
 const PHOTOS = {
-  "logo": "images/logo.png",
+  "logo": "images/logo-light.png",
   "hero": "images/hero.jpg",
   "story": "images/story.jpg",
   "pizza-spicyhoney": "images/pizza-spicyhoney.jpg",
