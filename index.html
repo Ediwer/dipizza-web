@@ -1130,7 +1130,19 @@ document.addEventListener("keydown", e => {
    propio. Si falla, se cae al resumen manual de siempre: la solicitud
    nunca se queda sin salida. */
 
-const FORM_ENDPOINT = "https://formsubmit.co/ajax/dipizza00@gmail.com";
+/* Destino de las solicitudes. En pruebas; cambiar a dipizza00@gmail.com
+   cuando se abra al publico — es la unica linea que hay que tocar. */
+const FORM_INBOX = "ediwergraterol@gmail.com";
+const FORM_ENDPOINT = "https://formsubmit.co/ajax/" + FORM_INBOX;
+
+/* Acuse de recibo que Formsubmit manda a quien rellena el formulario */
+const AUTO_REPLY = `Thanks for getting in touch with DiPizza.
+
+We've got your enquiry and we're looking at it right now - your date, the venue and the pizzas you're after. You'll hear back from us the same business day with availability and the total.
+
+If it's urgent, call us on (484) 954-7273.
+
+- DiPizza, wood-fired pizza catering`;
 
 $("form").addEventListener("submit", async e => {
   e.preventDefault();
@@ -1154,6 +1166,7 @@ $("form").addEventListener("submit", async e => {
     payload._template = "table";
     payload._captcha = "false";
     payload._replyto = mail;
+    payload._autoresponse = AUTO_REPLY;
 
     const res = await fetch(FORM_ENDPOINT, {
       method: "POST",
@@ -1171,7 +1184,8 @@ $("form").addEventListener("submit", async e => {
     ? `<h3>Thanks, ${first} — it's on its way.</h3>
        <p style="font-size:.9375rem;color:var(--ink-2)">
          Your enquiry is with the events team. We reply the same business day,
-         and you'll hear from us at <strong>${esc(mail)}</strong>.</p>
+         We've sent a confirmation to <strong>${esc(mail)}</strong> and we reply
+         the same business day.</p>
        <pre>${esc(summary)}</pre>`
     : `<h3>Couldn't send it, ${first}.</h3>
        <p style="font-size:.9375rem;color:var(--ink-2)">
