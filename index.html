@@ -1,4 +1,24 @@
-<title>DiPizza</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DiPizza — Wood-Fired Pizza Catering</title>
+<meta name="description" content="Wood-fired pizza catering for parties, weddings and corporate events. We bring the oven to your venue and cook Neapolitan pizza in front of your guests. $14 a pizza plus a $100 catering fee.">
+<link rel="canonical" href="https://ediwer.github.io/dipizza-web/">
+<link rel="icon" href="images/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<meta name="theme-color" content="#0C0B0A">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DiPizza">
+<meta property="og:title" content="DiPizza — Wood-Fired Pizza Catering">
+<meta property="og:description" content="Wood-fired pizza catering for parties, weddings and corporate events. We bring the oven to your venue and cook Neapolitan pizza in front of your guests. $14 a pizza plus a $100 catering fee.">
+<meta property="og:url" content="https://ediwer.github.io/dipizza-web/">
+<meta property="og:image" content="https://ediwer.github.io/dipizza-web/images/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Parisienne&display=swap">
 
 <style>
@@ -455,7 +475,8 @@ body::before {
   .sw-grid, .preset-grid { grid-template-columns: 1fr; }
 }
 </style>
-
+</head>
+<body>
 <header class="nav">
   <div class="rail nav-in">
     <a class="mark" id="navMark" href="#top"></a>
@@ -962,7 +983,7 @@ function renderBrand() {
   $("heroShot").innerHTML = state.photos.hero
     ? `<img src="${state.photos.hero}" alt="${esc(b.name)}">` : ovenSVG();
   $("storyShot").innerHTML = state.photos.story
-    ? `<img src="${state.photos.story}" alt="">` : sceneSVG("mise");
+    ? `<img src="${state.photos.story}" alt="" loading="lazy" decoding="async">` : sceneSVG("mise");
 }
 
 function renderInfo() {
@@ -980,7 +1001,7 @@ const tagsHTML = p => p.tags.map(t => `<span class="${TAG_CLASS[t] || "tag"}">${
 
 function pizzaArt(p) {
   const photo = state.photos["pizza-" + p.id];
-  return photo ? `<img src="${photo}" alt="${esc(p.name)}">` : pizzaSVG(p);
+  return photo ? `<img src="${photo}" alt="${esc(p.name)}" loading="lazy" decoding="async">` : pizzaSVG(p);
 }
 
 function renderSignature() {
@@ -1025,7 +1046,7 @@ function galleryPieces() {
   return FALLBACK_GALLERY;
 }
 function pieceArt(g) {
-  if (g.photo) return `<img src="${g.photo}" alt="${esc(g.caption)}">`;
+  if (g.photo) return `<img src="${g.photo}" alt="${esc(g.caption)}" loading="lazy" decoding="async">`;
   if (g.pizza) {
     const p = state.menu.find(x => x.id === g.pizza);
     return p ? pizzaArt(p) : sceneSVG("forno");
@@ -1354,3 +1375,5 @@ renderAll();
 
 document.documentElement.style.scrollBehavior = "smooth";
 </script>
+</body>
+</html>
