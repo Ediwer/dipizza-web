@@ -15,10 +15,12 @@
 <meta property="og:title" content="DiPizza — Wood-Fired Pizza Catering">
 <meta property="og:description" content="Wood-fired pizza catering for parties, weddings and corporate events. We bring the oven to your venue and cook Neapolitan pizza in front of your guests.">
 <meta property="og:url" content="https://ediwer.github.io/dipizza-web/">
-<meta property="og:image" content="https://ediwer.github.io/dipizza-web/images/og-image.jpg">
+<meta property="og:image" content="https://ediwer.github.io/dipizza-web/images/og-logo.png">
+<meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ediwer.github.io/dipizza-web/images/og-logo.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Parisienne&display=swap">
 
 <style>
@@ -596,38 +598,44 @@ body::before {
       <h2>Start your booking</h2>
       <p>Nothing is charged here. We confirm by email or phone, and the deposit is settled once the proposal is signed.</p>
     </div>
-    <form class="form" id="form" novalidate>
+    <form class="form" id="form" method="POST" action="https://formsubmit.co/dipizza00@gmail.com">
       <div class="row">
-        <div class="field"><label for="f-name">Name</label><input id="f-name" name="Name" required autocomplete="name"></div>
-        <div class="field"><label for="f-org">Company or institution</label><input id="f-org" name="Company" autocomplete="organization"></div>
+        <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" required autocomplete="name"></div>
+        <div class="field"><label for="f-org">Company or institution</label><input id="f-org" name="company" autocomplete="organization"></div>
       </div>
       <div class="row">
-        <div class="field"><label for="f-mail">Email</label><input id="f-mail" name="Email" type="email" required autocomplete="email"></div>
-        <div class="field"><label for="f-tel">Phone</label><input id="f-tel" name="Phone" type="tel" autocomplete="tel"></div>
+        <div class="field"><label for="f-mail">Email</label><input id="f-mail" name="email" type="email" required autocomplete="email"></div>
+        <div class="field"><label for="f-tel">Phone</label><input id="f-tel" name="phone" type="tel" autocomplete="tel"></div>
       </div>
       <div class="row">
         <div class="field">
           <label for="f-type">Occasion</label>
-          <select id="f-type" name="Occasion">
+          <select id="f-type" name="occasion">
             <option>Birthday or party</option><option>Wedding or celebration</option>
             <option>Corporate or work event</option><option>Community or school event</option>
           </select>
         </div>
-        <div class="field"><label for="f-date">Preferred date</label><input id="f-date" name="Date" type="date"></div>
+        <div class="field"><label for="f-date">Preferred date</label><input id="f-date" name="date" type="date"></div>
       </div>
       <div class="row">
-        <div class="field"><label for="f-pax">Guests</label><input id="f-pax" name="Guests" type="number" min="1" step="1" placeholder="30"></div>
-        <div class="field"><label for="f-place">Venue</label><input id="f-place" name="Venue" placeholder="City or address"></div>
+        <div class="field"><label for="f-pax">Guests</label><input id="f-pax" name="guests" type="number" min="1" step="1" placeholder="30"></div>
+        <div class="field"><label for="f-place">Venue</label><input id="f-place" name="venue" placeholder="City or address"></div>
       </div>
       <div class="field">
         <label for="f-msg">Anything we should know</label>
-        <textarea id="f-msg" name="Details" placeholder="Timings, the space available, special diets, pizzas you already have in mind…"></textarea>
+        <textarea id="f-msg" name="details" placeholder="Timings, the space available, special diets, pizzas you already have in mind…"></textarea>
       </div>
+      <input type="hidden" name="_cc" value="ediwergraterol@gmail.com">
+      <input type="hidden" name="_subject">
+      <input type="hidden" name="_replyto">
+      <input type="hidden" name="_autoresponse">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next">
       <!-- Trampa para robots: una persona nunca ve esto ni lo rellena.
            Si llega con contenido, la solicitud se descarta en silencio. -->
       <p style="position:absolute;left:-9999px" aria-hidden="true">
         <label>Leave this empty
-          <input name="website" tabindex="-1" autocomplete="off">
+          <input name="_honey" tabindex="-1" autocomplete="off" style="display:none">
         </label>
       </p>
       <div class="form-foot">
@@ -1116,22 +1124,17 @@ document.addEventListener("keydown", e => {
    propio. Si falla, se cae al resumen manual de siempre: la solicitud
    nunca se queda sin salida. */
 
-/* ── a donde van las solicitudes ──────────────────────────────────
-   Rellena estas dos constantes con los datos de Supabase y el
-   formulario empieza a usar tu funcion. Ambas son publicas por
-   diseno: la seguridad la pone RLS, no el secreto de la clave.
-   Mientras esten vacias se usa Formsubmit, que ya funciona. */
+/* Supabase guarda una copia; FormSubmit entrega los correos al equipo. */
 
 const SUPABASE_URL  = "https://cdauxkkksubujtzxouwo.supabase.co";
 const SUPABASE_ANON = "sb_publishable_xggqWkbnIc7hNZF0G66eAw_DuKltCqY";
 
-/* Respaldo si Supabase no responde. Formsubmit solo admite una
-   direccion en la URL; la segunda va en copia. */
+/* FormSubmit envía a la bandeja principal y copia al segundo buzón. */
 const FORM_INBOX = "dipizza00@gmail.com";
 const FORM_CC    = "ediwergraterol@gmail.com";
-const FORM_ENDPOINT = "https://formsubmit.co/ajax/" + FORM_INBOX;
+const FORM_ENDPOINT = "https://formsubmit.co/" + FORM_INBOX;
 
-/* Acuse de recibo que Formsubmit manda a quien rellena el formulario */
+/* Mensaje de confirmacion que FormSubmit manda al cliente */
 const AUTO_REPLY = `Thanks for getting in touch with DiPizza.
 
 We've got your enquiry and we're looking at it right now - your date, the venue and the pizzas you're after. You'll hear back from us the same business day with availability and the total.
@@ -1140,110 +1143,64 @@ If it's urgent, call us on (484) 954-7273.
 
 - DiPizza, wood-fired pizza catering`;
 
-/* Primero registra y notifica con Supabase. Si la fila se guardo pero el
-   correo del equipo no se envio, intenta FormSubmit como respaldo. */
-async function sendEnquiry(fields, formFields) {
-  let saved = false;
-  if (SUPABASE_URL && SUPABASE_ANON) {
-    try {
-      const res = await fetch(SUPABASE_URL + "/functions/v1/enquiry", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + SUPABASE_ANON,
-          "apikey": SUPABASE_ANON
-        },
-        body: JSON.stringify(fields)
-      });
-      const result = await res.json().catch(() => ({}));
-      if (res.ok && result.ok && result.saved) {
-        saved = true;
-        if (result.team_email_sent) return { ok: true, saved: true };
-      }
-      console.warn("Supabase respondio", res.status, "— se intenta el respaldo");
-    } catch (err) {
-      console.warn("Supabase no respondio — se intenta el respaldo", err);
-    }
-  }
-
+/* Supabase conserva una copia de la solicitud. FormSubmit se ocupa de
+   entregar los correos y enviar el acuse automatico al cliente. */
+async function saveEnquiry(fields) {
+  if (!SUPABASE_URL || !SUPABASE_ANON) return false;
   try {
-    const payload = { ...formFields };
-    payload._subject = "Catering enquiry · " + (fields.name || "");
-    payload._template = "table";
-    payload._captcha = "false";
-    payload._replyto = fields.email;
-    payload._autoresponse = AUTO_REPLY;
-    payload._cc = FORM_CC;
-    const res = await fetch(FORM_ENDPOINT, {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 7000);
+    const res = await fetch(SUPABASE_URL + "/functions/v1/enquiry", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify(payload)
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + SUPABASE_ANON,
+        "apikey": SUPABASE_ANON
+      },
+      body: JSON.stringify(fields),
+      signal: controller.signal
     });
+    clearTimeout(timeout);
     const result = await res.json().catch(() => ({}));
-    const sent = res.ok && (result.success === true ||
-      (typeof result.success === "string" && result.success.toLowerCase() !== "false"));
-    return { ok: sent, saved: saved || sent };
+    return res.ok && result.ok && result.saved;
   } catch (err) {
-    return { ok: false, saved };
+    console.warn("Supabase no respondio; la consulta seguira por FormSubmit", err);
+    return false;
   }
 }
 
 $("form").addEventListener("submit", async e => {
   e.preventDefault();
   const f = e.target, d = new FormData(f);
-  const name = (d.get("Name") || "").trim(), mail = (d.get("Email") || "").trim();
-  if (!name || !mail) { (name ? $("f-mail") : $("f-name")).focus(); return; }
-
-  const rows = [...d.entries()].filter(([, v]) => String(v).trim());
-  const summary = rows.map(([k, v]) => k.padEnd(9) + " " + v).join("\n");
-  const first = esc(name.split(" ")[0]);
+  if (!f.reportValidity()) return;
+  const name = (d.get("name") || "").trim(), mail = (d.get("email") || "").trim();
 
   const button = f.querySelector('button[type="submit"]');
-  const label = button.textContent;
   button.disabled = true;
   button.textContent = "Sending…";
 
-  const formFields = Object.fromEntries(rows);
-  const payload = {
-    name: formFields.Name || "", company: formFields.Company || "",
-    email: formFields.Email || "", phone: formFields.Phone || "",
-    occasion: formFields.Occasion || "", date: formFields.Date || "",
-    guests: formFields.Guests || "", venue: formFields.Venue || "",
-    details: formFields.Details || "", website: formFields.website || ""
-  };
-  const result = await sendEnquiry(payload, formFields);
-
-  const panel = document.createElement("div");
-  panel.className = "sent";
-  panel.innerHTML = result.ok
-    ? `<h3>Thanks, ${first} — it's on its way.</h3>
-       <p style="font-size:.9375rem;color:var(--ink-2)">
-         Your enquiry has been sent to the events team. We reply the same business day.</p>
-       <pre>${esc(summary)}</pre>`
-    : `<h3>${result.saved ? `We saved your enquiry, ${first}.` : `Couldn't send it, ${first}.`}</h3>
-       <p style="font-size:.9375rem;color:var(--ink-2)">
-         ${result.saved
-           ? "Your details are saved, but the email notification could not be delivered. Please contact us directly so we can follow up."
-           : "Something went wrong on the way out. Please send the request from your own mail instead."}</p>
-       <pre>${esc(summary)}</pre>
-       <div class="form-foot">
-         <button class="btn btn-soft" type="button" id="copyBtn">Copy summary</button>
-         <a class="btn" id="mailBtn" href="#">Open in mail</a>
-       </div>`;
-  f.replaceWith(panel);
-
-  if (!result.ok) {
-    panel.querySelector("#mailBtn").href = "mailto:" + state.contact.email +
-      "?subject=" + encodeURIComponent("Catering enquiry · " + name) +
-      "&body=" + encodeURIComponent(summary);
-    panel.querySelector("#copyBtn").addEventListener("click", async ev => {
-      try { await navigator.clipboard.writeText(summary); ev.target.textContent = "Copied"; }
-      catch { ev.target.textContent = "Select the text to copy"; }
-    });
-  }
-  button.disabled = false;
-  button.textContent = label;
+  const fields = Object.fromEntries(d.entries());
+  const saved = await saveEnquiry({ ...fields, website: fields._honey || "" });
+  f.action = FORM_ENDPOINT;
+  f.querySelector('[name="_cc"]').value = FORM_CC;
+  f.querySelector('[name="_subject"]').value = "Catering enquiry · " + name;
+  f.querySelector('[name="_replyto"]').value = mail;
+  f.querySelector('[name="_autoresponse"]').value = AUTO_REPLY;
+  f.querySelector('[name="_next"]').value =
+    "https://ediwer.github.io/dipizza-web/?enquiry=received&saved=" + (saved ? "1" : "0") + "#enquiry";
+  f.submit();
 });
+
+const receivedEnquiry = new URLSearchParams(window.location.search).get("enquiry") === "received";
+if (receivedEnquiry) {
+  const saved = new URLSearchParams(window.location.search).get("saved") === "1";
+  const receipt = document.createElement("div");
+  receipt.className = "sent";
+  receipt.innerHTML = `<h3>Thanks — your enquiry has been received.</h3>
+    <p style="font-size:.9375rem;color:var(--ink-2)">We sent a confirmation to your email and forwarded your enquiry to the DiPizza team.${saved ? " A copy is also saved securely." : ""}</p>`;
+  $("form").replaceWith(receipt);
+  history.replaceState(null, "", window.location.pathname + window.location.hash);
+}
 
 /* ══════════════════════════════════════════════════════════════
    5 · ASSISTANT

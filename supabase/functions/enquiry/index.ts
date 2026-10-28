@@ -2,12 +2,9 @@
 // DiPizza · recibe una solicitud del formulario y la reparte
 //
 //   1. la guarda en la tabla `enquiries`
-//   2. avisa por Telegram
-//   3. manda correo al equipo y acuse de recibo al cliente
-//
-// Las claves viven aquí como variables de entorno, nunca en la web.
-// Si Telegram o el correo no están configurados, se los salta: lo que
-// no puede fallar es el paso 1.
+//   2. avisa por Telegram si esta configurado
+// El correo al equipo se entrega por FormSubmit desde el formulario.
+// La consulta tambien queda guardada en Supabase.
 // ════════════════════════════════════════════════════════════════
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -24,14 +21,6 @@ const cors = (origin: string | null) => ({
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Vary": "Origin",
 });
-
-// Admite varios destinatarios separados por coma. Si el secreto no esta
-// puesto, van a los dos buzones de siempre.
-const TEAM_INBOX = (Deno.env.get("TEAM_INBOX") ??
-  "dipizza00@gmail.com, ediwergraterol@gmail.com")
-  .split(",").map((s) => s.trim()).filter(Boolean);
-
-const FROM = Deno.env.get("MAIL_FROM") ?? "DiPizza <onboarding@resend.dev>";
 
 type Payload = {
   name?: string; company?: string; email?: string; phone?: string;
@@ -82,28 +71,6 @@ async function notifyTelegram(row: Record<string, unknown>) {
   });
   return res.ok ? "enviado" : `error ${res.status}`;
 }
-
-async function sendMail(to: string | string[], subject: string, text: string) {
-  const key = Deno.env.get("RESEND_API_KEY");
-  if (!key) return "sin configurar";
-
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM, to, subject, text }),
-  });
-  if (res.ok) return `enviado a ${Array.isArray(to) ? to.length : 1}`;
-  return `error ${res.status}: ${await res.text().catch(() => "")}`.slice(0, 200);
-}
-
-const ACK = (first: string) =>
-  `Thanks for getting in touch with DiPizza, ${first}.
-
-We've got your enquiry and we're looking at it right now - your date, the venue and the pizzas you're after. You'll hear back from us the same business day with availability and the total.
-
-If it's urgent, call us on (484) 954-7273.
-
-- DiPizza, wood-fired pizza catering`;
 
 // ── servidor ────────────────────────────────────────────────────
 
@@ -164,27 +131,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    // 2 y 3 · avisos. Si alguno falla, la solicitud ya está a salvo.
-    const summary = Object.entries(row)
-      .filter(([k, v]) => v && k !== "user_agent")
-      .map(([k, v]) => `${k.padEnd(11)} ${v}`).join("\n");
-
-    const [telegram, teamMail, ackMail] = await Promise.allSettled([
-      notifyTelegram({ ...row, id: data.id }),
-      sendMail(TEAM_INBOX, `Nueva solicitud · ${name}`, summary),
-      sendMail(email, "We've got your enquiry — DiPizza", ACK(name.split(" ")[0])),
-    ]);
-
-    const outcome = (r: PromiseSettledResult<string>) =>
-      r.status === "fulfilled" ? r.value : "falló";
-
-    const report = {
-      destinatarios: TEAM_INBOX,
-      telegram: outcome(telegram),
-      correoEquipo: outcome(teamMail),
-      acuseCliente: outcome(ackMail),
-    };
-    console.log("solicitud", data.id, report);
+    // El correo al equipo sale por FormSubmit en la web.
+    const telegram = await notifyTelegram({ ...row, id: data.id }).catch(() => "falló");
+    console.log("solicitud guardada", data.id, { telegram });
 
     // Con la cabecera de diagnostico se devuelve el detalle de los
     // avisos. Sirve para saber por que no llego un correo sin tener
@@ -196,8 +145,7 @@ Deno.serve(async (req) => {
         ok: true,
         id: data.id,
         saved: true,
-        team_email_sent: report.correoEquipo.startsWith("enviado"),
-        ...(debug ? { report } : {}),
+        ...(debug ? { report: { telegram } } : {}),
       }),
       { status: 200, headers: { ...head, "Content-Type": "application/json" } },
     );
