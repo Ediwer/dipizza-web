@@ -599,7 +599,7 @@ body::before {
       <h2>Start your booking</h2>
       <p>Nothing is charged here. We confirm by email or phone, and the deposit is settled once the proposal is signed.</p>
     </div>
-    <form class="form" id="form" method="POST" action="https://formsubmit.co/dipizza00@gmail.com">
+    <form class="form" id="form" method="POST" action="https://formsubmit.co/dipizza00@gmail.com" target="formsubmit-response">
       <div class="row">
         <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" required autocomplete="name"></div>
         <div class="field"><label for="f-org">Company or institution</label><input id="f-org" name="company" autocomplete="organization"></div>
@@ -644,6 +644,7 @@ body::before {
         <button class="btn" type="submit">Send Enquiry</button>
       </div>
     </form>
+    <iframe id="formsubmit-frame" name="formsubmit-response" title="Enquiry delivery" hidden></iframe>
   </section>
 
   <!-- ── follow ───────────────────────────────────────── -->
@@ -1189,17 +1190,39 @@ $("form").addEventListener("submit", async e => {
   f.querySelector('[name="_autoresponse"]').value = AUTO_REPLY;
   f.querySelector('[name="_next"]').value =
     "https://ediwer.github.io/dipizza-web/?enquiry=received&saved=" + (saved ? "1" : "0") + "#enquiry";
+  submittedEnquirySaved = saved;
+  waitingForFormSubmit = true;
   f.submit();
 });
 
-const receivedEnquiry = new URLSearchParams(window.location.search).get("enquiry") === "received";
-if (receivedEnquiry) {
-  const saved = new URLSearchParams(window.location.search).get("saved") === "1";
+function showEnquiryReceipt(saved) {
   const receipt = document.createElement("div");
   receipt.className = "sent";
+  receipt.setAttribute("role", "status");
   receipt.innerHTML = `<h3>Thanks — your enquiry has been received.</h3>
-    <p style="font-size:.9375rem;color:var(--ink-2)">We sent a confirmation to your email and forwarded your enquiry to the DiPizza team.${saved ? " A copy is also saved securely." : ""}</p>`;
+    <p style="font-size:.9375rem;color:var(--ink-2)">A confirmation email is on its way. The DiPizza team has received your event details and will reply the same business day.${saved ? " A copy is also saved securely." : ""}</p>`;
   $("form").replaceWith(receipt);
+}
+
+const formSubmitFrame = $("formsubmit-frame");
+let waitingForFormSubmit = false;
+let submittedEnquirySaved = false;
+formSubmitFrame.addEventListener("load", () => {
+  if (!waitingForFormSubmit) return;
+  try {
+    const responseUrl = new URL(formSubmitFrame.contentWindow.location.href);
+    if (responseUrl.origin !== window.location.origin || responseUrl.searchParams.get("enquiry") !== "received") return;
+    waitingForFormSubmit = false;
+    showEnquiryReceipt(submittedEnquirySaved);
+  } catch (_) {
+    // FormSubmit's response is cross-origin until its _next redirect returns here.
+  }
+});
+
+const receivedEnquiry = new URLSearchParams(window.location.search).get("enquiry") === "received";
+if (receivedEnquiry && window.self === window.top) {
+  const saved = new URLSearchParams(window.location.search).get("saved") === "1";
+  showEnquiryReceipt(saved);
   history.replaceState(null, "", window.location.pathname + window.location.hash);
 }
 
