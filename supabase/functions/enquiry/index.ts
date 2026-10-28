@@ -178,15 +178,23 @@ Deno.serve(async (req) => {
     const outcome = (r: PromiseSettledResult<string>) =>
       r.status === "fulfilled" ? r.value : "falló";
 
-    console.log("solicitud", data.id, {
+    const report = {
+      destinatarios: TEAM_INBOX,
       telegram: outcome(telegram),
       correoEquipo: outcome(teamMail),
       acuseCliente: outcome(ackMail),
-    });
+    };
+    console.log("solicitud", data.id, report);
 
-    return new Response(JSON.stringify({ ok: true, id: data.id }), {
-      status: 200, headers: { ...head, "Content-Type": "application/json" },
-    });
+    // Con la cabecera de diagnostico se devuelve el detalle de los
+    // avisos. Sirve para saber por que no llego un correo sin tener
+    // que abrir los registros. Al publico nunca se le cuenta nada.
+    const debug = req.headers.get("x-dipizza-debug") === "1";
+
+    return new Response(
+      JSON.stringify(debug ? { ok: true, id: data.id, report } : { ok: true, id: data.id }),
+      { status: 200, headers: { ...head, "Content-Type": "application/json" } },
+    );
   } catch (err) {
     console.error("error inesperado:", err);
     return new Response(JSON.stringify({ error: "bad_request" }), {
