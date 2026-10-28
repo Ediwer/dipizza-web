@@ -138,14 +138,15 @@ img { display: block; }
   -webkit-backdrop-filter: saturate(180%) blur(16px);
   border-bottom: 1px solid var(--line);
 }
-.nav-in { display: flex; align-items: center; gap: 20px; height: 197px; }
+.nav-in { display: flex; align-items: center; gap: 20px; height: 74px; }
 .mark {
   display: flex; align-items: center; gap: 10px; text-decoration: none;
   font-family: Fredoka, sans-serif; font-weight: 600; font-size: 1.125rem;
   letter-spacing: -.01em; white-space: nowrap;
 }
 .mark img { height: 54px; width: auto; max-width: 150px; object-fit: contain; }
-.nav .mark img { height: 185px; width: 185px; max-width: none; }
+.nav .mark { align-self: flex-start; position: relative; z-index: 2; margin-top: 3px; }
+.nav .mark img { height: 150px; width: auto; max-width: none; }
 .mark .script { font-size: 1.35rem; color: var(--warm); }
 
 .nav-links { display: flex; gap: 30px; margin-inline: auto; font-size: .9375rem; }
@@ -458,8 +459,8 @@ body::before {
 }
 @media (max-width: 560px) {
   .rail { padding-inline: 18px; }
-  .nav-in { height: 165px; gap: 10px; }
-  .nav .mark img { height: 153px; width: 153px; }
+  .nav-in { height: 72px; gap: 10px; }
+  .nav .mark img { height: 124px; width: auto; }
   .nav-in > .btn { padding-inline: 16px; font-size: .8125rem; }
   .cards { grid-template-columns: 1fr; }
   .info { grid-template-columns: 1fr; }
@@ -574,7 +575,7 @@ body::before {
   <!-- ── dark CTA band ────────────────────────────────── -->
   <section class="rail band">
     <div class="cta-band">
-      <img class="cta-mark" src="images/logo-light.png" alt="">
+      <img class="cta-mark" src="images/logo-paddle-crisp.png" alt="">
       <span class="script">Ready when you are</span>
       <h2>Tell us what you're hosting</h2>
       <p>Send the date, the venue and roughly how many pizzas you need. We come back with availability and the total the same day.</p>
@@ -1309,7 +1310,7 @@ $("chatChips").addEventListener("click", e => { if (e.target.tagName === "BUTTON
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !chat.hidden) toggleChat(false); });
 
 const PHOTOS = {
-  "logo": "images/logo-light.png",
+  "logo": "images/logo-paddle-crisp.png",
   "hero": "images/Galeria/hero.jpg?v=gallery20261028",
   "story": "images/Galeria/1.jpg?v=gallery20261028",
   "pizza-spicyhoney": "images/pizza-spicyhoney.jpg?v=364212c",
