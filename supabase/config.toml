@@ -1,0 +1,8 @@
+project_id = "cdauxkkksubujtzxouwo"
+
+# La funcion la llama el formulario publico, que no tiene sesion y por
+# tanto no lleva un JWT. La validacion la hace la propia funcion:
+# campos obligatorios, limites de longitud y campo trampa para robots.
+# Escribir en la base sigue siendo imposible desde fuera de ella.
+[functions.enquiry]
+verify_jwt = false
