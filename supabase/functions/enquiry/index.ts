@@ -2,9 +2,9 @@
 // DiPizza · recibe una solicitud del formulario y la reparte
 //
 //   1. la guarda en la tabla `enquiries`
-//   2. manda el detalle a los dos buzones de DiPizza con Resend
-//   3. confirma al cliente que su solicitud se esta procesando
-//   4. avisa por Telegram si esta configurado.
+//   2. confirma al cliente que su solicitud se esta procesando con Resend
+//   3. avisa por Telegram si esta configurado
+// El detalle para los dos buzones del equipo se entrega por FormSubmit.
 // ════════════════════════════════════════════════════════════════
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -32,8 +32,6 @@ type Payload = {
 const clean = (v: unknown, max = 2000) =>
   typeof v === "string" ? v.trim().slice(0, max) || null : null;
 
-const TEAM_INBOX = ["dipizza00@gmail.com", "ediwergraterol@gmail.com"];
-
 async function sendMail(
   to: string | string[],
   subject: string,
@@ -42,7 +40,13 @@ async function sendMail(
 ) {
   const key = Deno.env.get("RESEND_API_KEY");
   const from = Deno.env.get("MAIL_FROM");
-  if (!key || !from) return { sent: false, reason: "not_configured" };
+  if (!key || !from) {
+    console.error("Resend configuration missing", {
+      apiKeyPresent: Boolean(key),
+      mailFromPresent: Boolean(from),
+    });
+    return { sent: false, reason: "not_configured" };
+  }
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -162,21 +166,6 @@ Deno.serve(async (req) => {
     if (error) console.error("insert falló:", error);
 
     const firstName = name.split(/\s+/)[0];
-    const line = (label: string, value: unknown) => value ? `${label}: ${value}` : null;
-    const teamText = [
-      "New DiPizza event enquiry",
-      "",
-      line("Name", row.name),
-      line("Company", row.company),
-      line("Customer email", row.email),
-      line("Phone", row.phone),
-      line("Occasion", row.occasion),
-      line("Preferred date", row.event_date),
-      line("Guests", row.guests),
-      line("Venue", row.venue),
-      line("Details", row.details),
-      line("Supabase record", data?.id),
-    ].filter(Boolean).join("\n");
     const customerText = `Hi ${firstName},
 
 Thanks for contacting DiPizza. We have received your event enquiry and are reviewing your date, venue and event details now. Our team will reply the same business day with availability and a tailored proposal.
@@ -185,14 +174,12 @@ If it is urgent, call us on (484) 954-7273.
 
 DiPizza — wood-fired pizza catering`;
 
-    const [teamMail, customerAck, telegram] = await Promise.all([
-      sendMail(TEAM_INBOX, `New DiPizza event enquiry · ${name}`, teamText, email),
+    const [customerAck, telegram] = await Promise.all([
       sendMail(email, "We're processing your DiPizza enquiry", customerText),
       data ? notifyTelegram({ ...row, id: data.id }).catch(() => "falló") : Promise.resolve("sin registro"),
     ]);
     console.log("solicitud procesada", data?.id ?? "sin registro", {
       saved: !error,
-      teamEmail: teamMail.sent,
       customerAck: customerAck.sent,
       telegram,
     });
@@ -202,7 +189,7 @@ DiPizza — wood-fired pizza catering`;
         ok: true,
         id: data?.id ?? null,
         saved: !error,
-        emails: { team: teamMail.sent, customer: customerAck.sent },
+        emails: { customer: customerAck.sent },
       }),
       { status: 200, headers: { ...head, "Content-Type": "application/json" } },
     );

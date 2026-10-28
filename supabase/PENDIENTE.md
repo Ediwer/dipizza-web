@@ -1,32 +1,26 @@
-# Estado actual del formulario de DiPizza
+# Estado del flujo de consultas
 
 Comprobado el 28 de octubre de 2026:
 
 | Componente | Estado |
 |---|---|
-| Proyecto Supabase `cdauxkkksubujtzxouwo` | activo y saludable |
-| Tabla `public.enquiries` | creada; contiene 7 solicitudes al revisar |
-| Edge Function `enquiry` | activa, versión 7 |
-| Formulario web | guarda por Supabase; no saca al cliente de la página |
-| Correo al cliente y al equipo | código conectado a Resend; falta comprobar/configurar secretos del remitente |
+| Proyecto Supabase `cdauxkkksubujtzxouwo` | activo |
+| Tabla `public.enquiries` | creada; guarda las solicitudes |
+| Edge Function `enquiry` | activa, versión 8 |
+| FormSubmit para el equipo | puesto en la web: `dipizza00@gmail.com` + copia a `ediwergraterol@gmail.com` |
+| Resend para el cliente | código activo; la prueba anterior no confirmó el envío |
 
-## Para habilitar los correos
+## Para completar y verificar
 
-1. En Resend, verifica un dominio que sea tuyo en **Domains**. El remitente debe ser de ese dominio. `onboarding@resend.dev` es solo para pruebas, no lo uses como remitente de clientes.
-2. En Resend, crea una API key de envío.
-3. En Supabase → proyecto `cdauxkkksubujtzxouwo` → **Edge Functions → Secrets**, agrega:
+1. En Supabase → proyecto `cdauxkkksubujtzxouwo` → **Edge Functions → Secrets**, confirma que estén los nombres exactos:
+   - `RESEND_API_KEY`
+   - `MAIL_FROM` con un remitente de tu dominio verificado, por ejemplo `DiPizza <consultas@tu-dominio.com>`.
+2. En Resend, confirma que el dominio de `MAIL_FROM` tenga estado **Verified**. La API key y el remitente deben pertenecer al mismo proyecto/cuenta de Resend.
+3. En FormSubmit, si todavía aparece **Check Your Email / This form needs Activation**, abre el mensaje de activación enviado a `dipizza00@gmail.com` y pulsa **Activate Form**. El panel de la bandeja es el destinatario principal; `_cc` copia el detalle a `ediwergraterol@gmail.com`.
+4. Cuando Resend esté configurado y FormSubmit activo, envía una consulta marcada como prueba. Comprueba el acuse al correo de prueba y el detalle en las dos bandejas del equipo.
 
-   | Nombre | Valor |
-   |---|---|
-   | `RESEND_API_KEY` | API key creada en Resend |
-   | `MAIL_FROM` | `DiPizza <consultas@TU-DOMINIO-VERIFICADO>` |
+El envío FormSubmit usa un marco oculto, así que el cliente no sale de la web. Resend solo manda el acuse al cliente y Supabase conserva cada solicitud. La prueba anterior quedó marcada `lost` con una nota de que era una prueba interna, no un presupuesto real.
 
-   No compartas ni subas la API key a GitHub. Los secretos se cargan directamente en Supabase. Al guardarlos, la función puede leerlos sin volver a desplegarse.
+## Revisar desde el teléfono
 
-4. Envía una consulta de prueba usando un correo tuyo como dirección del cliente. Confirma que llega el acuse y que las dos bandejas del equipo reciben el detalle.
-
-La función envía el detalle a `dipizza00@gmail.com` y `ediwergraterol@gmail.com`, con el correo del cliente como dirección de respuesta. Al cliente le envía el acuse de que la solicitud se está procesando. Si Resend falla, la solicitud igualmente queda en Supabase y la web no afirma que el correo fue enviado.
-
-## Ver las consultas desde el teléfono
-
-Inicia sesión en Supabase y abre **Table Editor → public.enquiries**. El estado inicial es `new`; también existen `quoted`, `confirmed`, `done` y `lost`.
+En Supabase Dashboard abre **Table Editor → public.enquiries**. Cada consulta empieza en estado `new`; los otros estados disponibles son `quoted`, `confirmed`, `done` y `lost`.

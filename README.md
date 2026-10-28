@@ -29,6 +29,6 @@ la clave correspondiente de `PHOTOS`.
 - [ ] Correo y telefono reales (ahora son marcadores)
 - [ ] Fotos de las ocho pizzas que aun muestran ilustracion
 - [ ] Enlace real de Instagram
-- [x] Formulario conectado a Supabase y Resend; falta configurar `RESEND_API_KEY` y `MAIL_FROM` en los secretos de Supabase
-- [ ] Verificar un dominio de envío en Resend para que el acuse llegue a cualquier cliente
+- [x] Formulario guarda solicitudes en Supabase; FormSubmit avisa a los dos buzones de DiPizza
+- [ ] Confirmar la clave y el remitente verificado de Resend para el acuse al cliente
 - [ ] Dominio y despliegue

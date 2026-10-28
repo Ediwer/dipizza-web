@@ -599,7 +599,7 @@ body::before {
       <h2>Start your booking</h2>
       <p>Nothing is charged here. Your enquiry stays on this page, and we email you as soon as we start preparing your proposal.</p>
     </div>
-    <form class="form" id="form">
+    <form class="form" id="form" method="POST" action="https://formsubmit.co/dipizza00@gmail.com" target="formsubmit-response">
       <div class="row">
         <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" required autocomplete="name"></div>
         <div class="field"><label for="f-org">Company or institution</label><input id="f-org" name="company" autocomplete="organization"></div>
@@ -626,6 +626,11 @@ body::before {
         <label for="f-msg">Anything we should know</label>
         <textarea id="f-msg" name="details" placeholder="Timings, the space available, special diets, pizzas you already have in mind…"></textarea>
       </div>
+      <input type="hidden" name="_cc" value="ediwergraterol@gmail.com">
+      <input type="hidden" name="_subject">
+      <input type="hidden" name="_replyto">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next">
 
       <!-- Trampa para robots: una persona nunca ve esto ni lo rellena.
            Si llega con contenido, la solicitud se descarta en silencio. -->
@@ -639,6 +644,7 @@ body::before {
         <button class="btn" type="submit">Send Enquiry</button>
       </div>
     </form>
+    <iframe id="formsubmit-frame" name="formsubmit-response" title="Enquiry delivery" hidden></iframe>
   </section>
 
   <!-- ── follow ───────────────────────────────────────── -->
@@ -1125,8 +1131,8 @@ document.addEventListener("keydown", e => {
 const SUPABASE_URL  = "https://cdauxkkksubujtzxouwo.supabase.co";
 const SUPABASE_ANON = "sb_publishable_xggqWkbnIc7hNZF0G66eAw_DuKltCqY";
 
-/* Resend sends the customer acknowledgement and both full team notifications
-   from the secure Supabase Edge Function. The browser never calls Resend. */
+/* Supabase stores the enquiry and Resend sends the customer acknowledgement.
+   FormSubmit separately delivers the full enquiry to both DiPizza inboxes. */
 async function saveEnquiry(fields) {
   if (!SUPABASE_URL || !SUPABASE_ANON) return null;
   try {
@@ -1151,22 +1157,45 @@ async function saveEnquiry(fields) {
   }
 }
 
-function showEnquiryReceipt(result) {
+function showEnquiryReceipt(state) {
   const receipt = document.createElement("div");
   receipt.className = "sent";
   receipt.setAttribute("role", "status");
-  if (result?.emails?.customer && result?.emails?.team) {
+  const customerSent = Boolean(state?.customerSent);
+  const teamSent = Boolean(state?.teamSent);
+  if (customerSent && teamSent) {
     receipt.innerHTML = `<h3>Thanks — your enquiry is being processed.</h3>
-      <p style="font-size:.9375rem;color:var(--ink-2)">We emailed you a confirmation and sent your event details to the DiPizza team. We'll reply the same business day.${result.saved ? " Your request is also saved securely." : ""}</p>`;
-  } else if (result?.saved) {
-    receipt.innerHTML = `<h3>Your enquiry is saved.</h3>
-      <p style="font-size:.9375rem;color:var(--ink-2)">We have your event details, but could not confirm that all emails were sent. Please call us on (484) 954-7273 so we can follow up.</p>`;
+      <p style="font-size:.9375rem;color:var(--ink-2)">We emailed you a confirmation and sent your event details to the DiPizza team. We'll reply the same business day.${state.saved ? " Your request is also saved securely." : ""}</p>`;
+  } else if (customerSent) {
+    receipt.innerHTML = `<h3>Your enquiry is saved and your confirmation email is on its way.</h3>
+      <p style="font-size:.9375rem;color:var(--ink-2)">${teamSent ? "The DiPizza team received your details." : "We couldn't confirm delivery to the DiPizza team yet."} Please call (484) 954-7273 if you need immediate follow-up.</p>`;
+  } else if (teamSent) {
+    receipt.innerHTML = `<h3>The DiPizza team received your enquiry.</h3>
+      <p style="font-size:.9375rem;color:var(--ink-2)">We couldn't send your confirmation email yet. Please call (484) 954-7273 if you need immediate follow-up.</p>`;
   } else {
-    receipt.innerHTML = `<h3>We couldn't confirm the email yet.</h3>
-      <p style="font-size:.9375rem;color:var(--ink-2)">Please contact DiPizza directly at <a href="mailto:dipizza00@gmail.com">dipizza00@gmail.com</a> or call (484) 954-7273.</p>`;
+    receipt.innerHTML = `<h3>We couldn't confirm both email deliveries.</h3>
+      <p style="font-size:.9375rem;color:var(--ink-2)">Your details may be saved securely, but please contact DiPizza directly at <a href="mailto:dipizza00@gmail.com">dipizza00@gmail.com</a> or call (484) 954-7273.</p>`;
   }
   $("form").replaceWith(receipt);
 }
+
+let activeEnquiryDelivery = null;
+const formSubmitFrame = $("formsubmit-frame");
+let formSubmitTimeout = null;
+formSubmitFrame.addEventListener("load", () => {
+  if (!activeEnquiryDelivery) return;
+  try {
+    const responseUrl = new URL(formSubmitFrame.contentWindow.location.href);
+    if (responseUrl.origin !== window.location.origin || responseUrl.searchParams.get("enquiry") !== "received") return;
+    activeEnquiryDelivery.teamSent = true;
+    clearTimeout(formSubmitTimeout);
+    const state = activeEnquiryDelivery;
+    activeEnquiryDelivery = null;
+    showEnquiryReceipt(state);
+  } catch (_) {
+    // FormSubmit is cross-origin until it redirects back to this site.
+  }
+});
 
 $("form").addEventListener("submit", async e => {
   e.preventDefault();
@@ -1179,8 +1208,34 @@ $("form").addEventListener("submit", async e => {
 
   const fields = Object.fromEntries(d.entries());
   const result = await saveEnquiry({ ...fields, website: fields._honey || "" });
-  showEnquiryReceipt(result);
+  const state = {
+    saved: Boolean(result?.saved),
+    customerSent: Boolean(result?.emails?.customer),
+    teamSent: false,
+  };
+
+  f.querySelector('[name="_subject"]').value = "Catering enquiry · " + (fields.name || "New customer");
+  f.querySelector('[name="_replyto"]').value = fields.email || "";
+  f.querySelector('[name="_next"]').value =
+    "https://ediwer.github.io/dipizza-web/?enquiry=received&saved=" + (state.saved ? "1" : "0") + "&customer=" + (state.customerSent ? "1" : "0") + "#enquiry";
+
+  activeEnquiryDelivery = state;
+  formSubmitTimeout = setTimeout(() => {
+    if (!activeEnquiryDelivery) return;
+    const pendingState = activeEnquiryDelivery;
+    activeEnquiryDelivery = null;
+    showEnquiryReceipt(pendingState);
+  }, 18000);
+  f.submit();
 });
+
+const receivedEnquiry = new URLSearchParams(window.location.search).get("enquiry") === "received";
+if (receivedEnquiry && window.self === window.top) {
+  const saved = new URLSearchParams(window.location.search).get("saved") === "1";
+  const customerSent = new URLSearchParams(window.location.search).get("customer") === "1";
+  showEnquiryReceipt({ saved, customerSent, teamSent: true });
+  history.replaceState(null, "", window.location.pathname + window.location.hash);
+}
 
 /* ══════════════════════════════════════════════════════════════
    5 · ASSISTANT
