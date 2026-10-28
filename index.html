@@ -136,14 +136,14 @@ img { display: block; }
   -webkit-backdrop-filter: saturate(180%) blur(16px);
   border-bottom: 1px solid var(--line);
 }
-.nav-in { display: flex; align-items: center; gap: 20px; height: 135px; }
+.nav-in { display: flex; align-items: center; gap: 20px; height: 197px; }
 .mark {
   display: flex; align-items: center; gap: 10px; text-decoration: none;
   font-family: Fredoka, sans-serif; font-weight: 600; font-size: 1.125rem;
   letter-spacing: -.01em; white-space: nowrap;
 }
 .mark img { height: 54px; width: auto; max-width: 150px; object-fit: contain; }
-.nav .mark img { height: 123px; width: 123px; max-width: none; }
+.nav .mark img { height: 185px; width: 185px; max-width: none; }
 .mark .script { font-size: 1.35rem; color: var(--warm); }
 
 .nav-links { display: flex; gap: 30px; margin-inline: auto; font-size: .9375rem; }
@@ -456,8 +456,8 @@ body::before {
 }
 @media (max-width: 560px) {
   .rail { padding-inline: 18px; }
-  .nav-in { height: 114px; gap: 10px; }
-  .nav .mark img { height: 102px; width: 102px; }
+  .nav-in { height: 165px; gap: 10px; }
+  .nav .mark img { height: 153px; width: 153px; }
   .nav-in > .btn { padding-inline: 16px; font-size: .8125rem; }
   .cards { grid-template-columns: 1fr; }
   .info { grid-template-columns: 1fr; }
@@ -1140,9 +1140,10 @@ If it's urgent, call us on (484) 954-7273.
 
 - DiPizza, wood-fired pizza catering`;
 
-/* Primero Supabase si esta configurado; si no, Formsubmit.
-   Devuelve true solo si la solicitud quedo registrada de verdad. */
-async function sendEnquiry(fields) {
+/* Primero registra y notifica con Supabase. Si la fila se guardo pero el
+   correo del equipo no se envio, intenta FormSubmit como respaldo. */
+async function sendEnquiry(fields, formFields) {
+  let saved = false;
   if (SUPABASE_URL && SUPABASE_ANON) {
     try {
       const res = await fetch(SUPABASE_URL + "/functions/v1/enquiry", {
@@ -1154,7 +1155,11 @@ async function sendEnquiry(fields) {
         },
         body: JSON.stringify(fields)
       });
-      if (res.ok) return true;
+      const result = await res.json().catch(() => ({}));
+      if (res.ok && result.ok && result.saved) {
+        saved = true;
+        if (result.team_email_sent) return { ok: true, saved: true };
+      }
       console.warn("Supabase respondio", res.status, "— se intenta el respaldo");
     } catch (err) {
       console.warn("Supabase no respondio — se intenta el respaldo", err);
@@ -1162,7 +1167,7 @@ async function sendEnquiry(fields) {
   }
 
   try {
-    const payload = { ...fields };
+    const payload = { ...formFields };
     payload._subject = "Catering enquiry · " + (fields.name || "");
     payload._template = "table";
     payload._captcha = "false";
@@ -1174,9 +1179,12 @@ async function sendEnquiry(fields) {
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify(payload)
     });
-    return res.ok;
+    const result = await res.json().catch(() => ({}));
+    const sent = res.ok && (result.success === true ||
+      (typeof result.success === "string" && result.success.toLowerCase() !== "false"));
+    return { ok: sent, saved: saved || sent };
   } catch (err) {
-    return false;
+    return { ok: false, saved };
   }
 }
 
@@ -1195,21 +1203,28 @@ $("form").addEventListener("submit", async e => {
   button.disabled = true;
   button.textContent = "Sending…";
 
-  const ok = await sendEnquiry(Object.fromEntries(rows));
+  const formFields = Object.fromEntries(rows);
+  const payload = {
+    name: formFields.Name || "", company: formFields.Company || "",
+    email: formFields.Email || "", phone: formFields.Phone || "",
+    occasion: formFields.Occasion || "", date: formFields.Date || "",
+    guests: formFields.Guests || "", venue: formFields.Venue || "",
+    details: formFields.Details || "", website: formFields.website || ""
+  };
+  const result = await sendEnquiry(payload, formFields);
 
   const panel = document.createElement("div");
   panel.className = "sent";
-  panel.innerHTML = ok
+  panel.innerHTML = result.ok
     ? `<h3>Thanks, ${first} — it's on its way.</h3>
        <p style="font-size:.9375rem;color:var(--ink-2)">
-         Your enquiry is with the events team. We reply the same business day,
-         We've sent a confirmation to <strong>${esc(mail)}</strong> and we reply
-         the same business day.</p>
+         Your enquiry has been sent to the events team. We reply the same business day.</p>
        <pre>${esc(summary)}</pre>`
-    : `<h3>Couldn't send it, ${first}.</h3>
+    : `<h3>${result.saved ? `We saved your enquiry, ${first}.` : `Couldn't send it, ${first}.`}</h3>
        <p style="font-size:.9375rem;color:var(--ink-2)">
-         Something went wrong on the way out. Nothing is lost — send it from
-         your own mail instead, it takes a second.</p>
+         ${result.saved
+           ? "Your details are saved, but the email notification could not be delivered. Please contact us directly so we can follow up."
+           : "Something went wrong on the way out. Please send the request from your own mail instead."}</p>
        <pre>${esc(summary)}</pre>
        <div class="form-foot">
          <button class="btn btn-soft" type="button" id="copyBtn">Copy summary</button>
@@ -1217,7 +1232,7 @@ $("form").addEventListener("submit", async e => {
        </div>`;
   f.replaceWith(panel);
 
-  if (!ok) {
+  if (!result.ok) {
     panel.querySelector("#mailBtn").href = "mailto:" + state.contact.email +
       "?subject=" + encodeURIComponent("Catering enquiry · " + name) +
       "&body=" + encodeURIComponent(summary);

@@ -192,7 +192,13 @@ Deno.serve(async (req) => {
     const debug = req.headers.get("x-dipizza-debug") === "1";
 
     return new Response(
-      JSON.stringify(debug ? { ok: true, id: data.id, report } : { ok: true, id: data.id }),
+      JSON.stringify({
+        ok: true,
+        id: data.id,
+        saved: true,
+        team_email_sent: report.correoEquipo.startsWith("enviado"),
+        ...(debug ? { report } : {}),
+      }),
       { status: 200, headers: { ...head, "Content-Type": "application/json" } },
     );
   } catch (err) {
