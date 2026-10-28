@@ -4,16 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DiPizza — Wood-Fired Pizza Catering</title>
-<meta name="description" content="Wood-fired pizza catering for parties, weddings and corporate events. We bring the oven to your venue and cook Neapolitan pizza in front of your guests. $14 a pizza plus a $100 catering fee.">
+<meta name="description" content="Wood-fired pizza catering for parties, weddings and corporate events. We bring the oven to your venue and cook Neapolitan pizza in front of your guests.">
 <link rel="canonical" href="https://ediwer.github.io/dipizza-web/">
 <link rel="icon" href="images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<meta name="theme-color" content="#0C0B0A">
+<meta name="theme-color" content="#050505">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="DiPizza">
 <meta property="og:title" content="DiPizza — Wood-Fired Pizza Catering">
-<meta property="og:description" content="Wood-fired pizza catering for parties, weddings and corporate events. We bring the oven to your venue and cook Neapolitan pizza in front of your guests. $14 a pizza plus a $100 catering fee.">
+<meta property="og:description" content="Wood-fired pizza catering for parties, weddings and corporate events. We bring the oven to your venue and cook Neapolitan pizza in front of your guests.">
 <meta property="og:url" content="https://ediwer.github.io/dipizza-web/">
 <meta property="og:image" content="https://ediwer.github.io/dipizza-web/images/og-image.jpg">
 <meta property="og:image:width" content="1200">
@@ -29,13 +29,13 @@
    ══════════════════════════════════════════════════════════════ */
 
 :root {
-  --ground:  #0C0B0A;
-  --surface: #171514;
-  --ink:     #F3EEE7;
-  --accent:  #F3EEE7;
-  --warm:    #E4414E;
-  --green:   #3FB375;
-  --zest:    #F2C300;
+  --ground:  #050505;
+  --surface: #11100F;
+  --ink:     #F4F0E8;
+  --accent:  #D2B36E;
+  --warm:    #D2B36E;
+  --green:   #77917A;
+  --zest:    #B99758;
   --shadow-a: 0, 0, 0;
   --shadow-o: .55;
 
@@ -136,13 +136,14 @@ img { display: block; }
   -webkit-backdrop-filter: saturate(180%) blur(16px);
   border-bottom: 1px solid var(--line);
 }
-.nav-in { display: flex; align-items: center; gap: 20px; height: 70px; }
+.nav-in { display: flex; align-items: center; gap: 20px; height: 94px; }
 .mark {
   display: flex; align-items: center; gap: 10px; text-decoration: none;
   font-family: Fredoka, sans-serif; font-weight: 600; font-size: 1.125rem;
   letter-spacing: -.01em; white-space: nowrap;
 }
 .mark img { height: 54px; width: auto; max-width: 150px; object-fit: contain; }
+.nav .mark img { height: 82px; width: 82px; max-width: none; }
 .mark .script { font-size: 1.35rem; color: var(--warm); }
 
 .nav-links { display: flex; gap: 30px; margin-inline: auto; font-size: .9375rem; }
@@ -216,9 +217,7 @@ img { display: block; }
 }
 .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
 .card-art { aspect-ratio: 4 / 3; background: var(--surface-2); display: grid; place-items: center; overflow: hidden; cursor: zoom-in; }
-.card-art img, .dish-art img { transition: transform .35s; }
-.card:hover .card-art img, .dish:hover .dish-art img { transform: scale(1.04); }
-.card-art img { width: 100%; height: 100%; object-fit: cover; }
+.card-art img { width: 100%; height: 100%; object-fit: contain; }
 .card-art svg { width: 86%; height: auto; }
 .card-body { padding: 20px 22px 24px; display: grid; gap: 9px; }
 .card-body h3 { font-size: 1.0625rem; }
@@ -260,7 +259,7 @@ img { display: block; }
   background: var(--zest); border-radius: 2px; margin-top: 9px;
 }
 .dish-plain p { font-size: .875rem; }
-.dish-art img { width: 100%; height: 100%; object-fit: cover; }
+.dish-art img { width: 100%; height: 100%; object-fit: contain; }
 .dish-art svg { width: 100%; height: 100%; }
 .dish h3 { font-size: 1rem; margin-bottom: 3px; }
 .dish p { font-size: .8125rem; color: var(--ink-2); line-height: 1.55; }
@@ -276,12 +275,10 @@ img { display: block; }
 .split .shot svg { padding: 5%; }
 .split h2 { font-size: clamp(1.75rem, 3vw, 2.4rem); margin-block: 12px 16px; }
 .split .btn { margin-top: 26px; }
-.ticks { display: grid; gap: 11px; margin-top: 20px; }
-.tick { display: flex; gap: 11px; align-items: flex-start; font-size: .9375rem; color: var(--ink-2); }
-.tick svg { width: 19px; height: 19px; flex: none; color: var(--green); margin-top: 3px; }
 
 /* ── gallery ─────────────────────────────────────────────── */
 .gal { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.gal .tile:only-child { grid-column: 1 / -1; width: min(100%, 420px); justify-self: center; aspect-ratio: 3 / 4; }
 .tile {
   position: relative; border: 1px solid var(--line); background: var(--surface);
   border-radius: var(--r-md); padding: 0; cursor: zoom-in; overflow: hidden;
@@ -429,19 +426,13 @@ img { display: block; }
 .chat-form input:focus { outline: none; border-color: var(--warm); }
 .chat-form button { width: 40px; height: 40px; flex: none; border-radius: 999px; border: 0; background: var(--accent); color: var(--on-accent); cursor: pointer; display: grid; place-items: center; }
 
-/* ── el fondo lleva la bandera ────────────────────────────────────
-   Verde arriba, neutro levantado a media pagina, rojo al final. Todo
-   mezclado contra el negro: tiñe, no colorea. */
+/* Fondo negro con un brillo dorado muy tenue. */
 body { position: relative; }
 body::before {
   content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: linear-gradient(to bottom,
-    color-mix(in srgb, var(--green) 20%, var(--ground)) 0%,
-    color-mix(in srgb, var(--green) 13%, var(--ground)) 26%,
-    color-mix(in srgb, var(--ink)   8%, var(--ground)) 48%,
-    color-mix(in srgb, var(--ink)   8%, var(--ground)) 56%,
-    color-mix(in srgb, var(--warm) 13%, var(--ground)) 76%,
-    color-mix(in srgb, var(--warm) 21%, var(--ground)) 100%);
+  background:
+    radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--warm) 8%, transparent), transparent 40%),
+    radial-gradient(ellipse at 50% 92%, color-mix(in srgb, var(--warm) 4%, transparent), transparent 44%);
 }
 .nav, main { position: relative; z-index: 1; }
 
@@ -465,6 +456,9 @@ body::before {
 }
 @media (max-width: 560px) {
   .rail { padding-inline: 18px; }
+  .nav-in { height: 80px; gap: 10px; }
+  .nav .mark img { height: 68px; width: 68px; }
+  .nav-in > .btn { padding-inline: 16px; font-size: .8125rem; }
   .cards { grid-template-columns: 1fr; }
   .info { grid-template-columns: 1fr; }
   .row { grid-template-columns: 1fr; }
@@ -545,7 +539,7 @@ body::before {
     <div class="sec-head">
       <p class="kicker">The Card</p>
       <h2 id="menuTitle"></h2>
-      <p>Fresh mozzarella on every pizza, dough stretched by hand at the venue. Pick the ones you want for your event — most hosts settle on five or six and let us bring the rest as a surprise.</p>
+      <p>Explore the full menu of traditional, meat and veggie pizzas. Each one is made with fresh mozzarella and hand-stretched dough.</p>
     </div>
     <div class="filters" id="filters" role="group" aria-label="Filter the menu"></div>
     <div class="menu-list" id="menuList"></div>
@@ -560,12 +554,6 @@ body::before {
         <p class="kicker">Built Around Your Event</p>
         <h2 id="storyTitle"></h2>
         <p class="lede" id="storyText"></p>
-        <div class="ticks">
-          <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Fifteen pizzas to choose from — pick the ones your guests will want.</span></div>
-          <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>$14 a pizza, plus a $100 catering fee. No surprises on the invoice.</span></div>
-          <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Six meat pizzas and six veggie ones, three of them without tomato sauce.</span></div>
-          <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Everything cooked on site — nothing arrives reheated.</span></div>
-        </div>
         <a class="btn" href="#gallery">See the Gallery</a>
       </div>
     </div>
@@ -575,8 +563,8 @@ body::before {
   <section class="rail band" id="gallery">
     <div class="sec-head">
       <p class="kicker">Gallery</p>
-      <h2>Set-ups, service and the card itself</h2>
-      <p>Real events and the pizzas shot from above. Select any piece to see it larger.</p>
+      <h2>Behind the scenes</h2>
+      <p>A look at our team preparing for service.</p>
     </div>
     <div class="gal" id="galGrid"></div>
   </section>
@@ -711,9 +699,9 @@ const DEFAULT_BRAND = {
   headline: "Made from scratch,|fired on site,|served {to your guests}.",
   lede: "We bring the wood-fired oven to you and cook Neapolitan pizza in front of your guests — dough stretched by hand, one pie at a time, never a mix and never a shortcut.",
   menuTitle: "Fifteen pizzas, three families",
-  menuNote: "All pizzas $14 each · Catering fee $100 per event · Pizzas tagged “no tomato” are made without tomato sauce.",
-  storyTitle: "We set up wherever you are",
-  storyText: "Backyard, park, warehouse or parking lot — the oven, the prep table and the crew travel to the venue. You pick the pizzas, we handle the rest and leave the space the way we found it.",
+  menuNote: "Vegetarian and no-tomato options are marked on the menu.",
+  storyTitle: "Made for your celebration",
+  storyText: "Great pizza, shared with the people who matter. Tell us about your event and we will help plan the details.",
   handle: "@dipizza",
   instagram: "https://instagram.com/",
   tagline: "Wood-fired pizza catering · est. 2016"
@@ -726,14 +714,13 @@ const DEFAULT_CONTACT = {
   notice: "Book ahead so we can hold your date — ask us what's open.",
   coverage: "Tell us the venue and we'll confirm we can reach it.",
   hours: "Reach out any day; we reply within one business day.",
-  payment: "$14 per pizza plus a $100 catering fee per event."
+  payment: "Ask us for a tailored proposal for your event."
 };
 
 const PRESETS = {
   dipizza: {
     label: "DiPizza",
-    light: { ground:"#0C0B0A", surface:"#171514", ink:"#F3EEE7",
-             accent:"#F3EEE7", warm:"#E4414E", green:"#3FB375", zest:"#F2C300" }
+    light: { ground:"#050505", surface:"#11100F", ink:"#F4F0E8", accent:"#D2B36E", warm:"#D2B36E", green:"#77917A", zest:"#B99758" }
   }
 };
 
@@ -800,18 +787,10 @@ const FAMILIES = [
   { id:"meats", label:"Meats" }, { id:"veggies", label:"Veggies" }
 ];
 
-/* Gallery falls back to these drawn pieces until real photos land. */
+/* Gallery fallbacks show behind-the-scenes scenes, not menu pizzas. */
 const FALLBACK_GALLERY = [
-  { id:"f-oven", wide:true, scene:"forno", caption:"The oven set up on site" },
-  { id:"f-marg", pizza:"margherita", caption:"Margherita, straight off the peel" },
-  { id:"f-pros", pizza:"prosciutto", caption:"Prosciutto with arugula and parmigiano" },
-  { id:"f-zucc", pizza:"zucchini",   caption:"Zucchini with cherry tomatoes" },
-  { id:"f-basi", pizza:"basilicata", caption:"Basilicata" },
-  { id:"f-mise", wide:true, scene:"mise", caption:"Prep table before service" },
-  { id:"f-carc", pizza:"carciofi",   caption:"Carciofi" },
-  { id:"f-bian", pizza:"bianca",     caption:"Bianca" },
-  { id:"f-sala", pizza:"salami",     caption:"Salami" },
-  { id:"f-pepp", pizza:"pepperoni",  caption:"Pepperoni" }
+  { id:"f-oven", wide:true, scene:"forno", caption:"The oven before service" },
+  { id:"f-mise", scene:"mise", caption:"Prep table before service" }
 ];
 
 /* ══════════════════════════════════════════════════════════════
@@ -1257,51 +1236,51 @@ $("form").addEventListener("submit", async e => {
 
 const REPLIES = [
   { k:["price","prices","cost","how much","quote","budget","rate","expensive"],
-    t:"Pizzas are $14 each, plus a $100 catering fee for the event. That covers the oven, the dough, the ingredients and cooking on site. Tell us your date, venue and roughly how many pizzas you need and we send the total back the same day.",
+    t:"Send us your event date, venue and guest count through the enquiry form. Our team will follow up with a tailored proposal.",
     a:["Start an enquiry", "#enquiry"] },
   { k:["minimum","maximum","how many","guests","people","headcount","pax","capacity"],
-    t:"Tell us how many guests you are expecting and we will work out the pizza count with you — most hosts plan on two to three slices a head. Ask us about larger parties and we will confirm what we can do." },
+    t:"Tell us how many guests you expect and our team will help plan your event." },
   { k:["gluten","celiac","coeliac","intolerance","intolerant"],
-    t:"Ask us when you book — tell us how many guests need it and we will confirm what we can arrange for your event." },
+    t:"Tell us about any dietary needs in your enquiry and the team will confirm what we can arrange." },
   { k:["vegan","vegetarian","diet","allergy","allergen","halal","kosher","dairy","nut"],
-    t:"Six of the fifteen pizzas are vegetarian, and three of those are made without tomato sauce — Basilicata, Spicy-Honey and Sundried Tomatoes. For any other dietary need, tell us when you book.",
-    a:["See the card", "#menu"] },
+    t:"Vegetarian and no-tomato options are marked on the menu. Share any other dietary needs with the team.",
+    a:["See the menu", "#menu"] },
   { k:["space","set up","setup","install","power","electricity","metres","meters","indoor","smoke","terrace","water"],
-    t:"We need 4 × 2.5 m of level ground, outdoors or in a space with extraction. No power supply and no water connection — the oven runs on wood. We arrive 90 minutes before service and are gone 45 minutes after.",
-    a:["What's included", "#story"] },
+    t:"Share the venue details in your enquiry and our team will confirm the arrangements for your event.",
+    a:["Start an enquiry", "#enquiry"] },
   { k:["where","travel","area","coverage","distance","km","miles","far","location"],
-    t:"Send us the venue address and we will confirm we can reach it and whether any travel applies." },
+    t:"Send us the venue address and we will confirm whether we can serve your event there." },
   { k:["invoice","vat","company","tax","institution","insurance","payment","terms","30 day","purchase order","deposit"],
-    t:"Pizzas are $14 each plus a $100 catering fee per event. Ask us about invoicing and paperwork for your company or venue and we will send what you need.",
-    a:["Booking information", "#story"] },
+    t:"We can provide the paperwork your company or venue needs. Include those details in your enquiry and we will follow up.",
+    a:["Start an enquiry", "#enquiry"] },
   { k:["date","availability","available","book","booking","calendar","free","when","notice"],
-    t:"Two weeks' notice for up to 150 guests, four weeks above that. We confirm availability in under 24 business hours, and Fridays and Saturdays from May to September usually go two to three months ahead.",
+    t:"Send us your preferred date and we will confirm availability.",
     a:["Check a date", "#enquiry"] },
   { k:["menu","pizza","pizzas","card","kinds","types","which","options","food"],
-    t:"Fifteen pizzas across three families: Traditionals, Meats and Veggies. For each event we settle on five or six, which keeps the line moving and every pie coming out hot.",
-    a:["Open the card", "#menu"] },
+    t:"Browse the full menu to see every pizza, ingredient and dietary tag.",
+    a:["Open the menu", "#menu"] },
   { k:["favourite","favorite","popular","recommend","best","suggest"],
-    t:"Margherita and Pepperoni go fastest at almost every event. Prosciutto and Zucchini are the two we get asked about most once people have tried them.",
+    t:"Browse the menu for our guest favourites and full range of pizzas.",
     a:["Open the menu", "#menu"] },
   { k:["photo","photos","gallery","pictures","see","look","instagram","follow"],
-    t:"The gallery further down has set-ups and the card shot from above, and the newest work goes to Instagram first.",
+    t:"The gallery shows moments from events and behind the scenes. The menu has the individual pizzas.",
     a:["Open the gallery", "#gallery"] },
   { k:["human","person","speak","call","phone","email","contact","talk","someone","whatsapp"],
-    t:"Gladly. The email and phone are in the booking information below, Monday to Friday 9:00–18:00 — or leave your details and we call you the same day.",
-    a:["Leave my details", "#enquiry"] },
+    t:"Gladly. Our email and phone are in the booking information below, or leave your details and the team will get back to you.",
+    a:["Leave your details", "#enquiry"] },
   { k:["hi","hello","hey","good morning","good afternoon","greetings","ciao"],
-    t:"Hello. I can answer on pricing, minimum headcount, special diets, the space we need, coverage and invoicing. What would you like to know?" },
+    t:"Hello. I can help with the menu, dietary information, location and your event enquiry. For a quote or venue details, send us a message through the form." },
   { k:["thanks","thank you","great","perfect","cheers"],
-    t:"My pleasure. If you like, I can hand this to the events team.",
+    t:"My pleasure. If you like, I can pass your enquiry to the events team.",
     a:["Go to the form", "#enquiry"] }
 ];
 
 const FALLBACK = {
-  t:"I don't have an answer for that yet. I do know pricing, minimum headcount, diets and allergens, the space we need, coverage, invoicing and availability. Otherwise a person on the team can take it from here.",
+  t:"I don't have an answer for that yet. Browse the menu or send your event details through the enquiry form and the team will help.",
   a:["Write to the team", "#enquiry"]
 };
 
-const CHIPS = ["How much is it?", "Minimum headcount?", "Gluten-free?", "What space do you need?", "How far do you travel?", "Can you invoice a company?"];
+const CHIPS = ["Get a quote", "Dietary options?", "Where do you travel?", "Check a date", "Can you invoice a company?"];
 
 const chat = $("chat"), chatBtn = $("chatBtn"), chatLog = $("chatLog");
 let greeted = false;
@@ -1340,7 +1319,7 @@ function toggleChat(open) {
   if (open) {
     if (!greeted) {
       greeted = true;
-      push("Hello — the assistant for " + state.brand.name + ". I can settle pricing, minimums, diets, space and coverage right now, and pass you to the events team whenever you'd rather speak to a person.", "bot");
+      push("Hello — the assistant for " + state.brand.name + ". I can help with the menu, dietary information, location and your event enquiry. For a quote or venue details, send us a message through the form.", "bot");
     }
     $("chatInput").focus();
   } else { chatBtn.focus(); }
@@ -1375,90 +1354,7 @@ const PHOTOS = {
 };
 
 const GALLERY = [
-  {
-    "id": "gal-01",
-    "order": 10,
-    "caption": "The setup on site, ready for service",
-    "dataUrl": "images/gal-01.jpg"
-  },
-  {
-    "id": "gal-02",
-    "order": 20,
-    "caption": "Prosciutto with arugula and parmigiano",
-    "dataUrl": "images/gal-02.jpg"
-  },
-  {
-    "id": "gal-03",
-    "order": 30,
-    "caption": "Stretching the dough at the prep table",
-    "dataUrl": "images/gal-03.jpg"
-  },
-  {
-    "id": "gal-04",
-    "order": 40,
-    "caption": "Ricotta, cherry tomatoes and fresh arugula",
-    "dataUrl": "images/gal-04.jpg"
-  },
-  {
-    "id": "gal-05",
-    "order": 50,
-    "caption": "Prosciutto, straight off the peel",
-    "dataUrl": "images/gal-05.jpg"
-  },
-  {
-    "id": "gal-06",
-    "order": 60,
-    "caption": "Pizzas going out as guests arrive",
-    "dataUrl": "images/gal-06.jpg"
-  },
-  {
-    "id": "gal-07",
-    "order": 70,
-    "caption": "Zucchini and mushrooms, garden style",
-    "dataUrl": "images/gal-07.jpg"
-  },
-  {
-    "id": "gal-08",
-    "order": 80,
-    "caption": "Bianca with mushrooms and goat cheese",
-    "dataUrl": "images/gal-08.jpg"
-  },
-  {
-    "id": "gal-09",
-    "order": 90,
-    "caption": "The wood-fired oven under the tent",
-    "dataUrl": "images/gal-09.jpg"
-  },
-  {
-    "id": "gal-10",
-    "order": 100,
-    "caption": "Mushrooms over a tomato base",
-    "dataUrl": "images/gal-10.jpg"
-  },
-  {
-    "id": "gal-11",
-    "order": 110,
-    "caption": "Mushroom pizza, straight from the peel",
-    "dataUrl": "images/gal-11.jpg"
-  },
-  {
-    "id": "gal-12",
-    "order": 120,
-    "caption": "Mushrooms and shaved cheese",
-    "dataUrl": "images/gal-12.jpg"
-  },
-  {
-    "id": "gal-13",
-    "order": 130,
-    "caption": "White pizza, blistered at the edge",
-    "dataUrl": "images/gal-13.jpg"
-  },
-  {
-    "id": "gal-14",
-    "order": 140,
-    "caption": "Pepperoni, cut and ready",
-    "dataUrl": "images/gal-14.jpg"
-  }
+  { "id": "gal-03", "order": 10, "caption": "Preparing a pizza at the prep table", "dataUrl": "images/gal-03.jpg" }
 ];
 
 /* ══════════════════════════════════════════════════════════════
