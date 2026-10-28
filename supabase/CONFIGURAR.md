@@ -1,138 +1,30 @@
-# Conectar DiPizza con Supabase
+# Configuración actual de DiPizza
 
-Todo el código está escrito. Lo que queda son cinco pasos en el navegador
-y dos datos que me tienes que pasar.
+El proyecto ya está creado y conectado a la web. La tabla `enquiries` y la función `enquiry` ya están desplegadas en Supabase.
 
----
+## Configurar el envío por Resend
 
-## 1 · Crear el proyecto
+1. En [Resend → Domains](https://resend.com/domains), verifica un dominio que te pertenezca y elige una dirección de envío, por ejemplo `consultas@tu-dominio.com`. La dirección debe pertenecer al dominio verificado.
+2. En [Resend → API Keys](https://resend.com/api-keys), crea una clave con permiso de envío.
+3. En Supabase, abre el proyecto `cdauxkkksubujtzxouwo` y entra a **Edge Functions → Secrets**. Agrega:
 
-En [supabase.com](https://supabase.com) → **New project**.
+   | Nombre | Valor |
+   |---|---|
+   | `RESEND_API_KEY` | La clave de Resend |
+   | `MAIL_FROM` | `DiPizza <consultas@tu-dominio-verificado.com>` |
 
-- **Name**: `dipizza`
-- **Region**: la más cercana a Pensilvania — *East US (North Virginia)*
-- **Database password**: genérala y **guárdala en tu gestor de contraseñas**.
-  No la vas a usar a diario, pero recuperarla luego es un fastidio.
+No pongas la clave en el código, en GitHub ni en la web. Debe quedarse en los secretos de Supabase. Al guardarla, la función la lee sin volver a desplegarse.
 
-Tarda un par de minutos en levantar.
+## Qué ocurre al enviar una consulta
 
----
+La web envía los datos a la función `enquiry`, sin navegar fuera de DiPizza. La función guarda la solicitud en `public.enquiries` y, mediante Resend:
 
-## 2 · Crear las tablas
+- envía el mensaje de confirmación “We're processing your DiPizza enquiry” al cliente;
+- envía el detalle completo a `dipizza00@gmail.com` y `ediwergraterol@gmail.com`;
+- permite responder al mensaje del cliente directamente desde el correo del equipo.
 
-**SQL Editor** → **New query** → pega entero el contenido de
-[`schema.sql`](./schema.sql) → **Run**.
+Si falla un correo, la consulta queda guardada en Supabase y el mensaje de la web no confirma falsamente que todos los correos salieron.
 
-Debe decir *Success*. Si lo ejecutas dos veces no pasa nada, está escrito
-para poder repetirse.
+## Revisar solicitudes desde el teléfono
 
-Comprueba en **Table Editor** que aparecen `enquiries` y `blocked_dates`.
-
----
-
-## 3 · Crear el bot de Telegram
-
-En Telegram, habla con **@BotFather**:
-
-1. `/newbot`
-2. Nombre: `DiPizza`
-3. Usuario: algo libre acabado en `bot`, por ejemplo `dipizza_avisos_bot`
-4. Te da un **token** con esta pinta: `7123456789:AAE...`
-
-Ahora necesitas tu **chat id**: abre una conversación con tu bot nuevo,
-escríbele cualquier cosa, y entra a esta dirección en el navegador
-sustituyendo el token:
-
-```
-https://api.telegram.org/bot<TU_TOKEN>/getUpdates
-```
-
-Busca `"chat":{"id":123456789` — ese número es tu chat id.
-
-> **El token no me lo pases por aquí.** Lo pones tú directamente en el
-> paso 4. Si se filtra, cualquiera puede escribir en tu nombre.
-
----
-
-## 4 · Guardar las claves
-
-**Project Settings** → **Edge Functions** → **Secrets** → añade:
-
-| Nombre | Valor |
-|---|---|
-| `TELEGRAM_BOT_TOKEN` | el token de @BotFather |
-| `TELEGRAM_CHAT_ID` | el número que acabas de sacar |
-| `TEAM_INBOX` | `ediwergraterol@gmail.com` *(para probar)* |
-
-Opcional, para los correos — se puede dejar para más tarde:
-
-| Nombre | Valor |
-|---|---|
-| `RESEND_API_KEY` | clave de [resend.com](https://resend.com) |
-| `MAIL_FROM` | `DiPizza <onboarding@resend.dev>` |
-
-Si no pones las de Resend, la función sigue funcionando: guarda la
-solicitud y avisa por Telegram. Los correos simplemente no salen.
-
----
-
-## 5 · Desplegar la función
-
-En una terminal, dentro de `C:\Proyectos\DiPizza`:
-
-```bash
-npx supabase login
-```
-
-```bash
-npx supabase link --project-ref TU_REF_DE_PROYECTO
-```
-
-*(la ref está en la URL del panel: `supabase.com/dashboard/project/`**`xxxxxxxx`**)*
-
-```bash
-npx supabase functions deploy enquiry
-```
-
----
-
-## 6 · Lo que necesito de ti
-
-Dos datos, que son **públicos por diseño** y van en el código de la web:
-
-- **Project URL** — `https://xxxxxxxx.supabase.co`
-- **anon public key** — la clave larga que empieza por `eyJ...`
-
-Los encuentras en **Project Settings → API**.
-
-> Hay una tercera clave, **`service_role`**. Esa **nunca** me la pases ni
-> la pongas en el repositorio: se salta toda la seguridad de la base.
-> Supabase se la da a la función automáticamente, no hay que tocarla.
-
-En cuanto me pases esos dos, cambio el formulario de Formsubmit a tu
-función y lo probamos.
-
----
-
-## Qué pasa cuando alguien rellena el formulario
-
-```
-web  →  función enquiry
-            ├─ guarda en la tabla enquiries     ← esto no puede fallar
-            ├─ te avisa por Telegram con botones
-            ├─ manda el resumen al correo del equipo
-            └─ manda acuse de recibo al cliente
-```
-
-Si Telegram o el correo fallan, **la solicitud ya está guardada**. Nunca se
-pierde por un problema de avisos.
-
-## Seguridad, en corto
-
-- El público **no puede leer ni escribir** en la tabla. No hay política que
-  se lo permita.
-- Solo la función escribe, usando la clave de servicio, que vive en el
-  servidor.
-- El panel leerá con sesión iniciada.
-- El formulario lleva un campo trampa oculto: si un robot lo rellena, la
-  solicitud se descarta en silencio.
+Abre Supabase Dashboard, inicia sesión y ve a **Table Editor → public.enquiries**. Ahí puedes revisar datos, fecha, estado y notas del presupuesto. Los estados disponibles son `new`, `quoted`, `confirmed`, `done` y `lost`.
