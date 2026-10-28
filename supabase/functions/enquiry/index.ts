@@ -25,7 +25,12 @@ const cors = (origin: string | null) => ({
   "Vary": "Origin",
 });
 
-const TEAM_INBOX = Deno.env.get("TEAM_INBOX") ?? "dipizza00@gmail.com";
+// Admite varios destinatarios separados por coma. Si el secreto no esta
+// puesto, van a los dos buzones de siempre.
+const TEAM_INBOX = (Deno.env.get("TEAM_INBOX") ??
+  "dipizza00@gmail.com, ediwergraterol@gmail.com")
+  .split(",").map((s) => s.trim()).filter(Boolean);
+
 const FROM = Deno.env.get("MAIL_FROM") ?? "DiPizza <onboarding@resend.dev>";
 
 type Payload = {
@@ -78,7 +83,7 @@ async function notifyTelegram(row: Record<string, unknown>) {
   return res.ok ? "enviado" : `error ${res.status}`;
 }
 
-async function sendMail(to: string, subject: string, text: string) {
+async function sendMail(to: string | string[], subject: string, text: string) {
   const key = Deno.env.get("RESEND_API_KEY");
   if (!key) return "sin configurar";
 
@@ -87,7 +92,8 @@ async function sendMail(to: string, subject: string, text: string) {
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({ from: FROM, to, subject, text }),
   });
-  return res.ok ? "enviado" : `error ${res.status}`;
+  if (res.ok) return `enviado a ${Array.isArray(to) ? to.length : 1}`;
+  return `error ${res.status}: ${await res.text().catch(() => "")}`.slice(0, 200);
 }
 
 const ACK = (first: string) =>

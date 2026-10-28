@@ -1146,9 +1146,10 @@ document.addEventListener("keydown", e => {
 const SUPABASE_URL  = "https://cdauxkkksubujtzxouwo.supabase.co";
 const SUPABASE_ANON = "sb_publishable_xggqWkbnIc7hNZF0G66eAw_DuKltCqY";
 
-/* Buzon de pruebas de Formsubmit. Cambiar a dipizza00@gmail.com al
-   abrir al publico, o quitarlo cuando Supabase este en marcha. */
-const FORM_INBOX = "ediwergraterol@gmail.com";
+/* Respaldo si Supabase no responde. Formsubmit solo admite una
+   direccion en la URL; la segunda va en copia. */
+const FORM_INBOX = "dipizza00@gmail.com";
+const FORM_CC    = "ediwergraterol@gmail.com";
 const FORM_ENDPOINT = "https://formsubmit.co/ajax/" + FORM_INBOX;
 
 /* Acuse de recibo que Formsubmit manda a quien rellena el formulario */
@@ -1188,6 +1189,7 @@ async function sendEnquiry(fields) {
     payload._captcha = "false";
     payload._replyto = fields.email;
     payload._autoresponse = AUTO_REPLY;
+    payload._cc = FORM_CC;
     const res = await fetch(FORM_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
