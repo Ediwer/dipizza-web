@@ -635,6 +635,13 @@ body::before {
         <label for="f-msg">Anything we should know</label>
         <textarea id="f-msg" name="Details" placeholder="Timings, the space available, special diets, pizzas you already have in mind…"></textarea>
       </div>
+      <!-- Trampa para robots: una persona nunca ve esto ni lo rellena.
+           Si llega con contenido, la solicitud se descarta en silencio. -->
+      <p style="position:absolute;left:-9999px" aria-hidden="true">
+        <label>Leave this empty
+          <input name="website" tabindex="-1" autocomplete="off">
+        </label>
+      </p>
       <div class="form-foot">
         <small>We use these details only to prepare your proposal.</small>
         <button class="btn" type="submit">Send Enquiry</button>
@@ -1130,8 +1137,17 @@ document.addEventListener("keydown", e => {
    propio. Si falla, se cae al resumen manual de siempre: la solicitud
    nunca se queda sin salida. */
 
-/* Destino de las solicitudes. En pruebas; cambiar a dipizza00@gmail.com
-   cuando se abra al publico — es la unica linea que hay que tocar. */
+/* ── a donde van las solicitudes ──────────────────────────────────
+   Rellena estas dos constantes con los datos de Supabase y el
+   formulario empieza a usar tu funcion. Ambas son publicas por
+   diseno: la seguridad la pone RLS, no el secreto de la clave.
+   Mientras esten vacias se usa Formsubmit, que ya funciona. */
+
+const SUPABASE_URL  = "";   // https://xxxxxxxx.supabase.co
+const SUPABASE_ANON = "";   // eyJhbGciOi...
+
+/* Buzon de pruebas de Formsubmit. Cambiar a dipizza00@gmail.com al
+   abrir al publico, o quitarlo cuando Supabase este en marcha. */
 const FORM_INBOX = "ediwergraterol@gmail.com";
 const FORM_ENDPOINT = "https://formsubmit.co/ajax/" + FORM_INBOX;
 
@@ -1143,6 +1159,45 @@ We've got your enquiry and we're looking at it right now - your date, the venue 
 If it's urgent, call us on (484) 954-7273.
 
 - DiPizza, wood-fired pizza catering`;
+
+/* Primero Supabase si esta configurado; si no, Formsubmit.
+   Devuelve true solo si la solicitud quedo registrada de verdad. */
+async function sendEnquiry(fields) {
+  if (SUPABASE_URL && SUPABASE_ANON) {
+    try {
+      const res = await fetch(SUPABASE_URL + "/functions/v1/enquiry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + SUPABASE_ANON,
+          "apikey": SUPABASE_ANON
+        },
+        body: JSON.stringify(fields)
+      });
+      if (res.ok) return true;
+      console.warn("Supabase respondio", res.status, "— se intenta el respaldo");
+    } catch (err) {
+      console.warn("Supabase no respondio — se intenta el respaldo", err);
+    }
+  }
+
+  try {
+    const payload = { ...fields };
+    payload._subject = "Catering enquiry · " + (fields.name || "");
+    payload._template = "table";
+    payload._captcha = "false";
+    payload._replyto = fields.email;
+    payload._autoresponse = AUTO_REPLY;
+    const res = await fetch(FORM_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    return res.ok;
+  } catch (err) {
+    return false;
+  }
+}
 
 $("form").addEventListener("submit", async e => {
   e.preventDefault();
@@ -1159,24 +1214,7 @@ $("form").addEventListener("submit", async e => {
   button.disabled = true;
   button.textContent = "Sending…";
 
-  let ok = false;
-  try {
-    const payload = Object.fromEntries(rows);
-    payload._subject = "Catering enquiry · " + name;
-    payload._template = "table";
-    payload._captcha = "false";
-    payload._replyto = mail;
-    payload._autoresponse = AUTO_REPLY;
-
-    const res = await fetch(FORM_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    ok = res.ok;
-  } catch (err) {
-    ok = false;
-  }
+  const ok = await sendEnquiry(Object.fromEntries(rows));
 
   const panel = document.createElement("div");
   panel.className = "sent";
