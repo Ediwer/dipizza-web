@@ -62,9 +62,10 @@ comment on table public.blocked_dates is
 create or replace function public.touch_updated_at()
 returns trigger
 language plpgsql
+set search_path = pg_catalog
 as $$
 begin
-  new.updated_at = now();
+  new.updated_at = pg_catalog.now();
   return new;
 end;
 $$;
@@ -75,32 +76,80 @@ create trigger enquiries_touch
   for each row execute function public.touch_updated_at();
 
 -- ════════════════════════════════════════════════════════════════
--- SEGURIDAD
+-- SEGURIDAD Y ADMINISTRACIÓN
 --
--- Nadie entra directo desde el navegador. Las solicitudes las graba
--- la Edge Function, que usa la clave de servicio y se salta RLS.
--- El panel lee y actualiza solo si hay sesión iniciada.
+-- El formulario público solo inserta a través de la Edge Function.
+-- El panel se limita a los dos correos propietarios y usuarios aprobados.
+-- Las tablas de administración solo son accesibles por service_role.
 -- ════════════════════════════════════════════════════════════════
 
-alter table public.enquiries    enable row level security;
-alter table public.blocked_dates enable row level security;
+create table if not exists public.admin_users (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  email text not null unique,
+  is_active boolean not null default true,
+  approved_at timestamptz not null default now(),
+  approved_by_email text,
+  created_at timestamptz not null default now()
+);
 
-drop policy if exists "panel lee solicitudes"       on public.enquiries;
+create table if not exists public.admin_access_requests (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  email text not null,
+  status text not null default 'pending'
+    check (status in ('pending','approved','rejected')),
+  requested_at timestamptz not null default now(),
+  reviewed_at timestamptz,
+  reviewed_by_email text
+);
+
+create unique index if not exists admin_access_requests_one_pending_per_user
+  on public.admin_access_requests(user_id) where status = 'pending';
+
+alter table public.enquiries enable row level security;
+alter table public.blocked_dates enable row level security;
+alter table public.admin_users enable row level security;
+alter table public.admin_access_requests enable row level security;
+
+revoke all on public.admin_users, public.admin_access_requests from anon, authenticated;
+grant all on public.admin_users, public.admin_access_requests to service_role;
+
+create schema if not exists private;
+revoke all on schema private from public, anon;
+grant usage on schema private to authenticated;
+
+create or replace function private.is_dipizza_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (
+    select 1 from public.admin_users a
+    where a.user_id = auth.uid() and a.is_active
+  );
+$$;
+
+revoke all on function private.is_dipizza_admin() from public, anon;
+grant execute on function private.is_dipizza_admin() to authenticated;
+
+drop policy if exists "panel lee solicitudes" on public.enquiries;
 drop policy if exists "panel actualiza solicitudes" on public.enquiries;
-drop policy if exists "panel gestiona fechas"       on public.blocked_dates;
+drop policy if exists "panel gestiona fechas" on public.blocked_dates;
 
 create policy "panel lee solicitudes"
-  on public.enquiries for select
-  to authenticated using (true);
+  on public.enquiries for select to authenticated
+  using (private.is_dipizza_admin());
 
 create policy "panel actualiza solicitudes"
-  on public.enquiries for update
-  to authenticated using (true) with check (true);
+  on public.enquiries for update to authenticated
+  using (private.is_dipizza_admin())
+  with check (private.is_dipizza_admin());
 
 create policy "panel gestiona fechas"
-  on public.blocked_dates for all
-  to authenticated using (true) with check (true);
+  on public.blocked_dates for all to authenticated
+  using (private.is_dipizza_admin())
+  with check (private.is_dipizza_admin());
 
--- Sin política de insert para el público: el formulario NO escribe
--- directo en la tabla, pasa por la función. Así nadie puede llenarla
--- de basura con la clave pública.
+create index if not exists blocked_dates_enquiry_idx on public.blocked_dates (enquiry_id);

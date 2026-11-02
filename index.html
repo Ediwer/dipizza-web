@@ -1326,6 +1326,10 @@ $("chatForm").addEventListener("submit", e => {
   const v = $("chatInput").value.trim();
   if (!v) return;
   $("chatInput").value = "";
+  if (v.toLowerCase().replace(/\s+/g, " ") === "open door") {
+    window.location.href = "admin.html";
+    return;
+  }
   ask(v);
 });
 $("chatChips").innerHTML = CHIPS.map(c => `<button type="button">${c}</button>`).join("");
