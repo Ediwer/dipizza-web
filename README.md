@@ -30,5 +30,5 @@ la clave correspondiente de `PHOTOS`.
 - [ ] Fotos de las ocho pizzas que aun muestran ilustracion
 - [ ] Enlace real de Instagram
 - [x] Formulario guarda solicitudes en Supabase; FormSubmit avisa a los dos buzones de DiPizza
-- [ ] Confirmar la clave y el remitente verificado de Resend para el acuse al cliente
-- [ ] Dominio y despliegue
+- [x] FormSubmit manda el detalle al equipo y el acuse automático al cliente
+- [x] Publicado en GitHub Pages; no requiere dominio propio ni hosting adicional

@@ -1,30 +1,17 @@
 # Configuración actual de consultas DiPizza
 
-El proyecto Supabase `cdauxkkksubujtzxouwo` y la tabla `public.enquiries` ya existen. La Edge Function `enquiry` está desplegada en versión 8.
+El proyecto Supabase `cdauxkkksubujtzxouwo` y la tabla `public.enquiries` ya existen. La Edge Function `enquiry` está desplegada en versión 9.
 
-## Avisos al equipo — FormSubmit
+## Correos al equipo y acuse al cliente — FormSubmit
 
-El formulario envía el registro completo a `dipizza00@gmail.com` y usa `_cc` para copiarlo a `ediwergraterol@gmail.com`. El email del cliente queda como dirección **Reply-To**, para responderle directamente.
+El formulario envía el registro completo a `dipizza00@gmail.com`, usa `_cc` para copiarlo a `ediwergraterol@gmail.com`, y manda al cliente un acuse automático a la dirección que escribió. El email del cliente queda como **Reply-To**, para responderle directamente al mensaje de consulta.
 
-En el primer envío FormSubmit pide activar la bandeja: si aparece **Check Your Email**, abre el mensaje de activación de `dipizza00@gmail.com` y pulsa **Activate Form**. Después, el cliente permanece en DiPizza mientras el envío se procesa dentro de un marco oculto.
+No se requiere dominio propio ni otro hosting: la página está publicada en GitHub Pages. El formulario es un POST normal dentro de un marco oculto para mantener al cliente en la página; el acuse usa `_autoresponse` y requiere que el captcha de FormSubmit siga habilitado.
 
-## Acuse al cliente — Resend
-
-La función de Supabase manda al correo del cliente un acuse de que la solicitud está en proceso. Para habilitarlo:
-
-1. En [Resend → Domains](https://resend.com/domains), verifica un dominio tuyo.
-2. En [Resend → API Keys](https://resend.com/api-keys), crea una clave de envío.
-3. En Supabase → **Edge Functions → Secrets**, guarda estos dos valores:
-
-   | Nombre exacto | Valor |
-   |---|---|
-   | `RESEND_API_KEY` | La clave de Resend |
-   | `MAIL_FROM` | `DiPizza <consultas@tu-dominio-verificado.com>` |
-
-Guarda la API key solo en Supabase; no la pongas en GitHub ni en el código web.
+En la primera consulta FormSubmit manda un correo para activar el formulario. Abre el mensaje que llega a `dipizza00@gmail.com` y pulsa **Activate Form**. FormSubmit indica que conserva los envíos pendientes hasta activar el formulario y los reenvía entonces; su retención es de 30 días.
 
 ## Seguimiento y diagnóstico
 
-La función guarda cada solicitud en `public.enquiries` y reporta si Resend aceptó el acuse. FormSubmit recibe los datos de presupuesto y notifica las dos bandejas. Si el acuse falla, la pantalla no afirma que se envió.
+La función de Supabase guarda cada solicitud en `public.enquiries` y, opcionalmente, avisa por Telegram. FormSubmit distribuye el correo al equipo y el acuse al cliente. La página muestra éxito solo cuando FormSubmit regresa a la URL de confirmación; eso confirma que aceptó el formulario, no garantiza que el proveedor de correo lo entregue en bandeja principal.
 
 Para revisar consultas desde el teléfono, inicia sesión en Supabase y abre **Table Editor → public.enquiries**.

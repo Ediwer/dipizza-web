@@ -2,9 +2,8 @@
 // DiPizza · recibe una solicitud del formulario y la reparte
 //
 //   1. la guarda en la tabla `enquiries`
-//   2. confirma al cliente que su solicitud se esta procesando con Resend
-//   3. avisa por Telegram si esta configurado
-// El detalle para los dos buzones del equipo se entrega por FormSubmit.
+//   2. avisa por Telegram si esta configurado
+// FormSubmit entrega el detalle al equipo y manda el acuse al cliente.
 // ════════════════════════════════════════════════════════════════
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -31,46 +30,6 @@ type Payload = {
 
 const clean = (v: unknown, max = 2000) =>
   typeof v === "string" ? v.trim().slice(0, max) || null : null;
-
-async function sendMail(
-  to: string | string[],
-  subject: string,
-  text: string,
-  replyTo?: string,
-) {
-  const key = Deno.env.get("RESEND_API_KEY");
-  const from = Deno.env.get("MAIL_FROM");
-  if (!key || !from) {
-    console.error("Resend configuration missing", {
-      apiKeyPresent: Boolean(key),
-      mailFromPresent: Boolean(from),
-    });
-    return { sent: false, reason: "not_configured" };
-  }
-
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from,
-        to,
-        subject,
-        text,
-        ...(replyTo ? { reply_to: replyTo } : {}),
-      }),
-    });
-    if (!res.ok) {
-      console.error("Resend send failed", res.status, (await res.text()).slice(0, 240));
-      return { sent: false, reason: `resend_${res.status}` };
-    }
-    const result = await res.json().catch(() => ({}));
-    return { sent: true, id: result.id ?? null };
-  } catch (error) {
-    console.error("Resend request failed", error);
-    return { sent: false, reason: "network_error" };
-  }
-}
 
 // ── avisos ──────────────────────────────────────────────────────
 
@@ -156,7 +115,7 @@ Deno.serve(async (req) => {
       user_agent: clean(req.headers.get("user-agent"), 300),
     };
 
-    // 1 · guardar la solicitud; los correos se intentan aunque el guardado falle.
+    // Guardar la solicitud; FormSubmit entrega los correos desde el navegador.
     const db = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
@@ -165,22 +124,11 @@ Deno.serve(async (req) => {
       .from("enquiries").insert(row).select().single();
     if (error) console.error("insert falló:", error);
 
-    const firstName = name.split(/\s+/)[0];
-    const customerText = `Hi ${firstName},
-
-Thanks for contacting DiPizza. We have received your event enquiry and are reviewing your date, venue and event details now. Our team will reply the same business day with availability and a tailored proposal.
-
-If it is urgent, call us on (484) 954-7273.
-
-DiPizza — wood-fired pizza catering`;
-
-    const [customerAck, telegram] = await Promise.all([
-      sendMail(email, "We're processing your DiPizza enquiry", customerText),
-      data ? notifyTelegram({ ...row, id: data.id }).catch(() => "falló") : Promise.resolve("sin registro"),
-    ]);
+    const telegram = data
+      ? await notifyTelegram({ ...row, id: data.id }).catch(() => "falló")
+      : "sin registro";
     console.log("solicitud procesada", data?.id ?? "sin registro", {
       saved: !error,
-      customerAck: customerAck.sent,
       telegram,
     });
 
@@ -189,7 +137,6 @@ DiPizza — wood-fired pizza catering`;
         ok: true,
         id: data?.id ?? null,
         saved: !error,
-        emails: { customer: customerAck.sent },
       }),
       { status: 200, headers: { ...head, "Content-Type": "application/json" } },
     );
