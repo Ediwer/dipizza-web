@@ -655,6 +655,7 @@ body::before {
       <span class="script">Follow along</span>
       <p class="lede" style="text-align:center">New seasonal pizzas and the set-ups we are proudest of, posted first on Instagram.</p>
       <a class="btn btn-soft" id="followLink" href="#" target="_blank" rel="noopener noreferrer">Open Instagram</a>
+      <a class="btn btn-soft" href="https://wa.me/14849547273?text=Hello%2C%20I%27m%20interested%20in%20DiPizza%20catering." target="_blank" rel="noopener noreferrer" aria-label="Message DiPizza on WhatsApp">Message us on WhatsApp</a>
     </div>
   </section>
 
@@ -984,7 +985,7 @@ function renderInfo() {
     <div class="info-item"><dt>Notice</dt><dd>${esc(c.notice)}</dd></div>
     <div class="info-item"><dt>Coverage</dt><dd>${esc(c.coverage)}</dd></div>
     <div class="info-item"><dt>Payment</dt><dd>${esc(c.payment)}</dd></div>
-    <div class="info-item"><dt>Reach us</dt><dd><a href="mailto:${esc(c.email)}">${esc(c.email)}</a><br><a href="tel:${esc(c.phone.replace(/[^\d+]/g,""))}">${esc(c.phone)}</a><br>${esc(c.hours)}</dd></div>`;
+    <div class="info-item"><dt>Reach us</dt><dd><a href="mailto:${esc(c.email)}">${esc(c.email)}</a><br><a href="tel:${esc(c.phone.replace(/[^\d+]/g,""))}">${esc(c.phone)}</a><br><a href="https://wa.me/14849547273" target="_blank" rel="noopener noreferrer">Message us on WhatsApp</a><br>${esc(c.hours)}</dd></div>`;
   $("footContact").textContent = c.email + " · " + c.phone;
 }
 
