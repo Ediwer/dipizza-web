@@ -169,11 +169,55 @@ async function loadEnquiries(){
   catch(err){$("summary").textContent="No se pudieron cargar las consultas: "+errorText(err)}
 }
 function runConsultation(){
-  const query=$("search").value.trim();
-  if(query.toLowerCase()==="leave"){window.location.assign("/");return}
   renderEnquiries();
   $("requestList").scrollIntoView({behavior:"smooth",block:"start"});
 }
+const ADMIN_ASSISTANT_REPLIES=[
+  {k:["price","prices","cost","how much","quote","budget","rate"],t:"Open Consultas y presupuestos to find a customer enquiry, review its details and prepare a quote.",a:["Find consultations","#adminEnquiries"]},
+  {k:["minimum","maximum","how many","guests","people","headcount","pax"],t:"Search by the customer's name, event details or guest count in Consultas y presupuestos.",a:["Find consultations","#adminEnquiries"]},
+  {k:["gluten","celiac","coeliac","intolerance","intolerant","vegan","vegetarian","diet","allergy","allergen","halal","kosher","dairy","nut"],t:"Dietary needs are included in the enquiry details. Search the customer's request to review what they asked for.",a:["Find consultations","#adminEnquiries"]},
+  {k:["space","set up","setup","install","power","electricity","indoor","smoke","terrace","water","venue"],t:"Search the enquiry by customer or venue to review the event arrangements.",a:["Find consultations","#adminEnquiries"]},
+  {k:["where","travel","area","coverage","distance","miles","location"],t:"DiPizza serves events in Augusta, Georgia. Search the enquiry to find the customer's venue details.",a:["Find consultations","#adminEnquiries"]},
+  {k:["invoice","company","tax","insurance","payment","terms","deposit","customer","consultation","enquiry","reservation","booking","order","search","find"],t:"Use Consultar to search customer names, emails, event dates, venues, notes and other enquiry details.",a:["Find consultations","#adminEnquiries"]},
+  {k:["date","availability","available","calendar","blocked","reminder","upcoming"],t:"Upcoming confirmed reservations appear in Reminders. Use Calendar to manage blocked dates.",a:["Open calendar","#adminCalendar"]},
+  {k:["menu","pizza","pizzas","food","dietary"],t:"Open the public website to browse the menu and dietary tags.",a:["See the menu","/\u0023menu"]},
+  {k:["photo","photos","gallery","pictures","instagram","follow"],t:"The public website gallery shows event moments and behind the scenes.",a:["Open the gallery","/\u0023gallery"]},
+  {k:["hello","hi","hey","good morning","good afternoon","greetings","ciao"],t:"Hello — the assistant for DiPizza. I can help you find customer enquiries, review reservations and navigate the website. Type Leave to return to Home."},
+  {k:["thanks","thank you","great","perfect","cheers"],t:"You're welcome. Type Leave whenever you want to return to the DiPizza Home page."}
+];
+const ADMIN_ASSISTANT_CHIPS=["Find a consultation","Upcoming reservations?","Where do we travel?","Menu"];
+const adminAssistant=$("adminAssistant"),adminAssistantButton=$("adminAssistantButton"),adminAssistantLog=$("adminAssistantLog");
+let adminAssistantGreeted=false;
+function assistantPush(text,who,action){
+  const bubble=document.createElement("div");bubble.className="assistant-msg "+who;bubble.textContent=text;
+  if(action){const button=document.createElement("button");button.type="button";button.className="assistant-action";button.textContent=action[0];button.addEventListener("click",()=>{
+    if(action[1].startsWith("/")){window.location.assign(action[1]);return}
+    const target=$(action[1].slice(1));
+    if(target&& !$("adminView").hidden)target.scrollIntoView({behavior:"smooth",block:"start"});
+    else if(target){$("accessView").scrollIntoView({behavior:"smooth",block:"start"});$("loginEmail").focus()}
+    adminAssistant.hidden=true;adminAssistantButton.setAttribute("aria-expanded","false");
+  });bubble.append(document.createElement("br"),button)}
+  adminAssistantLog.append(bubble);adminAssistantLog.scrollTop=adminAssistantLog.scrollHeight;
+}
+function adminAssistantAnswer(query){
+  const normalized=query.toLowerCase();let best=null,score=0;
+  for(const item of ADMIN_ASSISTANT_REPLIES){let points=0;for(const term of item.k)if(normalized.includes(term))points+=term.length;if(points>score){score=points;best=item}}
+  return best||{t:"I don't have an answer for that yet. Try searching the enquiries or ask about reservations, dates, the menu or the gallery.",a:["Find consultations","#adminEnquiries"]};
+}
+function adminAssistantAsk(query){
+  const normalized=query.toLowerCase().replace(/\s+/g," ").trim();
+  if(normalized==="leave"){window.location.assign("/");return}
+  assistantPush(query,"me");const answer=adminAssistantAnswer(query);setTimeout(()=>assistantPush(answer.t,"bot",answer.a),350);
+}
+function toggleAdminAssistant(open){
+  adminAssistant.hidden=!open;adminAssistantButton.setAttribute("aria-expanded",String(open));
+  if(open){if(!adminAssistantGreeted){adminAssistantGreeted=true;assistantPush("Hello — the assistant for DiPizza. I can help you find customer enquiries, review reservations and navigate the website. Type Leave to return to Home.","bot")}$("adminAssistantInput").focus()}else adminAssistantButton.focus();
+}
+adminAssistantButton.addEventListener("click",()=>toggleAdminAssistant(adminAssistant.hidden));
+$("adminAssistantForm").addEventListener("submit",event=>{event.preventDefault();const input=$("adminAssistantInput"),query=input.value.trim();if(!query)return;input.value="";adminAssistantAsk(query)});
+$("adminAssistantChips").innerHTML=ADMIN_ASSISTANT_CHIPS.map(text=>`<button type="button">${text}</button>`).join("");
+$("adminAssistantChips").addEventListener("click",event=>{if(event.target.tagName==="BUTTON")adminAssistantAsk(event.target.textContent)});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!adminAssistant.hidden)toggleAdminAssistant(false)});
 function renderUpcoming(){
   const list=$("upcomingList");if(!list)return;list.replaceChildren();
   const today=new Date();today.setHours(0,0,0,0);
