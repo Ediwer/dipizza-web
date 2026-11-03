@@ -67,6 +67,7 @@ async function routeSession(){
     $("signedIn").textContent="Sesión iniciada como "+user.email;
     $("approvals").hidden=!APPROVERS.has((user.email||"").toLowerCase());
     await Promise.all([loadEnquiries(),loadDates(),APPROVERS.has((user.email||"").toLowerCase())?loadApprovals():Promise.resolve()]);
+    if(location.hash==="#approvals"&&APPROVERS.has((user.email||"").toLowerCase()))$("approvals").scrollIntoView({behavior:"smooth",block:"start"});
   }catch(err){
     clearSession();show("access");setAuthTab("login");$("loginMessage").textContent=errorText(err);
   }

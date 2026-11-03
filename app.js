@@ -265,8 +265,6 @@ function renderBrand() {
   $("heroBadge").textContent = b.badge;
   $("heroTitle").innerHTML = headline(b.headline);
   $("heroLede").textContent = b.lede;
-  $("menuTitle").textContent = b.menuTitle;
-  $("menuNote").textContent = b.menuNote;
   $("storyTitle").textContent = b.storyTitle;
   $("storyText").textContent = b.storyText;
   $("followHandle").textContent = b.handle;
@@ -354,10 +352,11 @@ function renderGallery() {
 
 function renderAll() {
   renderPalette(); renderBrand(); renderInfo();
-  renderSignature(); renderMenu(); renderGallery();
+  renderGallery();
 }
 
-$("filters").addEventListener("click", e => {
+const menuFilters=$("filters");
+if(menuFilters)menuFilters.addEventListener("click", e => {
   const b = e.target.closest(".chip");
   if (!b) return;
   state.filter = b.dataset.cat;
@@ -616,8 +615,8 @@ const REPLIES = [
   { k:["gluten","celiac","coeliac","intolerance","intolerant"],
     t:"Tell us about any dietary needs in your enquiry and the team will confirm what we can arrange." },
   { k:["vegan","vegetarian","diet","allergy","allergen","halal","kosher","dairy","nut"],
-    t:"Vegetarian and no-tomato options are marked on the menu. Share any other dietary needs with the team.",
-    a:["See the menu", "#menu"] },
+    t:"Tell us about dietary needs and pizza preferences in your enquiry, and the team will confirm what we can arrange.",
+    a:["Start an enquiry", "#enquiry"] },
   { k:["space","set up","setup","install","power","electricity","metres","meters","indoor","smoke","terrace","water"],
     t:"Share the venue details in your enquiry and our team will confirm the arrangements for your event.",
     a:["Start an enquiry", "#enquiry"] },
@@ -630,11 +629,11 @@ const REPLIES = [
     t:"Send us your preferred date and we will confirm availability.",
     a:["Check a date", "#enquiry"] },
   { k:["menu","pizza","pizzas","card","kinds","types","which","options","food"],
-    t:"Browse the full menu to see every pizza, ingredient and dietary tag.",
-    a:["Open the menu", "#menu"] },
+    t:"Tell us which pizzas you have in mind in the enquiry form. The team can confirm ingredients and dietary options.",
+    a:["Start an enquiry", "#enquiry"] },
   { k:["favourite","favorite","popular","recommend","best","suggest"],
-    t:"Browse the menu for our guest favourites and full range of pizzas.",
-    a:["Open the menu", "#menu"] },
+    t:"Share what you and your guests enjoy in the enquiry form, and the team can suggest options for your event.",
+    a:["Start an enquiry", "#enquiry"] },
   { k:["photo","photos","gallery","pictures","see","look","instagram","follow"],
     t:"The gallery shows moments from events and behind the scenes. The menu has the individual pizzas.",
     a:["Open the gallery", "#gallery"] },
@@ -649,7 +648,7 @@ const REPLIES = [
 ];
 
 const FALLBACK = {
-  t:"I don't have an answer for that yet. Browse the menu or send your event details through the enquiry form and the team will help.",
+  t:"I don't have an answer for that yet. Send your event details through the enquiry form and the team will help.",
   a:["Write to the team", "#enquiry"]
 };
 

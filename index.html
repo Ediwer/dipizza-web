@@ -360,6 +360,8 @@ img { display: block; }
 }
 .form-foot { display: flex; align-items: center; gap: 16px; justify-content: space-between; flex-wrap: wrap; }
 .form-foot small { color: var(--ink-3); font-size: .8125rem; max-width: 36ch; }
+.privacy-consent { display:flex; align-items:flex-start; gap:10px; margin:8px 0 18px; color:var(--ink-3); font-size:.875rem; }
+.privacy-consent input { flex:none; margin-top:.3em; accent-color:var(--gold); }
 .form-error { margin: 14px 0 0; font-size: .875rem; color: #FF9B8F; }
 .form-error[hidden] { display: none; }
 .sent {
@@ -481,7 +483,6 @@ body::before {
     <a class="mark" id="navMark" href="#top"></a>
     <nav class="nav-links" aria-label="Sections">
       <a href="#top">Home</a>
-      <a href="#menu">Menu</a>
       <a href="#story">Our Story</a>
       <a href="#gallery">Gallery</a>
     </nav>
@@ -499,7 +500,6 @@ body::before {
         <h1 id="heroTitle"></h1>
         <p class="lede" id="heroLede"></p>
         <div class="hero-actions">
-          <a class="btn" href="#menu">See the Menu</a>
           <a class="btn btn-soft" href="#enquiry">Start an Enquiry</a>
         </div>
       </div>
@@ -526,29 +526,6 @@ body::before {
         <p>Backyard, park, warehouse or parking lot. Oven, prep table and crew travel to the venue — you supply the guests.</p>
       </div>
     </div>
-  </section>
-
-  <!-- ── signature four ───────────────────────────────── -->
-  <section class="rail band" id="signature">
-    <div class="sec-head">
-      <p class="kicker">Guest Favourites</p>
-      <h2>The four that disappear first</h2>
-      <p>Fourteen pizzas on the full menu, three families, and these are the ones we make the most of.</p>
-    </div>
-    <div class="cards" id="signatureCards"></div>
-    <div class="center-cta"><a class="btn btn-line" href="#menu">View the Full Menu</a></div>
-  </section>
-
-  <!-- ── full menu ────────────────────────────────────── -->
-  <section class="rail band" id="menu">
-    <div class="sec-head">
-      <p class="kicker">The Card</p>
-      <h2 id="menuTitle"></h2>
-      <p>Explore the full menu of traditional, meat and veggie pizzas. Each one is made with fresh mozzarella and hand-stretched dough.</p>
-    </div>
-    <div class="filters" id="filters" role="group" aria-label="Filter the menu"></div>
-    <div class="menu-list" id="menuList"></div>
-    <p class="menu-note" id="menuNote"></p>
   </section>
 
   <!-- ── story / made to order ────────────────────────── -->
@@ -639,6 +616,7 @@ body::before {
            tiene valor en app.js; mientras este vacio el resto de comprobaciones
            (reto firmado, limite por IP, trampa) siguen activas. -->
       <div id="turnstile" class="field" hidden></div>
+      <label class="privacy-consent"><input type="checkbox" name="privacy_acknowledged" required><span>I have read the <a href="privacy.html" target="_blank" rel="noopener">Privacy Notice</a> and understand how my information will be used to respond to this enquiry.</span></label>
       <div class="form-foot">
         <small>We use these details only to prepare your proposal. <a href="privacy.html">Privacy notice</a>.</small>
         <button class="btn" type="submit">Send Enquiry</button>
