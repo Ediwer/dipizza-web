@@ -134,20 +134,30 @@ function makeCard(row){
   const title=document.createElement("div"),h=document.createElement("h3"),time=document.createElement("time");
   h.textContent=row.name||"Sin nombre";time.textContent=new Date(row.created_at).toLocaleString("es-US",{dateStyle:"medium",timeStyle:"short"});title.append(h,time);head.append(title);article.append(head);
   const dl=document.createElement("dl");
-  const values=[["Correo",row.email],["Teléfono",row.phone],["Empresa",row.company],["Evento",row.occasion],["Fecha",row.event_date],["Invitados",row.guests==null?"":String(row.guests)],["Lugar",row.venue],["Detalles",row.details]];
+  const values=[["Correo",row.email],["Teléfono",row.phone],["Empresa",row.company],["Evento",row.occasion],["Invitados",row.guests==null?"":String(row.guests)],["Lugar",row.venue],["Detalles",row.details]];
   for(const [label,value] of values){const pair=makePair(label,value);if(label==="Correo"&&value){const link=document.createElement("a");link.href="mailto:"+encodeURIComponent(value);link.textContent=value;pair[1].replaceChildren(link)}if(label==="Teléfono"&&value){const link=document.createElement("a");link.href="tel:"+value.replace(/[^+\d]/g,"");link.textContent=value;pair[1].replaceChildren(link)}dl.append(...pair)}
   article.append(dl);
   const form=document.createElement("div");form.className="request-controls";
+  const dateWrap=document.createElement("div"),dateLabel=document.createElement("label"),eventDate=document.createElement("input");dateWrap.className="field";dateLabel.textContent="Fecha del evento";eventDate.type="date";eventDate.value=row.event_date||"";eventDate.required=row.status==="confirmed";dateWrap.append(dateLabel,eventDate);
   const statusWrap=document.createElement("div"),statusLabel=document.createElement("label"),status=document.createElement("select");statusWrap.className="field";statusLabel.textContent="Estado";status.append(new Option("Pendiente","new"),new Option("Presupuesto enviado","quoted"),new Option("Confirmado","confirmed"),new Option("Completado","done"),new Option("No concretado","lost"));status.value=row.status||"new";statusWrap.append(statusLabel,status);
   const quoteWrap=document.createElement("div"),quoteLabel=document.createElement("label"),quote=document.createElement("input");quoteWrap.className="field";quoteLabel.textContent="Total del presupuesto ($)";quote.type="number";quote.min="0";quote.step="0.01";quote.value=row.quote_total??"";quoteWrap.append(quoteLabel,quote);
   const notesWrap=document.createElement("div"),notesLabel=document.createElement("label"),notes=document.createElement("textarea");notesWrap.className="field";notesLabel.textContent="Notas internas";notes.value=row.notes||"";notesWrap.append(notesLabel,notes);
   const save=document.createElement("button");save.type="button";save.className="primary";save.textContent="Guardar cambios";
-  save.addEventListener("click",async()=>{save.disabled=true;try{await api("/rest/v1/enquiries?id=eq."+encodeURIComponent(row.id),{method:"PATCH",headers:{Prefer:"return=minimal"},body:JSON.stringify({status:status.value,quote_total:quote.value===""?null:Number(quote.value),notes:notes.value})});row.status=status.value;row.quote_total=quote.value===""?null:Number(quote.value);row.notes=notes.value;save.textContent="Guardado";setTimeout(()=>save.textContent="Guardar cambios",1200)}catch(err){alert(errorText(err))}finally{save.disabled=false}});
-  const actionBox=document.createElement("div");actionBox.append(save);form.append(statusWrap,quoteWrap,notesWrap,actionBox);article.append(form);return article;
+  const confirm=document.createElement("button");confirm.type="button";confirm.className="quiet";confirm.textContent=row.status==="confirmed"?"Reservación confirmada":"Confirmar reservación";confirm.disabled=row.status==="confirmed";
+  const persist=async(forceConfirm=false,sourceButton=save)=>{
+    const nextStatus=forceConfirm?"confirmed":status.value;
+    if(nextStatus==="confirmed"&&!eventDate.value){eventDate.required=true;eventDate.reportValidity();return}
+    eventDate.required=nextStatus==="confirmed";sourceButton.disabled=true;
+    const update={status:nextStatus,event_date:eventDate.value||null,quote_total:quote.value===""?null:Number(quote.value),notes:notes.value};
+    try{await api("/rest/v1/enquiries?id=eq."+encodeURIComponent(row.id),{method:"PATCH",headers:{Prefer:"return=minimal"},body:JSON.stringify(update)});Object.assign(row,update);status.value=row.status;save.textContent="Guardado";setTimeout(()=>save.textContent="Guardar cambios",1200);confirm.disabled=row.status==="confirmed";confirm.textContent=row.status==="confirmed"?"Reservación confirmada":"Confirmar reservación";renderUpcoming()}
+    catch(err){alert(errorText(err))}finally{sourceButton.disabled=false}
+  };
+  save.addEventListener("click",()=>persist(false,save));confirm.addEventListener("click",()=>persist(true,confirm));
+  const actionBox=document.createElement("div");actionBox.className="request-actions";actionBox.append(save,confirm);form.append(dateWrap,statusWrap,quoteWrap,notesWrap,actionBox);article.append(form);return article;
 }
 function renderEnquiries(){
   const status=$("statusFilter").value,q=$("search").value.trim().toLowerCase();
-  const filtered=enquiries.filter(x=>(status==="all"||x.status===status)&&(!q||[x.name,x.email,x.company,x.phone,x.venue,x.details].some(v=>String(v||"").toLowerCase().includes(q))));
+  const filtered=enquiries.filter(x=>(status==="all"||x.status===status)&&(!q||[x.id,x.name,x.email,x.company,x.phone,x.occasion,x.event_date,x.guests,x.venue,x.details,x.status,x.quote_total,x.notes].some(v=>String(v||"").toLowerCase().includes(q))));
   $("summary").textContent=filtered.length+" solicitud"+(filtered.length===1?"":"es")+" · "+enquiries.filter(x=>x.status==="new").length+" pendiente(s)";
   const list=$("requestList");list.replaceChildren();
   if(!filtered.length){const p=document.createElement("p");p.className="empty";p.textContent="No hay solicitudes con ese filtro.";list.append(p);return}
@@ -155,8 +165,32 @@ function renderEnquiries(){
 }
 async function loadEnquiries(){
   $("summary").textContent="Cargando consultas…";
-  try{enquiries=await api("/rest/v1/enquiries?select=id,created_at,name,company,email,phone,occasion,event_date,guests,venue,details,status,notes,quote_total&order=created_at.desc&limit=300");renderEnquiries()}
+  try{const all=[];let offset=0,batch;do{batch=await api("/rest/v1/enquiries?select=id,created_at,name,company,email,phone,occasion,event_date,guests,venue,details,status,notes,quote_total&order=created_at.desc&limit=500&offset="+offset);all.push(...batch);offset+=500}while(batch.length===500);enquiries=all;renderEnquiries();renderUpcoming()}
   catch(err){$("summary").textContent="No se pudieron cargar las consultas: "+errorText(err)}
+}
+function runConsultation(){
+  const query=$("search").value.trim();
+  if(query.toLowerCase()==="leave"){window.location.assign("/");return}
+  renderEnquiries();
+  $("requestList").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function renderUpcoming(){
+  const list=$("upcomingList");if(!list)return;list.replaceChildren();
+  const today=new Date();today.setHours(0,0,0,0);
+  const upcoming=enquiries.filter(row=>row.status==="confirmed"&&row.event_date).map(row=>{const date=new Date(row.event_date+"T00:00:00");return{row,date,days:Math.round((date-today)/86400000)}}).filter(item=>item.days>=0&&item.days<=30).sort((a,b)=>a.date-b.date);
+  $("upcomingSummary").textContent=upcoming.length?upcoming.length+" reserva"+(upcoming.length===1?"":"s")+" confirmada"+(upcoming.length===1?"":"s")+" en los próximos 30 días":"Sin reservas confirmadas en los próximos 30 días.";
+  if(!upcoming.length){const p=document.createElement("p");p.className="empty";p.textContent="Cuando confirmes una reserva con fecha, aparecerá aquí como recordatorio.";list.append(p);return}
+  for(const item of upcoming){const card=document.createElement("article");card.className="request";const h=document.createElement("h3");h.textContent=item.row.name||"Evento";const when=document.createElement("p");when.className="summary";when.textContent=item.date.toLocaleDateString("es-US",{dateStyle:"full"})+" · "+(item.days===0?"Hoy":item.days===1?"Mañana":"En "+item.days+" días");const venue=document.createElement("p");venue.className="muted";venue.textContent=item.row.venue||"Lugar por confirmar";const open=document.createElement("button");open.type="button";open.className="quiet";open.textContent="Ver consulta";open.addEventListener("click",()=>{const term=item.row.id||item.row.email||item.row.name;$("statusFilter").value="all";$("search").value=term;runConsultation();});card.append(h,when,venue,open);list.append(card)}
+}
+function xmlEscape(value){return String(value??"").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&apos;")}
+function exportEnquiries(){
+  if(!enquiries.length){alert("No hay consultas cargadas para exportar.");return}
+  const columns=[["ID",r=>r.id],["Fecha de ingreso",r=>r.created_at],["Cliente",r=>r.name],["Empresa",r=>r.company],["Correo",r=>r.email],["Teléfono",r=>r.phone],["Ocasión",r=>r.occasion],["Fecha del evento",r=>r.event_date],["Invitados",r=>r.guests],["Lugar",r=>r.venue],["Detalles",r=>r.details],["Estado",r=>r.status],["Total del presupuesto",r=>r.quote_total],["Notas internas",r=>r.notes]];
+  const rowXml=cells=>"<Row>"+cells.map(value=>`<Cell><Data ss:Type="String">${xmlEscape(value)}</Data></Cell>`).join("")+"</Row>";
+  const rows=[rowXml(columns.map(([label])=>label)),...enquiries.map(row=>rowXml(columns.map(([,get])=>get(row))))].join("");
+  const xml=`<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Worksheet ss:Name="Consultas"><Table>${rows}</Table></Worksheet></Workbook>`;
+  const blob=new Blob(["\ufeff",xml],{type:"application/vnd.ms-excel;charset=utf-8"}),url=URL.createObjectURL(blob),link=document.createElement("a");
+  link.href=url;link.download="dipizza-consultas-"+new Date().toISOString().slice(0,10)+".xls";document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 async function loadApprovals(){
   try{
@@ -189,7 +223,7 @@ $("dateForm").addEventListener("submit",async e=>{
   try{await api("/rest/v1/blocked_dates?on_conflict=day",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({day:$("blockedDay").value,reason:$("blockedReason").value.trim()||null})});$("dateForm").reset();$("dateMessage").className="success";$("dateMessage").textContent="Fecha bloqueada.";await loadDates()}
   catch(err){$("dateMessage").className="error";$("dateMessage").textContent=errorText(err)}
 });
-$("refresh").addEventListener("click",loadEnquiries);$("search").addEventListener("input",renderEnquiries);$("statusFilter").addEventListener("change",renderEnquiries);
+$("refresh").addEventListener("click",loadEnquiries);$("search").addEventListener("input",renderEnquiries);$("search").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();runConsultation()}});$("searchButton").addEventListener("click",runConsultation);$("exportExcel").addEventListener("click",exportEnquiries);$("statusFilter").addEventListener("change",renderEnquiries);$("leaveAdmin").addEventListener("click",()=>window.location.assign("/"));
 function initializeAuthPage(){
   const fromHash=new URLSearchParams(window.location.hash.replace(/^#/,""));
   const fromQuery=new URLSearchParams(window.location.search);
