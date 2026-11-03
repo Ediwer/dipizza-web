@@ -84,7 +84,7 @@ $("resetBackToLogin").addEventListener("click",()=>{clearSession();show("access"
 $("forgotForm").addEventListener("submit",async e=>{
   e.preventDefault();$("forgotMessage").className="error";$("forgotMessage").textContent="Enviando solicitud…";
   const email=$("forgotEmail").value.trim().toLowerCase();
-  const redirectTo=new URL("admin.html#recovery",window.location.origin).href;
+  const redirectTo="https://dipizzacatering.com/admin.html";
   const query=new URLSearchParams({redirect_to:redirectTo});
   try{await rawJson("/auth/v1/recover?"+query.toString(),{method:"POST",body:JSON.stringify({email})});$("forgotMessage").className="success";$("forgotMessage").textContent="Si existe una cuenta con ese correo, recibirás un enlace para restablecer la contraseña."}
   catch(err){$("forgotMessage").className="error";$("forgotMessage").textContent=errorText(err)}
