@@ -1,8 +1,9 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const ORIGINS = ["https://dipizzacatering.com",
+const ORIGINS = [
   "https://www.dipizzacatering.com",
-  "https://ediwer.github.io", "http://localhost:3000", "http://127.0.0.1:5500"];
+  "https://dipizzacatering.com",
+];
 const BOOTSTRAP_ADMINS = new Set(["dipizza00@gmail.com", "ediwergraterol@gmail.com"]);
 const cors = (origin: string | null) => ({
   "Access-Control-Allow-Origin": origin && ORIGINS.includes(origin) ? origin : ORIGINS[0],

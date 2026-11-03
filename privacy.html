@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy Notice — DiPizza</title>
 <meta name="description" content="How DiPizza uses information submitted through its catering enquiry form.">
-<link rel="canonical" href="https://dipizzacatering.com/privacy.html">
+<link rel="canonical" href="https://www.dipizzacatering.com/privacy.html">
 <link rel="icon" href="images/favicon.png" type="image/png">
 <meta name="theme-color" content="#050505">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap">
@@ -25,8 +25,10 @@ header,main,footer{width:min(900px,calc(100% - 40px));margin:auto}header{padding
 <h2>Information you may provide</h2>
 <p>This can include your name, company, email address, phone number, event type and date, guest count, venue, and any details you choose to include.</p>
 <h2>How your enquiry is handled</h2>
-<p>Enquiry details are stored in DiPizza’s Supabase project so the team can review and manage requests. The form also uses FormSubmit to deliver the enquiry to <a href="mailto:dipizza00@gmail.com">dipizza00@gmail.com</a> and <a href="mailto:ediwergraterol@gmail.com">ediwergraterol@gmail.com</a>, and to send an acknowledgement to the email address you provide.</p>
+<p>Enquiry details are stored in DiPizza’s Supabase project so the team can review and manage requests. From there the enquiry is emailed to the DiPizza events inbox, and an acknowledgement is sent to the email address you provide. Email delivery is handled by FormSubmit.</p>
 <p>The enquiry form does not collect payment information. Information is used to respond to and manage your catering enquiry.</p>
+<h2>Protecting the form from automated abuse</h2>
+<p>To stop bots and automated scripts from flooding the form, each submission is checked and the number of enquiries from the same connection is limited. For this we store a one-way cryptographic hash of your IP address, never the address itself, along with the time and the result of the attempt. These records cannot be used to recover your IP address or to identify you, and they are deleted after seven days. Your browser’s user agent is stored with the enquiry for the same reason.</p>
 <h2>Your choices</h2>
 <p>For questions about an enquiry or to request correction or deletion of information you submitted, contact <a href="mailto:dipizza00@gmail.com">dipizza00@gmail.com</a>.</p>
 </div>
