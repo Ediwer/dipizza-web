@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DiPizza — Wood-Fired Pizza Catering</title>
 <meta name="description" content="Wood-fired pizza catering for parties, weddings and corporate events. We bring the oven to your venue and cook Neapolitan pizza in front of your guests.">
-<link rel="canonical" href="https://ediwer.github.io/dipizza-web/">
+<link rel="canonical" href="https://dipizzacatering.com/">
 <link rel="icon" href="images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 <meta name="theme-color" content="#050505">
@@ -14,13 +14,13 @@
 <meta property="og:site_name" content="DiPizza">
 <meta property="og:title" content="DiPizza — Wood-Fired Pizza Catering">
 <meta property="og:description" content="Wood-fired pizza catering for parties, weddings and corporate events. We bring the oven to your venue and cook Neapolitan pizza in front of your guests.">
-<meta property="og:url" content="https://ediwer.github.io/dipizza-web/">
-<meta property="og:image" content="https://ediwer.github.io/dipizza-web/images/og-logo.png">
+<meta property="og:url" content="https://dipizzacatering.com/">
+<meta property="og:image" content="https://dipizzacatering.com/images/og-logo.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ediwer.github.io/dipizza-web/images/og-logo.png">
+<meta name="twitter:image" content="https://dipizzacatering.com/images/og-logo.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Parisienne&display=swap">
 
 <style>
@@ -641,7 +641,7 @@ body::before {
         </label>
       </p>
       <div class="form-foot">
-        <small>We use these details only to prepare your proposal.</small>
+        <small>We use these details only to prepare your proposal. <a href="privacy.html">Privacy notice</a>.</small>
         <button class="btn" type="submit">Send Enquiry</button>
       </div>
     </form>
@@ -662,6 +662,7 @@ body::before {
     <span class="mark" id="footMark"></span>
     <span id="footTag"></span>
     <span id="footContact"></span>
+    <a href="privacy.html">Privacy</a>
   </footer>
 </main>
 
@@ -713,8 +714,8 @@ const DEFAULT_BRAND = {
   menuNote: "Vegetarian and no-tomato options are marked on the menu.",
   storyTitle: "Made for your celebration",
   storyText: "Great pizza, shared with the people who matter. Tell us about your event and we will help plan the details.",
-  handle: "@dipizza",
-  instagram: "https://instagram.com/",
+  handle: "@dipizza00",
+  instagram: "https://www.instagram.com/dipizza00/",
   tagline: "Wood-fired pizza catering · est. 2016"
 };
 
@@ -1204,7 +1205,7 @@ $("form").addEventListener("submit", async e => {
   f.querySelector('[name="_autoresponse"]').value =
     `Hi ${(fields.name || "there").trim().split(/\s+/)[0]}, thanks for contacting DiPizza. We have received your event enquiry and are reviewing your date, venue and event details. Our team will reply the same business day with availability and a tailored proposal. If it is urgent, call (484) 954-7273. — DiPizza, wood-fired pizza catering`;
   f.querySelector('[name="_next"]').value =
-    "https://ediwer.github.io/dipizza-web/?enquiry=received&saved=" + (state.saved ? "1" : "0") + "#enquiry";
+    "https://dipizzacatering.com/?enquiry=received&saved=" + (state.saved ? "1" : "0") + "#enquiry";
 
   activeEnquiryDelivery = state;
   formSubmitTimeout = setTimeout(() => {

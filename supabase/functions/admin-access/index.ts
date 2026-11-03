@@ -1,6 +1,8 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const ORIGINS = ["https://ediwer.github.io", "http://localhost:3000", "http://127.0.0.1:5500"];
+const ORIGINS = ["https://dipizzacatering.com",
+  "https://www.dipizzacatering.com",
+  "https://ediwer.github.io", "http://localhost:3000", "http://127.0.0.1:5500"];
 const BOOTSTRAP_ADMINS = new Set(["dipizza00@gmail.com", "ediwergraterol@gmail.com"]);
 const cors = (origin: string | null) => ({
   "Access-Control-Allow-Origin": origin && ORIGINS.includes(origin) ? origin : ORIGINS[0],
@@ -69,7 +71,7 @@ Deno.serve(async (req) => {
           name: "DiPizza · solicitud de acceso administrador",
           email,
           request: String(data.id),
-          review: "Solicitudes: https://ediwer.github.io/dipizza-web/admin.html#approvals. Inicia sesión con uno de los correos propietarios para aprobar o rechazar.",
+          review: "Solicitudes: https://dipizzacatering.com/admin.html#approvals. Inicia sesión con uno de los correos propietarios para aprobar o rechazar.",
           _subject: "Aprobación de nuevo usuario administrador · DiPizza",
           _cc: "ediwergraterol@gmail.com",
           _template: "table",

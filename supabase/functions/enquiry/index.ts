@@ -9,6 +9,8 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const ORIGINS = [
+  "https://dipizzacatering.com",
+  "https://www.dipizzacatering.com",
   "https://ediwer.github.io",
   "http://localhost:3000",
   "http://127.0.0.1:5500",
