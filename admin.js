@@ -155,9 +155,14 @@ function makeCard(row){
   save.addEventListener("click",()=>persist(false,save));confirm.addEventListener("click",()=>persist(true,confirm));
   const actionBox=document.createElement("div");actionBox.className="request-actions";actionBox.append(save,confirm);form.append(dateWrap,statusWrap,quoteWrap,notesWrap,actionBox);article.append(form);return article;
 }
+/* Un solo filtro para la lista y para el asistente, para que los dos
+   cuenten siempre lo mismo. */
+function matchEnquiries(term,status){
+  const q=String(term||"").trim().toLowerCase();
+  return enquiries.filter(x=>(status==="all"||x.status===status)&&(!q||[x.id,x.name,x.email,x.company,x.phone,x.occasion,x.event_date,x.guests,x.venue,x.details,x.status,x.quote_total,x.notes].some(v=>String(v||"").toLowerCase().includes(q))));
+}
 function renderEnquiries(){
-  const status=$("statusFilter").value,q=$("search").value.trim().toLowerCase();
-  const filtered=enquiries.filter(x=>(status==="all"||x.status===status)&&(!q||[x.id,x.name,x.email,x.company,x.phone,x.occasion,x.event_date,x.guests,x.venue,x.details,x.status,x.quote_total,x.notes].some(v=>String(v||"").toLowerCase().includes(q))));
+  const filtered=matchEnquiries($("search").value,$("statusFilter").value);
   $("summary").textContent=filtered.length+" solicitud"+(filtered.length===1?"":"es")+" · "+enquiries.filter(x=>x.status==="new").length+" pendiente(s)";
   const list=$("requestList");list.replaceChildren();
   if(!filtered.length){const p=document.createElement("p");p.className="empty";p.textContent="No hay solicitudes con ese filtro.";list.append(p);return}
@@ -172,52 +177,146 @@ function runConsultation(){
   renderEnquiries();
   $("requestList").scrollIntoView({behavior:"smooth",block:"start"});
 }
-const ADMIN_ASSISTANT_REPLIES=[
-  {k:["price","prices","cost","how much","quote","budget","rate"],t:"Open Consultas y presupuestos to find a customer enquiry, review its details and prepare a quote.",a:["Find consultations","#adminEnquiries"]},
-  {k:["minimum","maximum","how many","guests","people","headcount","pax"],t:"Search by the customer's name, event details or guest count in Consultas y presupuestos.",a:["Find consultations","#adminEnquiries"]},
-  {k:["gluten","celiac","coeliac","intolerance","intolerant","vegan","vegetarian","diet","allergy","allergen","halal","kosher","dairy","nut"],t:"Dietary needs are included in the enquiry details. Search the customer's request to review what they asked for.",a:["Find consultations","#adminEnquiries"]},
-  {k:["space","set up","setup","install","power","electricity","indoor","smoke","terrace","water","venue"],t:"Search the enquiry by customer or venue to review the event arrangements.",a:["Find consultations","#adminEnquiries"]},
-  {k:["where","travel","area","coverage","distance","miles","location"],t:"DiPizza serves events in Augusta, Georgia. Search the enquiry to find the customer's venue details.",a:["Find consultations","#adminEnquiries"]},
-  {k:["invoice","company","tax","insurance","payment","terms","deposit","customer","consultation","enquiry","reservation","booking","order","search","find"],t:"Use Consultar to search customer names, emails, event dates, venues, notes and other enquiry details.",a:["Find consultations","#adminEnquiries"]},
-  {k:["date","availability","available","calendar","blocked","reminder","upcoming"],t:"Upcoming confirmed reservations appear in Reminders. Use Calendar to manage blocked dates.",a:["Open calendar","#adminCalendar"]},
-  {k:["menu","pizza","pizzas","food","dietary"],t:"Open the public website to browse the menu and dietary tags.",a:["See the menu","/\u0023menu"]},
-  {k:["photo","photos","gallery","pictures","instagram","follow"],t:"The public website gallery shows event moments and behind the scenes.",a:["Open the gallery","/\u0023gallery"]},
-  {k:["hello","hi","hey","good morning","good afternoon","greetings","ciao"],t:"Hello — the assistant for DiPizza. I can help you find customer enquiries, review reservations and navigate the website. Type Leave to return to Home."},
-  {k:["thanks","thank you","great","perfect","cheers"],t:"You're welcome. Type Leave whenever you want to return to the DiPizza Home page."}
-];
-const ADMIN_ASSISTANT_CHIPS=["Find a consultation","Upcoming reservations?","Where do we travel?","Menu"];
-const adminAssistant=$("adminAssistant"),adminAssistantButton=$("adminAssistantButton"),adminAssistantLog=$("adminAssistantLog");
-let adminAssistantGreeted=false;
-function assistantPush(text,who,action){
+/* ── asistente del panel ──────────────────────────────────────────
+   No es un FAQ: es la via rapida para consultar y filtrar. Lo que no
+   sea un comando se trata como busqueda sobre las consultas ya
+   cargadas, que es lo que mas se usa en el dia a dia. */
+const STATUS_LABEL={new:["pendiente","pendientes"],quoted:["con presupuesto enviado","con presupuesto enviado"],confirmed:["confirmada","confirmadas"],done:["completada","completadas"],lost:["no concretada","no concretadas"]};
+const statusWord=(status,count=2)=>(STATUS_LABEL[status]||[status,status])[count===1?0:1];
+const assistant=$("adminAssistant"),assistantButton=$("adminAssistantButton"),assistantLog=$("adminAssistantLog");
+let assistantGreeted=false;
+const signedIn=()=>!$("adminView").hidden;
+function assistantPush(text,who,actions){
   const bubble=document.createElement("div");bubble.className="assistant-msg "+who;bubble.textContent=text;
-  if(action){const button=document.createElement("button");button.type="button";button.className="assistant-action";button.textContent=action[0];button.addEventListener("click",()=>{
-    if(action[1].startsWith("/")){window.location.assign(action[1]);return}
-    const target=$(action[1].slice(1));
-    if(target&& !$("adminView").hidden)target.scrollIntoView({behavior:"smooth",block:"start"});
-    else if(target){$("accessView").scrollIntoView({behavior:"smooth",block:"start"});$("loginEmail").focus()}
-    adminAssistant.hidden=true;adminAssistantButton.setAttribute("aria-expanded","false");
-  });bubble.append(document.createElement("br"),button)}
-  adminAssistantLog.append(bubble);adminAssistantLog.scrollTop=adminAssistantLog.scrollHeight;
+  if(actions&&actions.length){
+    bubble.append(document.createElement("br"));
+    for(const action of actions){
+      const button=document.createElement("button");button.type="button";button.className="assistant-action";button.textContent=action.label;
+      button.addEventListener("click",action.run);bubble.append(button,document.createTextNode(" "));
+    }
+  }
+  assistantLog.append(bubble);assistantLog.scrollTop=assistantLog.scrollHeight;
+  return bubble;
 }
-function adminAssistantAnswer(query){
-  const normalized=query.toLowerCase();let best=null,score=0;
-  for(const item of ADMIN_ASSISTANT_REPLIES){let points=0;for(const term of item.k)if(normalized.includes(term))points+=term.length;if(points>score){score=points;best=item}}
-  return best||{t:"I don't have an answer for that yet. Try searching the enquiries or ask about reservations, dates, the menu or the gallery.",a:["Find consultations","#adminEnquiries"]};
+const assistantSay=(text,actions)=>setTimeout(()=>assistantPush(text,"bot",actions),200);
+function assistantGo(id){const target=$(id);if(target)target.scrollIntoView({behavior:"smooth",block:"start"});toggleAssistant(false)}
+const goToList=()=>({label:"Ver la lista",run:()=>assistantGo("adminEnquiries")});
+
+/* Deja la barra de busqueda y el desplegable exactamente como diga el
+   asistente, para que la pantalla y el chat nunca digan cosas distintas. */
+function applyFilter(term,status){
+  $("search").value=term;$("statusFilter").value=status;renderEnquiries();
+  return matchEnquiries(term,status);
 }
-function adminAssistantAsk(query){
-  const normalized=query.toLowerCase().replace(/\s+/g," ").trim();
-  if(normalized==="leave"){window.location.assign("/");return}
-  assistantPush(query,"me");const answer=adminAssistantAnswer(query);setTimeout(()=>assistantPush(answer.t,"bot",answer.a),350);
+const plural=(n,one,many)=>n+" "+(n===1?one:many);
+function openEnquiry(row){applyFilter(row.id,"all");assistantGo("adminEnquiries")}
+
+function assistantSearch(term){
+  if(!signedIn()){assistantSay("Inicia sesión y vuelve a preguntar: sin sesión no puedo leer las consultas.");return}
+  const found=applyFilter(term,"all");
+  if(!found.length){
+    assistantSay("Ninguna consulta coincide con «"+term+"». Busco por nombre, empresa, correo, teléfono, lugar, fecha, notas y estado.",
+      [{label:"Quitar el filtro",run:()=>{applyFilter("","all");assistantPush("Filtro quitado.","bot")}}]);
+    return;
+  }
+  const actions=found.slice(0,3).map(row=>({
+    label:(row.name||"Sin nombre")+" · "+statusWord(row.status,1),
+    run:()=>openEnquiry(row),
+  }));
+  if(found.length>3)actions.push(goToList());
+  assistantSay(plural(found.length,"consulta coincide","consultas coinciden")+" con «"+term+"». La lista ya está filtrada.",actions);
 }
-function toggleAdminAssistant(open){
-  adminAssistant.hidden=!open;adminAssistantButton.setAttribute("aria-expanded",String(open));
-  if(open){if(!adminAssistantGreeted){adminAssistantGreeted=true;assistantPush("Hello — the assistant for DiPizza. I can help you find customer enquiries, review reservations and navigate the website. Type Leave to return to Home.","bot")}$("adminAssistantInput").focus()}else adminAssistantButton.focus();
+
+function filterByStatus(status){
+  if(!signedIn()){assistantSay("Inicia sesión primero para filtrar las consultas.");return}
+  const found=applyFilter("",status);
+  if(!found.length){assistantSay(status==="all"?"No hay ninguna consulta todavía.":"No hay consultas "+statusWord(status)+".");return}
+  const what=status==="all"?"en total":statusWord(status,found.length);
+  assistantSay(plural(found.length,"consulta","consultas")+" "+what+". Ya está filtrado.",[goToList()]);
 }
-adminAssistantButton.addEventListener("click",()=>toggleAdminAssistant(adminAssistant.hidden));
-$("adminAssistantForm").addEventListener("submit",event=>{event.preventDefault();const input=$("adminAssistantInput"),query=input.value.trim();if(!query)return;input.value="";adminAssistantAsk(query)});
-$("adminAssistantChips").innerHTML=ADMIN_ASSISTANT_CHIPS.map(text=>`<button type="button">${text}</button>`).join("");
-$("adminAssistantChips").addEventListener("click",event=>{if(event.target.tagName==="BUTTON")adminAssistantAsk(event.target.textContent)});
-document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!adminAssistant.hidden)toggleAdminAssistant(false)});
+
+function showSummary(){
+  if(!signedIn()){assistantSay("Inicia sesión primero para ver el resumen.");return}
+  if(!enquiries.length){assistantSay("Todavía no hay consultas cargadas.");return}
+  const counts=Object.keys(STATUS_LABEL).map(s=>[s,enquiries.filter(x=>x.status===s).length]).filter(([,n])=>n);
+  assistantSay(plural(enquiries.length,"consulta","consultas")+" en total: "+counts.map(([s,n])=>n+" "+statusWord(s,n)).join(" · ")+".",
+    counts.map(([s])=>({label:statusWord(s),run:()=>filterByStatus(s)})));
+}
+
+function showUpcoming(){
+  if(!signedIn()){assistantSay("Inicia sesión primero para ver la agenda.");return}
+  const today=new Date();today.setHours(0,0,0,0);
+  const upcoming=enquiries.filter(r=>r.status==="confirmed"&&r.event_date)
+    .map(r=>({row:r,days:Math.round((new Date(r.event_date+"T00:00:00")-today)/86400000)}))
+    .filter(i=>i.days>=0&&i.days<=30).sort((a,b)=>a.days-b.days);
+  if(!upcoming.length){assistantSay("Sin reservas confirmadas en los próximos 30 días.");return}
+  const when=d=>d===0?"hoy":d===1?"mañana":"en "+d+" días";
+  assistantSay(plural(upcoming.length,"reserva confirmada","reservas confirmadas")+" en los próximos 30 días: "+
+    upcoming.slice(0,3).map(i=>(i.row.name||"Evento")+" "+when(i.days)).join(" · ")+".",
+    [{label:"Abrir recordatorios",run:()=>assistantGo("upcomingTitle")},
+     ...upcoming.slice(0,2).map(i=>({label:"Ver "+(i.row.name||"evento"),run:()=>openEnquiry(i.row)}))]);
+}
+
+async function refreshData(){
+  if(!signedIn()){assistantSay("Inicia sesión primero.");return}
+  assistantPush("Recargando desde la base…","bot");
+  try{await loadEnquiries();assistantPush("Listo: "+plural(enquiries.length,"consulta","consultas")+".","bot",[goToList()])}
+  catch(err){assistantPush("No pude recargar: "+errorText(err),"bot")}
+}
+
+const COMMANDS=[
+  {names:["leave","salir","inicio","home","volver"],help:"leave — volver a la web pública",run:()=>{window.location.assign("/")}},
+  {names:["help","ayuda","comandos","?"],help:"help — esta lista",run:()=>showHelp()},
+  {names:["pendientes","nuevas","new"],help:"pendientes — solo las que nadie ha tocado",run:()=>filterByStatus("new")},
+  {names:["presupuestos","presupuestadas","quoted"],help:"presupuestos — con presupuesto enviado",run:()=>filterByStatus("quoted")},
+  {names:["confirmadas","confirmed","reservas"],help:"confirmadas — reservas cerradas",run:()=>filterByStatus("confirmed")},
+  {names:["completadas","done"],help:"completadas — eventos ya servidos",run:()=>filterByStatus("done")},
+  {names:["perdidas","lost"],help:"perdidas — no concretadas",run:()=>filterByStatus("lost")},
+  {names:["todas","all"],help:"todas — quitar el filtro de estado",run:()=>filterByStatus("all")},
+  {names:["limpiar","clear","reset"],help:"limpiar — vaciar búsqueda y filtro",run:()=>{applyFilter("","all");assistantSay("Búsqueda y filtro vacíos.",[goToList()])}},
+  {names:["resumen","stats","totales"],help:"resumen — cuántas hay de cada estado",run:()=>showSummary()},
+  {names:["proximas","próximas","agenda","recordatorios"],help:"próximas — reservas de los próximos 30 días",run:()=>showUpcoming()},
+  {names:["fechas","calendario","bloqueadas"],help:"fechas — ir al calendario de fechas bloqueadas",run:()=>assistantGo("adminCalendar")},
+  {names:["actualizar","refresh","recargar"],help:"actualizar — volver a leer la base",run:()=>refreshData()},
+  {names:["exportar","export","excel"],help:"exportar — descargar el Excel de consultas",run:()=>{if(!signedIn()){assistantSay("Inicia sesión primero.");return}exportEnquiries();assistantSay("Excel generado.")}},
+  {names:["cerrar sesion","cerrar sesión","logout","desconectar"],help:"cerrar sesión — salir de la cuenta",run:()=>{toggleAssistant(false);logout()}},
+];
+
+function showHelp(){
+  assistantSay("Comandos:\n"+COMMANDS.map(c=>"· "+c.help).join("\n")+
+    "\n· buscar <texto> — búsqueda explícita\n\nCualquier otra cosa que escribas la busco entre las consultas.");
+}
+
+function assistantAsk(raw){
+  const query=String(raw||"").trim();if(!query)return;
+  assistantPush(query,"me");
+  const normalized=query.toLowerCase().replace(/\s+/g," ").replace(/[?¿!¡.]+$/,"").trim();
+  const command=COMMANDS.find(c=>c.names.includes(normalized));
+  if(command){command.run();return}
+  const explicit=normalized.match(/^(?:buscar|busca|search|find)\s+(.+)$/);
+  assistantSearch(explicit?explicit[1]:query);
+}
+
+const ASSISTANT_CHIPS=["pendientes","próximas","resumen","exportar","help"];
+function toggleAssistant(open){
+  assistant.hidden=!open;assistantButton.setAttribute("aria-expanded",String(open));
+  if(open){
+    if(!assistantGreeted){
+      assistantGreeted=true;
+      assistantPush("Escribe lo que busques —un nombre, un correo, un lugar— y filtro las consultas. O usa un comando: «help» los lista, «leave» te devuelve a la web pública.","bot");
+    }
+    $("adminAssistantInput").focus();
+  }else assistantButton.focus();
+}
+assistantButton.addEventListener("click",()=>toggleAssistant(assistant.hidden));
+$("adminAssistantForm").addEventListener("submit",event=>{
+  event.preventDefault();const input=$("adminAssistantInput"),query=input.value;input.value="";assistantAsk(query);
+});
+for(const text of ASSISTANT_CHIPS){
+  const chip=document.createElement("button");chip.type="button";chip.textContent=text;
+  chip.addEventListener("click",()=>assistantAsk(text));$("adminAssistantChips").append(chip);
+}
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!assistant.hidden)toggleAssistant(false)});
 function renderUpcoming(){
   const list=$("upcomingList");if(!list)return;list.replaceChildren();
   const today=new Date();today.setHours(0,0,0,0);
