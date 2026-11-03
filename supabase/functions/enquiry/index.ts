@@ -272,11 +272,16 @@ Deno.serve(async (req) => {
       await logAttempt(challenge.error);
       return json({ error: challenge.error }, 403, head);
     }
+    /* Solo una clave duplicada significa que el reto ya se gasto. Cualquier
+       otro fallo (la tabla aun no existe, un corte puntual) no puede acabar
+       rechazando a un cliente legitimo: se anota y se sigue, aunque por esta
+       vez el reto deje de ser de un solo uso. */
     const { error: replay } = await db.from("enquiry_nonces").insert({ jti: challenge.jti });
-    if (replay) {
+    if (replay?.code === "23505") {
       await logAttempt("replay");
       return json({ error: "challenge_failed" }, 403, head);
     }
+    if (replay) console.error("enquiry_nonces no disponible:", replay.message);
 
     // 3 · Turnstile si hay secreto configurado
     if (!await checkTurnstile(clean(body.turnstile, 4000), ip)) {
@@ -284,7 +289,8 @@ Deno.serve(async (req) => {
       return json({ error: "turnstile_failed" }, 403, head);
     }
 
-    // 4 · limites por IP y tope global
+    // 4 · limites por IP y tope global. Si la tabla no esta, los contadores
+    //     vienen vacios y se deja pasar: nunca al reves.
     const dayAgo = new Date(Date.now() - 86_400_000).toISOString();
     const [perHour, perDay, global] = await Promise.all([
       db.from("enquiry_guard").select("id", { count: "exact", head: true })
