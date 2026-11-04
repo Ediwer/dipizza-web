@@ -687,6 +687,7 @@ function answer(q) {
 function ask(q) { push(q, "me"); const r = answer(q); setTimeout(() => push(r.t, "bot", r.a), 420); }
 function toggleChat(open) {
   chat.hidden = !open;
+  document.body.classList.toggle("chat-open", open);
   chatBtn.setAttribute("aria-expanded", String(open));
   if (open) {
     if (!greeted) {
