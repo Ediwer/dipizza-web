@@ -388,7 +388,7 @@ img { display: block; }
 /* ── assistant ───────────────────────────────────────────── */
 .chat-btn {
   position: fixed; right: 24px; bottom: 24px; z-index: 70;
-  width: 58px; height: 58px; border-radius: 999px;
+  width: 58px; height: 58px; border-radius: var(--r-md);
   border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent);
   cursor: pointer; display: grid; place-items: center; box-shadow: var(--shadow-lift);
   transition: transform .2s;
@@ -399,7 +399,7 @@ img { display: block; }
 }
 .social-float a {
   width: 46px; height: 46px; display: grid; place-items: center;
-  border: 1px solid var(--line-strong); border-radius: 50%;
+  border: 1px solid var(--line-strong); border-radius: 14px;
   background: var(--surface); color: var(--warm); box-shadow: var(--shadow);
   text-decoration: none; transition: transform .18s, border-color .18s, background .18s;
 }
