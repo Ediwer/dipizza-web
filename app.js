@@ -265,6 +265,8 @@ function renderBrand() {
   $("heroBadge").textContent = b.badge;
   $("heroTitle").innerHTML = headline(b.headline);
   $("heroLede").textContent = b.lede;
+  $("menuTitle").textContent = b.menuTitle;
+  $("menuNote").textContent = b.menuNote;
   $("storyTitle").textContent = b.storyTitle;
   $("storyText").textContent = b.storyText;
   $("followHandle").textContent = b.handle;
@@ -352,7 +354,7 @@ function renderGallery() {
 
 function renderAll() {
   renderPalette(); renderBrand(); renderInfo();
-  renderGallery();
+  renderSignature(); renderMenu(); renderGallery();
 }
 
 const menuFilters=$("filters");
@@ -629,13 +631,13 @@ const REPLIES = [
     t:"Send us your preferred date and we will confirm availability.",
     a:["Check a date", "#enquiry"] },
   { k:["menu","pizza","pizzas","card","kinds","types","which","options","food"],
-    t:"Tell us which pizzas you have in mind in the enquiry form. The team can confirm ingredients and dietary options.",
-    a:["Start an enquiry", "#enquiry"] },
+    t:"Browse the menu to see every pizza, ingredients and dietary tags.",
+    a:["Open the menu", "#menu"] },
   { k:["favourite","favorite","popular","recommend","best","suggest"],
-    t:"Share what you and your guests enjoy in the enquiry form, and the team can suggest options for your event.",
-    a:["Start an enquiry", "#enquiry"] },
+    t:"Browse the menu for our guest favorites and full range of pizzas.",
+    a:["Open the menu", "#menu"] },
   { k:["photo","photos","gallery","pictures","see","look","instagram","follow"],
-    t:"The gallery shows moments from events and behind the scenes. The menu has the individual pizzas.",
+    t:"The gallery shows moments from events and behind the scenes. Browse the menu for the individual pizzas.",
     a:["Open the gallery", "#gallery"] },
   { k:["human","person","speak","call","phone","email","contact","talk","someone","whatsapp"],
     t:"Gladly. Our email and phone are in the booking information below, or leave your details and the team will get back to you.",

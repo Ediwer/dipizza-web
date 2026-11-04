@@ -495,6 +495,7 @@ body::before {
     <a class="mark" id="navMark" href="#top"></a>
     <nav class="nav-links" aria-label="Sections">
       <a href="#top">Home</a>
+      <a href="#menu">Menu</a>
       <a href="#story">Our Story</a>
       <a href="#gallery">Gallery</a>
     </nav>
@@ -512,6 +513,7 @@ body::before {
         <h1 id="heroTitle"></h1>
         <p class="lede" id="heroLede"></p>
         <div class="hero-actions">
+          <a class="btn" href="#menu">See the Menu</a>
           <a class="btn btn-soft" href="#enquiry">Start an Enquiry</a>
         </div>
       </div>
@@ -538,6 +540,28 @@ body::before {
         <p>Backyard, park, warehouse or parking lot. Oven, prep table and crew travel to the venue — you supply the guests.</p>
       </div>
     </div>
+  </section>
+
+  <!-- ── signature pizzas ─────────────────────────────── -->
+  <section class="rail band" id="signature">
+    <div class="sec-head">
+      <h2>The four that disappear first</h2>
+      <p>Fourteen pizzas on the full menu, three families, and these are the ones we make the most of.</p>
+    </div>
+    <div class="cards" id="signatureCards"></div>
+    <div class="center-cta"><a class="btn btn-line" href="#menu">View the Full Menu</a></div>
+  </section>
+
+  <!-- ── full menu ────────────────────────────────────── -->
+  <section class="rail band" id="menu">
+    <div class="sec-head">
+      <p class="kicker">The Menu</p>
+      <h2 id="menuTitle"></h2>
+      <p>Explore the full menu of traditional, meat and veggie pizzas. Each one is made with fresh mozzarella and hand-stretched dough.</p>
+    </div>
+    <div class="filters" id="filters" role="group" aria-label="Filter the menu"></div>
+    <div class="menu-list" id="menuList"></div>
+    <p class="menu-note" id="menuNote"></p>
   </section>
 
   <!-- ── story / made to order ────────────────────────── -->
@@ -699,6 +723,6 @@ body::before {
 
 
 
-<script src="app.js?v=20261103-cachefix" defer></script>
+<script src="app.js?v=20261103-menu-restore" defer></script>
 </body>
 </html>
